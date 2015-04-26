@@ -1,0 +1,49 @@
+
+
+<form class="make-prediction" ng-submit="makePrediction.makePrediction(makePrediction.prediction)"> 
+
+	<div>
+		<label><h1>What is your prediction?</h1></label>
+		<input type="text" ng-model="makePrediction.prediction.title" autofocus>
+	</div>
+	
+	<div>
+		<label>Topic</label>
+		<input type="text" ng-model="makePrediction.prediction.topics">
+	</div>
+
+	<input type="submit" class="button--primary" value="Add Prediction">
+
+</form>
+
+
+<!--
+<div ng-show="makePrediction.prediction.title" class="editing-prediction-preview">
+	<h2>Preview:</h2>
+	<ul>
+		<li class="prediction">{{makePrediction.prediction.title}}</li>  
+	</ul>
+</div>
+-->
+<div ng-show="makePrediction.newlyAddedPredictions.length" class="newly-added-predictions">
+	<h2>Newly added predictions</h2>
+	<ul>
+		<li ng-repeat="prediction in makePrediction.newlyAddedPredictions" class="prediction">{{prediction.title}}</li>
+	</ul>	
+</div>
+
+
+	
+
+
+
+<!--
+
+What should I predict?
+
+
+
+
+
+
+-->
