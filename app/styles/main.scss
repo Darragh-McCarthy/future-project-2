@@ -18,7 +18,7 @@ body {
 
 body {
   min-height: 100%;
-  background:rgb(245,245,245);
+  //background:rgb(245,245,245);;
 }
 
 ul {
@@ -54,8 +54,9 @@ header {
     top:0;
     left:0;
     width:100%;
-    background:rgb(245,245,245);
-    box-shadow:0 2px 10px #ddd;
+    background:#fff;;
+    //box-shadow:0 2px 10px #ddd;
+    border-bottom:1px solid #ddd;
 
     .navigation {
       display: inline-block;
@@ -90,34 +91,6 @@ header {
       border-radius: 5px;
       display: inline-block;
     }
-      button,
-      button:hover {
-        font-size:18px;
-        background: none;
-        color: #222;
-        margin-left: 5px;
-        padding:.5em 1em;
-        vertical-align: top;
-        margin-top: 10px;
-
-        color:#fff;
-        border-radius:5px;
-
-        //border:2px solid rgb(50,150,240);
-        color:rgb(0,150,240);
-        background:rgb(20,180,240);
-        color:#fff;
-        font-weight: normal;
-        box-shadow:0 2px 3px #bbb;
-        border:0;
-
-        &:hover {
-          background: #ddd;
-          border-color:#eee;
-          color:#777;
-          box-shadow:none; 
-        }
-      }
   }
   .back-button {
     font-size:20px;
@@ -135,6 +108,8 @@ header {
 main {
   display: block;
   width:98%;
+  margin-left: 1%;
+  margin-right: 1%;
   margin-top:20px;
   margin-bottom:50px;
 }
@@ -145,7 +120,6 @@ main {
     font-weight: bold;
     font-size: 20px;
   }
-
 }
 
 
@@ -158,255 +132,260 @@ main {
   font-weight: bold;
 }
 
+.how-likely-are-these-predictions {
+  padding: 0px;
+  font-size:20px;
+  font-weight:normal;
+  margin-bottom:50px;
+  color:#222;
+  
+}
 
 
 .prediction-list {
   display: block;
   margin:auto;
   width: 100%;
-  max-width:700px;
+  max-width:600px;
 
-  .prediction {
-    margin:0;
-    padding:0;
-  }
   .prediction {
     + .prediction {
-      //margin-top: 1px;
-      border-top:1px solid #eee;
+      margin-top:30px;
     }
-  }
-
-  .right-of-topic-image {
-    padding: 0;
     margin:0;
+    padding:0;
     color:#222;
     width: 100%;
     display: block;
-    padding:20px 30px 15px;
     background:#fff;
-    border-radius:2px;
+    border-radius:3px;
     box-shadow:0 2px 3px #ddd;
+    border:2px solid #eee;
 
-    + .right-of-topic-image {
+    &:hover {
+      //padding-bottom:15px;
+
+      .community-opinion,
+      .overall-vote-count {
+        //display: block;
+      }
+      .user-estimate {
+        //margin-top:0;
+        //border-top:1px solid #222;
+      }
+      .user-estimate-option {
+        //margin-bottom: 10px;
+
+      }
+
+      /*
+      .graph-bar-empty { height:1px;   }
+      .graph-bar-10    { height:10px;  }
+      .graph-bar-20    { height:20px;  }
+      .graph-bar-30    { height:30px;  }
+      .graph-bar-40    { height:40px;  }
+      .graph-bar-50    { height:50px; }
+      .graph-bar-60    { height:60px; }
+      .graph-bar-70    { height:70px; }
+      .graph-bar-80    { height:80px; }
+      .graph-bar-90    { height:90px; }
+      .graph-bar-100   { height:100px; }
+      */
+
     }
+
+
   }
 
-  .right-of-topic-image:hover {
-    background:#eee;
-    //margin:50px 0;
+
+  .prediction-header {
+    padding:15px 20px;
   }
-  .prediction:hover .user-opinion {
-    margin-top:40px;
-  }
+
+
   .topics {
     font-size:15px;
     cursor:pointer;
-    color:#999;
-    font-weight: bold;
-    display: inline-block;
-    background:#eee;
-    border-radius:15px;
-    padding:.3em .6em;
+    color:rgb(100,180,240);
+    font-weight: normal;
+    border-radius:5px;
     line-height: 1em;
+    background: #eee;
+    display: inline-block;
+    color:#555;
+    padding:.2em .3em;
   }
+
+
   .prediction-title {
     font-size: 18px;
     line-height: 1.4em;
-    font-weight: bold;;
+    font-weight: bold;
+    color:#333;
+    display: inline-block;
   }
 
-  .prediction:hover .prediction-title {}
+  .prediction-image-container {
+    position:relative;
+    background:red;
+
+    .prediction-image-aspect-ratio-container {
+      background:orange;
+      height: 0;
+      padding-bottom:50%;
+
+      .prediction-image {
+        background:blue;
+        position:absolute;
+        width: 100%;
+        height:100%;
+      }
+    }
+  }
 
 
-  .prediction:hover .community-opinion {
-    display: block;
-  }
-  .prediction:hover .user-opinion {
-    display: block;
-  }
-  .prediction:hover .overall-vote-count {}
-  .prediction:hover .topics {}
 
-  .prediction-details {
-    display: block;
-    margin-top:-8px;
-    display: none;
-  }
+
 
 
   .overall-vote-count {
-    font-size:16px;
-    line-height: 1em;
-    display: inline-block;
-    margin:0;
-    padding:0;
-    font-size: 16px;
-    text-align: center;
-    padding:.5em;
-    border-radius:30px;
-    font-weight: normal;
-    vertical-align: top;
-  }
-
-
-  .community-opinion {
     display: none;
-    margin-top: 20px;
-    margin-bottom:10px;
-    position: relative;
-    border-color:#333;
-    border-radius:3px;
-  }
-  .community-opinion-option {
-    height:20px;
-    padding: 0px 5px;
-    color:#fff;
-    line-height: 1em;
+    width: 100%;
+    margin:0px 20px;
 
-    .vote-count {
-      font-size:14px;
+    font-size:16px;    
+    font-weight: normal;
+    color:#777;
+
+    .count {
+      color:#222;
+    }
+  }
+
+  .graph {
+    display: block;
+    margin-bottom:0;
+    padding-bottom:0;
+    line-height: 0;
+    margin-top:10px;
+    position: relative;
+  }
+
+  .community-opinion-option {
+    display:inline-block;
+    background:#222;
+    vertical-align: bottom;
+    position: relative;
+
+
+
+    &.graph-bar-empty,
+    &.graph-bar-10,
+    &.graph-bar-20,
+    &.graph-bar-30,
+    &.graph-bar-40,
+    &.graph-bar-50,
+    &.graph-bar-60,
+    &.graph-bar-70,
+    &.graph-bar-80,
+    &.graph-bar-90,
+    &.graph-bar-100 {
+      background:#ddd;
+      width:9.09%;
+      height:1px;
     }
 
+    &:nth-child(11) { background:rgb(241,103,0);  }
+    &:nth-child(10) { background:rgb(246,125,0);  }
+    &:nth-child(9) { background:rgb(249,147,7);   }
+    &:nth-child(8) { background:rgb(252,169,14);  }
+    &:nth-child(7) { background:rgb(255,190,20);  }
+    &:nth-child(6) { background:rgb(226,197,33);  }
+    &:nth-child(5) { background:rgb(198,204,46);  }
+    &:nth-child(4) { background:rgb(170,210,60);  }
+    &:nth-child(3) { background:rgb(120,200,120); }
+    &:nth-child(2) { background:rgb(70,190,180);  }
+    &:nth-child(1) { background:rgb(20,180,240);  }
+
+
+
   }
+  
 
-/*
-  .meter {
-    width: 100%;
-    margin-top:5px;
 
-    div {
+
+  .user-estimate {
+    .user-estimate-option {
       left:50%;
       width:5px;
-      background:#ccc;
-      padding:5px 0;
-      width:10%;
+      height:3.5em;
+      padding-top:.5em;
+      width:9.09%;
       display: inline-block;
       text-align: center;
-
-      &:first-child {
-        border-radius: 3px 0 0 3px;
-      }
-      &:last-child {
-        border-radius: 0 3px 3px 0;
-      }
-    }
-  }
-
-*/
-  .graph-bar-empty,
-  .graph-bar-10,
-  .graph-bar-20,
-  .graph-bar-30,
-  .graph-bar-40,
-  .graph-bar-50,
-  .graph-bar-60,
-  .graph-bar-70,
-  .graph-bar-80,
-  .graph-bar-90,
-  .graph-bar-100 {
-    background:#ddd;
-
-    &.strongly-agree    { background:rgb(20,180,240);  }
-    &.agree             { background:rgb(170,210,60); }
-    &.disagree          { background:rgb(255,190,20); }
-    &.strongly-disagree { background:rgb(246,125,0); }
-  }
-
-  .graph-bar-empty { width:2%; }
-  .graph-bar-10 { width:10%; }
-  .graph-bar-20 { width:20%; }
-  .graph-bar-30 { width:30%; }
-  .graph-bar-40 { width:40%; }
-  .graph-bar-50 { width:50%; }
-  .graph-bar-60 { width:60%; }
-  .graph-bar-70 { width:70%; }
-  .graph-bar-80 { width:80%; }
-  .graph-bar-90 { width:90%; }
-  .graph-bar-100 { width:100%; }
-
-  .user-opinion {
-    display: none;
-    position:absolute;
-    top:0px;
-    background: rgb(250,250,250);
-    background:#fff;
-    padding:10px 0px;
-    z-index: 1;
-    left:0;
-    border-radius:5px;
-    box-shadow:0 2px 5px #ddd;
-    margin-left:-120px;
-    margin-top:-40px;
-
-    .option-title {
-      font-size:13px;
-      line-height: 1.4em;
-      display: block;
-
-    }
-    .user-opinion-option  {
-      display: block;
+      color:#777;
+      font-size:16px;
       font-weight: normal;
-      font-size:14px;
-      width:9em;
-      padding-top:.3em;
-      padding-bottom:.3em; 
-      cursor:pointer;
+      vertical-align: top;
+      line-height: 1.2em;
 
-      + .user-opinion-option {
-        border-top:1px solid #eee;
+      .likely {  
+        font-size: 13px;
+        font-weight: bold;
+        color:#555;
+        display: block;
       }
-
-
-
-      &:hover {
-        &.strongly-agree:hover    { 
-          background: rgb(20,180,240);
-          border-color: rgb(20,180,240);
-        }
-        &.agree:hover             { 
-          background:rgb(170,210,60); 
-          border-color:rgb(170,210,60); 
-        }
-        &.disagree:hover          { 
-          background:rgb(255,190,20); 
-          border-color:rgb(255,190,20); 
-        }
-        &.strongly-disagree:hover { 
-          background:rgb(246,125,0); 
-          border-color:rgb(246,125,0); 
-        }
+      .show-onselect {
+        display: none;
       }
-
-    }
-
-
-
-
-    .strongly-agree,
-    .agree {
-
       &:hover {
-        background:#444;
-        border-color:#444;
+        background: #555;
         color:#fff;
-      }
-    }
-    .disagree,
-    .strongly-disagree {
 
-      &:hover {
-        background:rgb(255,100,0);
-        border-color:rgb(255,100,100);
-        color:#fff;
-        background:#444;
-        border-color:#444;
+        .amount {
+          font-weight: bold;
+        }
+        .show-onselect {
+          display: inline;
+          color: inherit;
+         
+        }
+        .likely {
+          display: block;
+          color: inherit;
+        }
+        &:nth-child(11) { background:rgb(241,103,0);    }
+        &:nth-child(10) { background:rgb(246,125,0);    }
+        &:nth-child(9) { background:rgb(249,147,7);    }
+        &:nth-child(8) { background:rgb(252,169,14);   }
+        &:nth-child(7) { background:rgb(255,190,20);   }
+        &:nth-child(6) { background:rgb(226,197,33);   }
+        &:nth-child(5) { background:rgb(198,204,46);   }
+        &:nth-child(4) { background:rgb(170,210,60);   }
+        &:nth-child(3) { background:rgb(120,200,120);  }
+        &:nth-child(2) { background:rgb(70,190,180);   }
+        &:nth-child(1) { background:rgb(20,180,240);   }
       }
+
     }
   }
 
-
+  .view-poll-results {
+    color:#999;
+    font-size:14px;
+    position: absolute;
+    right:10px;
+    top:5px;
+    background:#fff;
+    line-height: 1em;
+  }
+  .how-likely {
+    font-size:14px;
+    color:#555;
+    font-weight: normal;
+    margin-top: 10px;
+    display: none;
+  }
 
 
 }
@@ -491,6 +470,7 @@ form.make-prediction {
     min-width: 150px;
      vertical-align: top;
      margin-top: 50px;
+
   }
   .topic-title {
     font-weight: bold;

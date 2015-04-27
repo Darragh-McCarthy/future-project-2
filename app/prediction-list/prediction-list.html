@@ -10,49 +10,92 @@ Shares
 <div class="prediction-list">
 
   <div ng-show="predictionList.isLoading" class="isloading-notice">Loading...</div>
+  <div ng-hide="predictionList.isLoading" class="how-likely-are-these-predictions">
+    How likely are these predictions to come true?
+  </div>
 
   <ul>
-    <li class="prediction" ng-repeat="prediction in predictionList.predictions | orderBy:'-created'">
+    <li class="prediction" ng-repeat="prediction in predictionList.predictions | orderBy:'-created'">  
+
+          <div class="view-poll-results">View poll results</div>
+
+          <div class="prediction-header">
+            <div class="prediction-title" ng-bind="prediction.title"></div>
+            <div class="topics">
+              <span class="topic">{{prediction.topics[0]}}</span>
+            </div>
+          </div>        
 
 
-      <div class="right-of-topic-image">
+          <!--
+          <div class="prediction-image-container">
+            <div class="prediction-image-aspect-ratio-container">
+              <div class="prediction-image"></div>
+            </div>
+          </div>
+          -->
 
+          <div class="overall-vote-count">
+              <span class="count">551 votes</span> by Darragh McCarthy, Thomas Flaherty, more...              
+          </div>
+
+
+
+          <div class="how-likely">How likely is this to happen?</div>
+        <div class="community-opinion">
         
 
-          <div class="prediction-title" ng-bind="prediction.title"></div>
+         
 
-          <div class="topics">
-            <span class="topic">{{prediction.topics[0]}}</span>
-          </div>
 
-<!--
-          <div class="meter">
-            <div>10%</div><div>20%</div><div>30%</div><div>40%</div><div>50%</div><div>60%</div><div>70%</div><div>80%</div><div>90%</div><div>100%</div>
-          </div>
--->
-        <div class="prediction-details">
-          <div class="user-selected-vote">Strongly agree</div>
-        </div>
-        <div class="community-opinion">
-          <div class="overall-vote-count"><span class="count">551</span> votes</div>
-
-          <div class="community-opinion-option graph-bar-100 strongly-agree">
-          </div><div class="community-opinion-option graph-bar-50 agree">
-          </div><div class="community-opinion-option graph-bar-20 disagree">
-          </div><div class="community-opinion-option graph-bar-empty strongly-disagree">
+          <div class="graph">
+            <div class="community-opinion-option graph-bar-empty"></div><div class="community-opinion-option graph-bar-10"></div><div class="community-opinion-option graph-bar-20"></div><div class="community-opinion-option graph-bar-70"></div><div class="community-opinion-option graph-bar-100"></div><div class="community-opinion-option graph-bar-30"></div><div class="community-opinion-option graph-bar-30"></div><div class="community-opinion-option graph-bar-30"></div><div class="community-opinion-option graph-bar-20"></div><div class="community-opinion-option graph-bar-10"></div><div class="community-opinion-option graph-bar-empty"></div>
           </div>
 
         </div>
 
-        <ul class="user-opinion">
-               <li class="user-opinion-option strongly-agree">Strongly agree
-          </li><li class="user-opinion-option agree">Agree
-          </li><li class="user-opinion-option disagree">Disagree
-          </li><li class="user-opinion-option strongly-disagree">Strongly disagree
-          </li>
-        </ul>
 
-      </div>
+
+          <div class="user-estimate">
+
+            <div class="user-estimate-option">
+              <span class="amount">100%</span>
+              <span class="likely">likely</span>
+            </div><div class="user-estimate-option">
+              <span class="amount">90<span class="show-onselect">%</span></span>
+              <span class="likely show-onselect">likely</span>
+            </div><div class="user-estimate-option">
+              <span class="amount">80<span class="show-onselect">%</span></span>
+              <span class="likely show-onselect">likely</span>
+            </div><div class="user-estimate-option">
+              <span class="amount">70<span class="show-onselect">%</span></span>
+              <span class="likely show-onselect">likely</span>
+            </div><div class="user-estimate-option">
+              <span class="amount">60<span class="show-onselect">%</span></span>
+              <span class="likely show-onselect">likely</span>
+            </div><div class="user-estimate-option">
+              <span class="amount">50<span class="show-onselect">%</span></span>
+              <span class="likely show-onselect">likely</span>
+            </div><div class="user-estimate-option">
+              <span class="amount">40<span class="show-onselect">%</span></span>
+              <span class="likely show-onselect">likely</span>
+            </div><div class="user-estimate-option">
+              <span class="amount">30<span class="show-onselect">%</span></span>
+              <span class="likely show-onselect">likely</span>
+            </div><div class="user-estimate-option">
+              <span class="amount">20<span class="show-onselect">%</span></span>
+              <span class="likely show-onselect">likely</span>
+            </div><div class="user-estimate-option">
+              <span class="amount">10<span class="show-onselect">%</span></span>
+              <span class="likely show-onselect">likely</span>
+            </div><div class="user-estimate-option">
+              <span class="amount">0%</span> 
+              <span class="likely">likely</span>
+            </div>
+          </div>
+
+           
+
     <!--
         <div class="actions">
           <ul>
