@@ -11,12 +11,12 @@ angular
 
 
 
-currentUser.$inject=['$q','$window','$timeout','parse'];
-function currentUser( $q,  $window,  $timeout,  parse ) {
+currentUser.$inject=['$q','$window','$timeout','Parse'];
+function currentUser( $q,  $window,  $timeout,  Parse ) {
 
 	var _whenFacebookSdkLoaded = loadAndInitializeFacebookSdk();
 	var _whenLoggedIn = $q.defer();
-	var _user = parse.User.current();
+	var _user = Parse.User.current();
 
 
 	var currentUserObject = {
@@ -38,7 +38,7 @@ function currentUser( $q,  $window,  $timeout,  parse ) {
 
 
 	function getFacebookIdFromParse() {
-		return parse.User.current().attributes.authData.facebook.id;
+		return Parse.User.current().attributes.authData.facebook.id;
 	}
 
 	function loginWithFacebook() {
@@ -112,18 +112,18 @@ function getFacebookProfilePhotoUrl(userId) {
 */
 
 	function isLoggedIntoParse() {
-		return !! parse.User.current();
+		return !! Parse.User.current();
 	}
 
 	function logoutOfParse() {
-		parse.User.logOut();
+		Parse.User.logOut();
 	}
 
 	function logIntoParseWithFacebook() {
 		return $q(function(resolve, reject){
 			_whenFacebookSdkLoaded
 				.then(function(){
-					parse.FacebookUtils.logIn('public_profile,email,user_friends', {
+					Parse.FacebookUtils.logIn('public_profile,email,user_friends', {
 	      		success: function(user) {
 	 	    		  resolve(user);
 	      		},
@@ -142,7 +142,7 @@ function getFacebookProfilePhotoUrl(userId) {
 
 		return $q(function(resolve, reject) {
 			$window.fbAsyncInit = function() {
-		    parse.FacebookUtils.init({
+		    Parse.FacebookUtils.init({
 		      appId      : '867899246628303',
 		      cookie     : true,  // enable cookies to allow Parse to access the session
 		      version    : 'v2.2',

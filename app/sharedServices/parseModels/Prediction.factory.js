@@ -4,45 +4,60 @@
 
 angular
 	.module('myApp.sharedServices')
-	.factory('Prediction', Prediction);
+	.factory('PredictionService', PredictionService);
 
 
 
 
-Prediction.$inject=['$q','parse'];
-function Prediction( $q,  parse ) {
+PredictionService.$inject=['$q','Parse','TopicService'];
+function PredictionService( $q,  Parse,  TopicService ) {
   
-	var Prediction = parse.Object.extend('Prediction');
-  var predictionQuery = new parse.Query(Prediction);
+	var Prediction = Parse.Object.extend('Prediction');
 
   return {
     'getSomePredictions': getSomePredictions,
-    'addNewPrediction': addNewPrediction
+    'addNewPrediction': addNewPrediction,
+    'getPredictionsByTopicTitle': getPredictionsByTopicTitle
+    }
+
+  function getPredictionsByTopicTitle (topicTitle) {
+    return $q(function(resolve, reject) {
+
+      getParsePredictionsByTopicTitle(topicTitle)
+        .then(function(parsePredictions){
+
+          var predictions = [];
+
+          angular.forEach(parsePredictions, function(parsePrediction){
+            var prediction = makeParselessPrediction(parsePrediction);
+            predictions.push(prediction)
+          })
+
+          resolve(predictions);
+
+        });
+
+    });
   }
 
+
+
+
   function getSomePredictions() {
+    var predictionQuery = new Parse.Query(Prediction);
+
     return $q(function(resolve, reject) {
+      predictionQuery.include('topics');
       predictionQuery.find({
 
         success: function(results) {
+          console.log(results);
+
           var predictionList = [];
-          
-          angular.forEach(results, function(object, key) {
 
-            var prediction = {
-              'id':                       object.id,
-              'created':                  object.createdAt,
-              'title':                    object.get('title'),
-              'topics':                   object.get('topics'),
-              'numStronglyAgreeVotes':    object.get('numStronglyAgreeVotes'),
-              'numStronglyDisagreeVotes': object.get('numStronglyDisagreeVotes'),
-              'numAgreeVotes':            object.get('numAgreeVotes'),
-              'numDisagreeVotes':         object.get('numDisagreeVotes'),
-              'numNeitherVotes':          object.get('numNeitherVotes')
-            };
-
+          angular.forEach(results, function(object) {
+            var prediction = makeParselessPrediction(object)
             predictionList.push(prediction);
-
           });
 
           resolve(predictionList);
@@ -55,87 +70,105 @@ function Prediction( $q,  parse ) {
     });
   }
 
-  function addNewPrediction(title, topics) {
+  function makeParselessPrediction ( parsePrediction ) {
+    var topics = [];
+
+    angular.forEach(parsePrediction.get('topics'), function(topic) {
+      var parselessTopic = makeParselessTopic(topic);
+      topics.push(parselessTopic);
+    });
+
+    var prediction = {
+      'id':                       parsePrediction.id,
+      'created':                  parsePrediction.createdAt,
+      'title':                    parsePrediction.get('title'),
+      'topics':                   topics
+    };
+
+    return prediction;
+  }
+
+
+  function makeParselessTopic (parseTopic) {
+    return {
+      'title': parseTopic.get('title'),
+      'url': parseTopic.get('url')
+    };
+  }
+
+
+  function addNewPrediction ( title, topicTitles ) {
     return $q(function(resolve, reject) {
-      if (title && topics.length){
-        var prediction = new Prediction();
-        prediction.save({
-            'title': title,
-            'topics': topics,
-            'user': parse.User.current()
-          })
-          .then(
-            function(){ console.log('save successful'); },
-            function(){ console.log('save failed'); }
-          );
-      }
-      else {
+
+      if (!title && !topicTitles.length) {
         console.log('invalid input; failed to create prediction');
       }
-    });  
+      else {
+        TopicService.getOrCreateNewTopics(topicTitles)
+          .then(function(topics) {
+
+              console.log('addNewPrediction', topics);
+
+              var newPrediction = new Prediction();
+
+              newPrediction.save({
+                'title': title,
+                'topics': topics,
+                'user': Parse.User.current()
+              })
+              .then(
+                function() { 
+                  console.log('save successful'); 
+                  resolve();
+                },
+                function() { 
+                  console.log('save failed'); 
+                  reject();
+                }
+              );
+          })
+        ;
+      }
+    });
+
+  }
+
+  function getParsePredictionsByTopicTitle (topicTitle) {
+    return $q(function(resolve, reject){
+
+      TopicService.getTopicByTitle(topicTitle)
+        .then(function(topic){
+          var predictionQuery = new Parse.Query(Prediction);
+          predictionQuery.include('topics');
+          predictionQuery.equalTo('topics', topic);
+          predictionQuery
+            .find({
+              success: function(results){
+                console.log(results, results.length);
+
+                resolve(results); 
+              },
+              error: function(){
+                reject();
+              }
+            });
+
+        });
+    });
   }
 
 
 
-  function addVoteOfLikelihood(predictionId, voteTitle) {
-/*
-    var VoteOfLikelihood = Parse.Object.extend('VoteOfLikelihood');
-    voteOfLikelihood = new VoteOfLikelihood();
-    voteOfLikelihood.set()
 
-    var prediction = predictionQuery.get( predictionId );
-    if (prediction) {
-
-      prediction.increment('completelyLikelyVotesCount');
-      prediction.decrement('completelyLikelyVotesCount');
+  function addPercentEstimate(user, predictionId, percentage) {
 
 
 
-      if ('Completely likely' === ) {
-        
-      }
-      else if ('Very likely') {
-        
-      }
-      else if ('Moderately likely') {
-        
-      }
-      else if ('Slightly likely') {
-        
-      }
-      else if ('Not likely') {
-        
-      }
-
-    }
-*/
   
   }
 
 }
 
-  /*
-  var parseObject = parse.Object.extend(
-		'Prediction', 
-		{
-			instanceMethod1: function(){
-
-			},
-			instanceMethod2: function(){
-
-			}
-		},
-		{
-			classMethod1:function(){
-
-			},
-			classMethod2:function(){
-
-			}
-		}
-	);
-  return {};
-  */
 
 
 })();

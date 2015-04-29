@@ -9,44 +9,44 @@ Shares
 
 <div class="prediction-list">
 
+
+
   <div ng-show="predictionList.isLoading" class="isloading-notice">Loading...</div>
+
+    <h1 ng-show="predictionList.currentTopic">{{predictionList.currentTopic}}</h1>
+
+
   <div ng-hide="predictionList.isLoading" class="how-likely-are-these-predictions">
-    How likely are these predictions to come true?
+    
+    <div class="instructions">How likely are these predictions, on a scale of 0 to 100%?</div>
   </div>
 
   <ul>
     <li class="prediction" ng-repeat="prediction in predictionList.predictions | orderBy:'-created'">  
 
-          <div class="view-poll-results">View poll results</div>
+      <div class="view-poll-results">View poll results</div>
 
-          <div class="prediction-header">
-            <div class="prediction-title" ng-bind="prediction.title"></div>
-            <div class="topics">
-              <span class="topic">{{prediction.topics[0]}}</span>
-            </div>
-          </div>        
+        <div class="prediction-header">
 
+          <div class="prediction-title" ng-bind="prediction.title"></div>
+          <div class="topics">
+            <a class="topic" ui-sref="app.search({q:prediction.topics[0].title})">{{prediction.topics[0].title}}</a>
+          </div>
+          
 
-          <!--
-          <div class="prediction-image-container">
+          <div ng-show="{{prediction.imageUrl}}" class="prediction-image-container">
             <div class="prediction-image-aspect-ratio-container">
               <div class="prediction-image"></div>
             </div>
           </div>
-          -->
 
-          <div class="overall-vote-count">
-              <span class="count">551 votes</span> by Darragh McCarthy, Thomas Flaherty, more...              
-          </div>
+        </div>
+          
+        <div class="overall-vote-count">
+            <span class="count">551 votes</span> by Darragh McCarthy, Thomas Flaherty, more...              
+        </div>
 
-
-
-          <div class="how-likely">How likely is this to happen?</div>
         <div class="community-opinion">
-        
-
-         
-
 
           <div class="graph">
             <div class="community-opinion-option graph-bar-empty"></div><div class="community-opinion-option graph-bar-10"></div><div class="community-opinion-option graph-bar-20"></div><div class="community-opinion-option graph-bar-70"></div><div class="community-opinion-option graph-bar-100"></div><div class="community-opinion-option graph-bar-30"></div><div class="community-opinion-option graph-bar-30"></div><div class="community-opinion-option graph-bar-30"></div><div class="community-opinion-option graph-bar-20"></div><div class="community-opinion-option graph-bar-10"></div><div class="community-opinion-option graph-bar-empty"></div>
@@ -59,8 +59,8 @@ Shares
           <div class="user-estimate">
 
             <div class="user-estimate-option">
-              <span class="amount">100%</span>
-              <span class="likely">likely</span>
+              <span class="amount">100<span class="show-onselect">%</span></span>
+              <span class="likely show-onselect">likely</span>
             </div><div class="user-estimate-option">
               <span class="amount">90<span class="show-onselect">%</span></span>
               <span class="likely show-onselect">likely</span>
@@ -89,8 +89,8 @@ Shares
               <span class="amount">10<span class="show-onselect">%</span></span>
               <span class="likely show-onselect">likely</span>
             </div><div class="user-estimate-option">
-              <span class="amount">0%</span> 
-              <span class="likely">likely</span>
+              <span class="amount">0<span class="show-onselect">%</span></span>
+              <span class="likely show-onselect">likely</span>
             </div>
           </div>
 
@@ -110,7 +110,11 @@ Shares
     </li>
   </ul>
 
-  <div ng-hide="predictionList.isLoading" class="kickstart-predictions-notice">
-  This topic is just getting started. <a href="#">Add some predictions</a> to get it going!
+  <div ng-show="predictionList.currentTopic">
+    <div ng-hide="predictionList.isLoading" class="kickstart-predictions-notice">
+      This topic is just getting started. Add a prediction to {{predictionList.currentTopic}}<br/>
+      <button class="button--primary">Add {{predictionList.currentTopic}} prediction</button>
+    </div>
   </div>
+
 </div>

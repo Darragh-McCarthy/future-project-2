@@ -7,6 +7,7 @@ angular.module('myApp')
 
 BrowseTopics.$inject=['Topic'];
 function BrowseTopics( Topic ) {
+
 	var browseTopics = this;
 	browseTopics.topics = Topic.getTopics();
 
@@ -21,6 +22,7 @@ function BrowseTopics( Topic ) {
 		'url':'#'
 	};
 	browseTopics.topics.unshift(everythingTopic, personalisedFeedTopic);
+	
 }
 
 })();

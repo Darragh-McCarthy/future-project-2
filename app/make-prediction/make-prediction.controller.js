@@ -6,8 +6,8 @@ angular.module('myApp')
 	.controller('MakePrediction', MakePrediction);
 
 
-MakePrediction.$inject=['Prediction'];
-function MakePrediction( Prediction ) {
+MakePrediction.$inject=['PredictionService'];
+function MakePrediction( PredictionService ) {
 	var makePrediction = this;
 
 	makePrediction.prediction = {};
@@ -16,10 +16,17 @@ function MakePrediction( Prediction ) {
 	makePrediction.makePrediction = function() {
 		var newPrediction = angular.copy(makePrediction.prediction);
 		makePrediction.prediction = {};
-		makePrediction.newlyAddedPredictions.push(newPrediction);
-		Prediction.addNewPrediction(newPrediction.title, newPrediction.topics.split(','));
+
+		var topics = newPrediction.topics.split(',');
+		
+		PredictionService
+			.addNewPrediction(newPrediction.title, topics)
+			.then(function(){
+				makePrediction.newlyAddedPredictions.push(newPrediction);
+			});
 
 	};
+
 }
 
 

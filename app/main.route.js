@@ -20,6 +20,8 @@ angular.module('myApp')
 
 configureRoutes.$inject=['$stateProvider','$urlRouterProvider'];
 function configureRoutes( $stateProvider,  $urlRouterProvider ) {
+
+  
   $stateProvider
     .state('app', {
       url: '/',
@@ -28,12 +30,31 @@ function configureRoutes( $stateProvider,  $urlRouterProvider ) {
           templateUrl: 'header/header.html',
           controller: 'Header as header'
         },
-        'content': { 
+        'content': {
           templateUrl: 'prediction-list/prediction-list.html', 
           controller: 'PredictionList as predictionList'
         }
       }
-    }) 
+    })
+    .state('app.search', {
+      url: 'search?q=searchQuery',
+      views: {
+        'content@': {
+          templateUrl: 'prediction-list/prediction-list.html', 
+          controller: 'PredictionList as predictionList'
+        }
+      }
+    })
+    .state('app.topic', {
+      url: 'topic/:topic',
+      views: {
+        'content@': {
+          templateUrl: 'prediction-list/prediction-list.html', 
+          controller: 'PredictionList as predictionList'
+        }
+      }
+    })
+
     .state('app.make-prediction', {
       url: 'make-prediction',
       views: {
@@ -45,7 +66,6 @@ function configureRoutes( $stateProvider,  $urlRouterProvider ) {
           template: '<a class="back-button" ui-sref="app"> < back</a>'
         }
       }
-
     })
     .state('app.login', {
       url: 'login',
