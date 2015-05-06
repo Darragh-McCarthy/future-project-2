@@ -18,89 +18,40 @@ body {
 
 body {
   min-height: 100%;
-  background:rgb(245,245,245);;
-}
-
-ul {
-  padding:0;
-  margin:0; 
+  background:rgb(245,245,245);
 }
 
 
+[type="text"] {
+  font-weight:normal;
+}
 
 
 
 
 
-
-
-
-header {
-
-  .logo {
-    width:50px;
-    height:50px;
-    float: right; 
-    background:#ccc;
-    margin-right:100px;
-
-  }
-  .fill-space-left-by-fixed-position-header {
-    display: block;
-    height: 120px;
-  }
-  .fixed-to-top {
-    position:fixed;
-    z-index: 4;
-    top:0;
-    left:0;
-    width:100%;
-    background:rgb(80,90,100);
-    border-bottom:1px solid #ddd;
-
-    .navigation {
-      display: inline-block;
-      font-size: 16px;
-      margin-left: 0px;
-
-      li {
-        display: inline-block;
-      }
-
-      a, 
-      a:visited {
-        text-decoration: none;
-        font-weight: normal;
-        color:#fff;
-
-        &.active {
-          display: none;
-        }
-        &.feedback {
-          color:#eee;
-
-        }
-      }
-
-    }
-      button {
-        margin-left:20px;
-      }
-
-
-
-    img.profile-photo {
-      height:50px;
-      width: 50px;
-      margin:5px;
-      border-radius: 5px;
-      display: inline-block;
-      position: absolute;
-      right:10px;
-      top:10px;
-    }
-  }
-  .back-button {
+.header__fill-fixed-position-space {
+  display: block;
+  height: 120px;
+}
+.header__fixed-to-top {
+  position:fixed;
+  z-index: 4;
+  top:0;
+  right:0;
+  left:0;
+  background:rgb(80,90,100);
+  box-shadow:0 2px 5px #ddd;
+  height:70px; 
+}
+.header__add-prediction-button {
+  margin:6px 15px;
+  display: inline-block;
+}
+.header__back-button {
+  &,
+  &:hover,
+  &:visited {
     font-size:20px;
     padding:20px;
     padding-left:40px;
@@ -110,6 +61,55 @@ header {
     color:rgb(70,120,230);
   }
 }
+.header__profile-photo {
+  height:50px;
+  width: 50px;
+  margin:10px;
+  border-radius: 5px;
+  position: absolute;
+  right:0px;
+  top:0px;
+}
+
+.header__quick-topic-prediction-selection {
+  display: inline-block;
+}
+.header__show-topics {
+  border:none;
+  background:#ddd;
+  display: inline-block;
+  height:70px;
+  width: 150px;
+}
+.header__topics-dropdown {
+  display: none;
+  .header__show-topics:hover ~ &,
+  &:hover { 
+    display: block;
+  }
+  position:fixed;
+  top:70px;
+  left:5%;
+  right: 5%;
+  height: 400px;
+  background:#fff;
+  border:1px solid #ddd;
+  border-radius:3px;
+
+}
+
+
+.header__popular-pages {
+  display: inline-block;
+}
+.header__popular-pages__show-popular-predictions,
+.header__popular-pages__show-celebrity-predictions {
+  display: inline-block;
+  margin-left:20px;
+  font-weight:bold;
+  font-size:14px;
+}
+
 
 
 
@@ -122,311 +122,7 @@ main {
   margin-bottom:50px;
 }
 
-.editing-prediction-preview,
-.newly-added-predictions {
-  h2 {
-    font-weight: bold;
-    font-size: 20px;
-  }
-}
 
-
-
-
-
-
-.how-likely-are-these-predictions {
-  padding: 0px;
-  font-size:30px;
-  font-weight:normal;
-  margin-bottom:50px;
-  color:#444;
-
-  .instructions {
-    font-size:20px;
-    margin-top:10px;
-    color:#555;
-  }
-}
-
-
-.prediction-list {
-  display: block;
-  margin:auto;
-  width: 100%;
-  max-width:700px;
-
-  .kickstart-predictions-notice,
-  .isloading-notice {
-    padding:20px;
-    background: #eee;
-    margin:50px 0;
-    font-weight: normal;
-  }
-
-  .prediction {
-    + .prediction {
-      margin-top:25px;
-    }
-    margin:0;
-    padding:0;
-    color:#222;
-    width: 100%;
-    display: block;
-    background:#fff;
-    border-radius:5px;
-    box-shadow:0 3px 5px #ddd;
-    border:1px solid #ccc;
-
-
-    &:hover {
-      padding-bottom:20px;
-      padding-top:20px;
-
-      .community-opinion,
-      .overall-vote-count {
-        display: block;
-      }
-      .user-estimate-option {
-        border-top:1px solid #777;
-      }
-      .graph,
-      .user-estimate {
-        padding-left:4%;
-        padding-right:4%;
-      }
-      .graph {
-        margin-top:20px;
-      }
-
-      .graph-bar-empty { height:1px;   }
-      .graph-bar-10    { height:10px;  }
-      .graph-bar-20    { height:20px;  }
-      .graph-bar-30    { height:30px;  }
-      .graph-bar-40    { height:40px;  }
-      .graph-bar-50    { height:50px; }
-      .graph-bar-60    { height:60px; }
-      .graph-bar-70    { height:70px; }
-      .graph-bar-80    { height:80px; }
-      .graph-bar-90    { height:90px; }
-      .graph-bar-100   { height:100px; }
-
-      .user-estimate-option {
-        color:#555;
-      }
-
-    }
-
-
-  }
-
-  .prediction-header {
-    padding:10px 20px 0;
-  }
-
-
-  .topics {
-    font-size:15px;
-    cursor:pointer;
-    color:rgb(100,180,240);
-    font-weight: normal;
-    border-radius:5px;
-    line-height: 1em;
-    background: #eee;
-    display: inline-block;
-    color:#222;
-    padding:.4em .5em;
-
-    a {
-      color:inherit;
-      text-decoration: none;
-    }
-  }
-
-
-  .prediction-title {
-    font-size: 18px;
-    line-height: 1.4em;
-    font-weight: bold;
-    color:#333;
-    display: inline;
-  }
-
-  .prediction-image-container {
-    position:relative;
-    background:red;
-    max-width: 400px;
-    margin:20px 0;
-
-    .prediction-image-aspect-ratio-container {
-      background:orange;
-      height: 0;
-      padding-bottom:50%;
-
-      .prediction-image {
-        background:blue;
-        position:absolute;
-        width: 100%;
-        height:100%;
-      }
-    }
-  }
-
-
-
-
-
-
-  .overall-vote-count {
-    display: none;
-    width: 100%;
-    margin:20px 20px 0;
-
-    font-size:15px;    
-    font-weight: normal;
-    color:#555;
-    line-height: 1em;
-
-    .count {
-      color:#222;
-    }
-  }
-
-  .graph {
-    display: block;
-    margin-bottom:0;
-    padding-bottom:0;
-    line-height: 0;
-    margin-top:0px;
-    position: relative;
-  }
-
-  .community-opinion {
-    padding-top:10px;
-  }
-
-  .community-opinion-option {
-    display:inline-block;
-    background:#222;
-    vertical-align: bottom;
-    position: relative;
-
-
-
-    &.graph-bar-empty,
-    &.graph-bar-10,
-    &.graph-bar-20,
-    &.graph-bar-30,
-    &.graph-bar-40,
-    &.graph-bar-50,
-    &.graph-bar-60,
-    &.graph-bar-70,
-    &.graph-bar-80,
-    &.graph-bar-90,
-    &.graph-bar-100 {
-      background:#ddd;
-      width:9.09%;
-      height:1px;
-    }
-
-    &:nth-child(11) { background:rgb(241,103,0);  }
-    &:nth-child(10) { background:rgb(246,125,0);  }
-    &:nth-child(9) { background:rgb(249,147,7);   }
-    &:nth-child(8) { background:rgb(252,169,14);  }
-    &:nth-child(7) { background:rgb(255,190,20);  }
-    &:nth-child(6) { background:rgb(226,197,33);  }
-    &:nth-child(5) { background:rgb(198,204,46);  }
-    &:nth-child(4) { background:rgb(170,210,60);  }
-    &:nth-child(3) { background:rgb(120,200,120); }
-    &:nth-child(2) { background:rgb(70,190,180);  }
-    &:nth-child(1) { background:rgb(20,180,240);  }
-    
-
-
-
-  }
-  
-
-
-
-  .user-estimate {
-            display: block;
-
-    .user-estimate-option {
-      left:50%;
-      width:5px;
-      height:2.8em;
-      padding-top:.3em;
-      width:9.09%;
-      display: inline-block;
-      text-align: center;
-      color:#999;
-      font-size:16px;
-      font-weight: normal;
-      vertical-align: top;
-      line-height: 1.2em;
-
-      .likely {  
-        font-size: 13px;
-        font-weight: bold;
-        color:#555;
-        display: block;
-        line-height: 1em;
-      }
-      .show-onselect {
-        visibility:hidden;
-      }
-      &:hover {
-        background: #555;
-        color:#fff;
-
-        .amount {
-          font-weight: bold;
-        }
-        .show-onselect {
-          visibility:visible;
-          color: inherit;
-         
-        }
-        .likely {
-          display: block;
-          color: inherit;
-        }
-        &:nth-child(11) { background:rgb(241,103,0);    }
-        &:nth-child(10) { background:rgb(246,125,0);    }
-        &:nth-child(9) { background:rgb(249,147,7);    }
-        &:nth-child(8) { background:rgb(252,169,14);   }
-        &:nth-child(7) { background:rgb(255,190,20);   }
-        &:nth-child(6) { background:rgb(226,197,33);   }
-        &:nth-child(5) { background:rgb(198,204,46);   }
-        &:nth-child(4) { background:rgb(170,210,60);   }
-        &:nth-child(3) { background:rgb(120,200,120);  }
-        &:nth-child(2) { background:rgb(70,190,180);   }
-        &:nth-child(1) { background:rgb(20,180,240);   }
-      }
-
-    }
-  }
-
-  .view-poll-results {
-    color:#999;
-    font-size:14px;
-    position: absolute;
-    right:5px;
-    top:2px;
-    background:#fff;
-    line-height: 1em;
-  }
-  .how-likely {
-    font-size:14px;
-    color:#555;
-    font-weight: normal;
-    margin-top: 10px;
-    display: none;
-  }
-
-
-}
 
 
 
@@ -444,7 +140,7 @@ main {
 
 
 
-form.make-prediction {
+.make-prediction {
   width:100%;
   max-width:600px;
   padding:20px 30px;
@@ -474,23 +170,18 @@ form.make-prediction {
     }
   }
 }
+
+
+
+
+
 .login {
-  .login-modal-window {
-    position:fixed;
-    z-index:4;
-    left:0;
-    right:0;
-    border-radius:5px;
-    top:0;
-    width:300px;
-    height:300px;
-    background:#fff;
-    margin-left:auto;
-    margin-right:auto;
-    margin-top:50px;
-    padding:50px;
-
-  }
+  left:0;
+  right:0;
+  top:0;
+  width:300px;
+  height:300px;
+  margin:50px auto;
 }
 
 
@@ -501,34 +192,233 @@ form.make-prediction {
 
 
 
-.browse-topics {
-  .topics {
 
-  }
-  .topic {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.prediction-list {
+  display: block;
+  margin:auto;
+  width: 100%;
+  max-width:600px;
+}
+.prediction-list__instructions {
+  margin:10px 0 50px;
+  font-weight:normal;
+  font-size:20px;
+  color:#555;
+}
+.prediction-list__isloading-notice,
+.prediction-list__kickstart-predictions-notice {
+  font-weight: bold;
+}
+.prediction-list__kickstart-predictions-notice {
+  margin-top:50px;
+}
+
+
+
+.pagination {
+  margin-top:30px;
+  font-size: 20px;
+}
+
+
+
+
+.predictions {
+  padding:0;
+  margin:0;
+}
+.prediction + .prediction {
+  margin-top:25px;
+}
+.prediction {
+  margin:0;
+  padding:0;
+  color:#222;
+  width: 100%;
+  display: block;
+  background:#fff;
+  border-radius:5px;
+  box-shadow:0 3px 5px #ddd;
+  border:1px solid #ccc;
+}
+.prediction__header {
+  padding:10px 20px 0;
+}
+
+.prediction__topic,
+.prediction__topic:visited,
+.prediction__topic:hover {
+  display: none;
+  padding:.4em .5em;
+  border-radius:5px;
+  font-size:15px;
+  font-weight: normal;
+  cursor:pointer;
+  line-height: 1em;
+  background: #eee;
+  color:#222;
+  text-decoration: none;
+  margin-right:1px;
+}
+.prediction__topic {
+  &:first-child,
+  .prediction--expanded & {
     display: inline-block;
-    width:20%;
-    min-width: 150px;
-     vertical-align: top;
-     margin-top: 50px;
-
-  }
-  .topic-title {
-    font-weight: bold;
-    font-size: 18px;
-    margin-top:10px;
-    text-align: center;
-    width: 100%;
-  }
-  .topic-image {
-    width:100px;
-    height:100px;
-    margin:0 auto;
-    display: block;
-    border-radius:100px;
-    background: rgb(230,230,230);      
-    border:1px solid #999;
   }
 }
+.prediction__title {
+  &,
+  &:hover,
+  &:visited {
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1.4em;
+    color:#333;  
+    text-decoration: none;  
+  }
+}
+
+
+
+
+
+.likelihood {
+  margin-top:10px;
+  border-top:1px solid #ccc;
+}
+.likelihood__community-estimate {}
+.likelihood__community-estimate__graph {
+  line-height: 0;
+  background:#eee;
+}
+.likelihood__community-estimate__graph-bar {
+  display:inline-block;
+  vertical-align: bottom;
+  width:9.09%;
+  &:nth-child(1) { background: rgb(20,180,240);  }
+  &:nth-child(2) { background: rgb(70,190,180);  }
+  &:nth-child(3) { background: rgb(120,200,120); }
+  &:nth-child(4) { background: rgb(170,210,60);  }
+  &:nth-child(5) { background: rgb(198,204,46);  }
+  &:nth-child(6) { background: rgb(226,197,33);  }
+  &:nth-child(7) { background: rgb(255,190,20);  }
+  &:nth-child(8) { background: rgb(252,169,14);  }
+  &:nth-child(9) { background: rgb(249,147,7);   }
+  &:nth-child(10) { background: rgb(246,125,0);   }
+  &:nth-child(11) { background: rgb(241,103,0);   }
+}
+.likelihood__community-estimate__count {
+  width: 100%;
+  padding:5px 20px 10px;
+  line-height: 1em;
+  font-size:15px;    
+  font-weight: normal;
+  color:#222;
+  background: #eee;
+}
+
+
+.likelihood__user-estimate {
+  display: block;
+}
+.likelihood__user-estimate__radio-button {
+  position: absolute;
+  visibility: hidden;
+}
+.likelihood__user-estimate-option {
+  display: inline;
+      display: inline-block;
+  vertical-align: top;
+  height:3.5em;
+  width:9.09%;
+  padding-top:.6em;
+  text-align: center;
+  color:#999;
+  font-size:13px;
+  font-weight: normal;
+  line-height: 1.2em;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.likelihood__user-estimate-option {
+}
+.likelihood__user-estimate-option + .likelihood__user-estimate-option { 
+  border-left:1px solid #eee; 
+}
+.likelihood__user-estimate-option--active {
+  .prediction--expanded & {
+    border-top-color:#eee;
+  }
+
+  background:#777;
+  color:#fff;
+  border-radius:2px;
+}
+.likelihood__user-estimate-option:hover {
+  color:#fff;
+  font-weight: bold;
+  &:nth-child(1)  { background: rgb(20,180,240);  border-left-color: rgb(20,180,240);  }
+  &:nth-child(2)  { background: rgb(70,190,180);  border-left-color: rgb(70,190,180);  }
+  &:nth-child(3)  { background: rgb(120,200,120); border-left-color: rgb(120,200,120); }
+  &:nth-child(4)  { background: rgb(170,210,60);  border-left-color: rgb(170,210,60);  }
+  &:nth-child(5)  { background: rgb(198,204,46);  border-left-color: rgb(198,204,46);  }
+  &:nth-child(6)  { background: rgb(226,197,33);  border-left-color: rgb(226,197,33);  }
+  &:nth-child(7)  { background: rgb(255,190,20);  border-left-color: rgb(255,190,20);  }
+  &:nth-child(8)  { background: rgb(252,169,14);  border-left-color: rgb(252,169,14);  }
+  &:nth-child(9)  { background: rgb(249,147,7);   border-left-color: rgb(249,147,7);   }
+  &:nth-child(10) { background: rgb(246,125,0);   border-left-color: rgb(246,125,0);   }
+  &:nth-child(11) { background: rgb(241,103,0);   border-left-color: rgb(241,103,0);   }
+}
+
+
+
+
+
+
+
+
+
+
+.likelihood__user-estimate-option .show-on-active {
+  display: none;
+}
+.likelihood__user-estimate-option--active {
+  font-weight: bold;
+}
+.likelihood__user-estimate-option:hover .show-on-active,
+.likelihood__user-estimate-option--active .show-on-active {
+  display: initial;
+}
+
+
+
 
 

@@ -1,5 +1,5 @@
-(function () { 
-    var root = angular.element(document.getElementsByTagName('body'));
+function countWatchers () { 
+    var root = angular.element(document.getElementsByTagName('html'));
 
     var watchers = [];
 
@@ -28,5 +28,5 @@
     });
 
     console.log('Watchers:'+watchersWithoutDuplicates.length+' (without duplicated)');
-})();
+}
 

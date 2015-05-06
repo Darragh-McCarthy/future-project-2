@@ -1,33 +1,33 @@
 <!--
 
-
 Dropdowns
-  topics
+  topics list
   popular
   celebrity
 
 -->
 
 
-<header>
+<div class="header">
+  <div class="header__fill-fixed-position-space"></div>
+  <div class="header__fixed-to-top">
+    <img class="header__profile-photo" ng-src="{{header.currentUser.facebookPhotoUrl}}" ng-click="header.logout()">
+    <button class="header__add-prediction-button button--primary" ui-sref="app.make-prediction">Add prediction</button>  	
 
-  <div class="fill-space-left-by-fixed-position-header"></div>
+  <!--    <div class="header__quick-topic-prediction-selection">
+        <button class="header__show-topics" href="#">Topics</button>
+        <div class="header__topics-dropdown">
+          <ul>
+            <li ng-repeat="topic in header.topics">{{topic.title}}</li>
+          </ul>
+        </div>
+      </div>
+      <div class="header__popular-pages">
 
-  <div class="fixed-to-top">
-
-    <img class="profile-photo" ng-src="{{header.currentUser.facebookPhotoUrl}}" ng-click="header.logout()">
-    <button ui-sref="app.make-prediction" class="button--primary">Add prediction</button>    
-    <ul class="navigation">
-      <!--<li><a ui-sref="app.browse-topics" ui-sref-active="active">Browse Topics</a></li>-->
-      <li><a class="feedback" href="#">Feedback</a></li>
-    </ul>
-    <div class="logo">Logo here</div>
+        <li class="header__popular-pages__show-popular-predictions" href="#">Popular Predictions</li>
+        <li class="header__popular-pages__show-celebrity-predictions" href="#">Celebrity Predictions</li>
+      </div>
+      -->
 
   </div>
-
-
-	<ul class="topics-by-title"><li ng-repeat="topic in topics">{{topic.title}}</li></ul>
-	<ul class="topics-by-title"><li ng-repeat="topic in topics">{{topic.title}}</li></ul>
-	<ul class="topics-by-title"><li ng-repeat="topic in topics">{{topic.title}}</li></ul>
-	<ul class="topics-by-title"><li ng-repeat="topic in topics">{{topic.title}}</li></ul>
-</header>
+</div>

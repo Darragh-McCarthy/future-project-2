@@ -9,16 +9,20 @@ angular
 
 
 
-PredictionService.$inject=['$q','Parse','TopicService'];
-function PredictionService( $q,  Parse,  TopicService ) {
+PredictionService.$inject=['$q','Parse','TopicService','LikelihoodEstimateService'];
+function PredictionService( $q,  Parse,  TopicService,  LikelihoodEstimateService ) {
   
 	var Prediction = Parse.Object.extend('Prediction');
 
   return {
     'getSomePredictions': getSomePredictions,
     'addNewPrediction': addNewPrediction,
-    'getPredictionsByTopicTitle': getPredictionsByTopicTitle
+    'getPredictionsByTopicTitle': getPredictionsByTopicTitle,
+    'addLikelihoodEstimate': addLikelihoodEstimate
     }
+
+
+
 
   function getPredictionsByTopicTitle (topicTitle) {
     return $q(function(resolve, reject) {
@@ -84,12 +88,23 @@ function PredictionService( $q,  Parse,  TopicService ) {
       'title':                    parsePrediction.get('title'),
       'topics':                   topics
     };
+    prediction.communityEstimates = [];
+    prediction.communityEstimatesCount = 0;
+
+    angular.forEach([100,90,80,70,60,50,40,30,20,10,0], function(percent) {
+      var percentEstimateCount = parsePrediction.get('percentEstimateCount' + percent);
+      if ( ! percentEstimateCount ) {
+        percentEstimateCount = 0;
+      }
+      prediction.communityEstimates.push({'percent':percent, 'count':percentEstimateCount});
+      prediction.communityEstimatesCount += percentEstimateCount;
+    });
 
     return prediction;
   }
 
 
-  function makeParselessTopic (parseTopic) {
+  function makeParselessTopic ( parseTopic ) {
     return {
       'title': parseTopic.get('title'),
       'url': parseTopic.get('url')
@@ -99,36 +114,43 @@ function PredictionService( $q,  Parse,  TopicService ) {
 
   function addNewPrediction ( title, topicTitles ) {
     return $q(function(resolve, reject) {
+      var currentUser = Parse.User.current();
 
-      if (!title && !topicTitles.length) {
+      if ( ! currentUser) {
+        reject();
+        console.log('cannot addNewPrediction because user not logged into Parse');
+        return;
+      }
+
+      if ( ! title || ! topicTitles.length) {
         console.log('invalid input; failed to create prediction');
+        reject();
+        return;
       }
-      else {
-        TopicService.getOrCreateNewTopics(topicTitles)
-          .then(function(topics) {
 
-              console.log('addNewPrediction', topics);
+      TopicService.getOrCreateNewTopics(topicTitles)
+        .then(function(topics) {
+          var prediction = new Prediction();
 
-              var newPrediction = new Prediction();
-
-              newPrediction.save({
-                'title': title,
-                'topics': topics,
-                'user': Parse.User.current()
-              })
-              .then(
-                function() { 
-                  console.log('save successful'); 
-                  resolve();
-                },
-                function() { 
-                  console.log('save failed'); 
-                  reject();
-                }
-              );
+          prediction.save({
+            'title': title,
+            'topics': topics,
+            'author': currentUser
           })
-        ;
-      }
+          .then(
+            function() { 
+              console.log('save successful'); 
+              resolve();
+            },
+            function() { 
+              console.log('save failed'); 
+              reject();
+            }
+          );
+        })
+      ;
+
+
     });
 
   }
@@ -144,8 +166,6 @@ function PredictionService( $q,  Parse,  TopicService ) {
           predictionQuery
             .find({
               success: function(results){
-                console.log(results, results.length);
-
                 resolve(results); 
               },
               error: function(){
@@ -159,12 +179,51 @@ function PredictionService( $q,  Parse,  TopicService ) {
 
 
 
+  function addLikelihoodEstimate(predictionId, percent) {
+    return $q(function(resolve, reject) {
 
-  function addPercentEstimate(user, predictionId, percentage) {
+      var predictionLikelihoodEstimateOptions = [0,10,20,30,40,50,60,70,80,90,100];
+      if ( predictionLikelihoodEstimateOptions.indexOf(percent) === -1 ) {
+        reject();
+      }
 
+      var currentParseUser = Parse.User.current();
+      if ( ! currentParseUser ) {
+        reject();
+      }
 
+      var predictionQuery = new Parse.Query(Prediction);
+      predictionQuery
+        .get(predictionId)
+        .then(function(prediction) {
+          if ( ! prediction) {
+            reject();
+          } else {
+            //LikelihoodEstimateService
+            //  .addNew(currentParseUser, prediction, percent)
+            //  .then(function() {
 
-  
+                prediction.increment('percentEstimateCount'+percent);
+                prediction.save({
+                  success: function(prediction){
+                    resolve(makeParselessPrediction(prediction));
+                  },
+                  error: function(){
+                    reject();
+                  }
+                });
+
+              //})
+            //;
+
+          }
+
+        })
+      ;
+
+      
+      
+    });
   }
 
 }
@@ -172,90 +231,7 @@ function PredictionService( $q,  Parse,  TopicService ) {
 
 
 })();
-
-
-
-
 /*
-  // A complex subclass of Parse.Object
-var Monster = Parse.Object.extend("Monster", {
-  // Instance methods
-  hasSuperHumanStrength: function () {
-    return this.get("strength") > 18;
-  },
-  // Instance properties go in an initialize method
-  initialize: function (attrs, options) {
-    this.sound = "Rawr"
-  }
-}, {
-  // Class methods
-  spawn: function(strength) {
-    var monster = new Monster();
-    monster.set("strength", strength);
-    return monster;
-  }
-});
- 
-var monster = Monster.spawn(200);
-alert(monster.get('strength'));  // Displays 200.
-alert(monster.sound); // Displays Rawr.
-
-
-
-var GameScore = Parse.Object.extend("GameScore");
-var gameScore = new GameScore();
- 
-gameScore.set("score", 1337);
-gameScore.set("playerName", "Sean Plott");
-gameScore.set("cheatMode", false);
- 
-gameScore.save(null, {
-  success: function(gameScore) {
-    // Execute any logic that should take place after the object is saved.
-    alert('New object created with objectId: ' + gameScore.id);
-  },
-  error: function(gameScore, error) {
-    // Execute any logic that should take place if the save fails.
-    // error is a Parse.Error with an error code and message.
-    alert('Failed to create new object, with error code: ' + error.message);
-  }
-});
-
-
-var GameScore = Parse.Object.extend("GameScore");
-var gameScore = new GameScore();
- 
-gameScore.save({
-  score: 1337,
-  playerName: "Sean Plott",
-  cheatMode: false
-}, {
-  success: function(gameScore) {
-    // The object was saved successfully.
-  },
-  error: function(gameScore, error) {
-    // The save failed.
-    // error is a Parse.Error with an error code and message.
-  }
-});
-var GameScore = Parse.Object.extend("GameScore");
-var query = new Parse.Query(GameScore);
-query.get("xWMyZ4YEGZ", {
-  success: function(gameScore) {
-    // The object was retrieved successfully.
-  },
-  error: function(object, error) {
-    // The object was not retrieved successfully.
-    // error is a Parse.Error with an error code and message.
-  }
-});
-
-var score = gameScore.get("score");
-var playerName = gameScore.get("playerName");
-var cheatMode = gameScore.get("cheatMode");
-var objectId = gameScore.id;
-var updatedAt = gameScore.updatedAt;
-var createdAt = gameScore.createdAt;
 
 myObject.fetch({
   success: function(myObject) {

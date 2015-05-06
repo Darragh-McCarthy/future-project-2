@@ -1,120 +1,66 @@
 <!--
+Follow
 Comments
 Views
 Shares
+Vote of timescale
+Custom vote
 -->
-
 
 
 
 <div class="prediction-list">
 
+  <h1 ng-bind="predictionList.currentTopic"></h1>
+  <div ng-hide="predictionList.isLoadingComplete" class="prediction-list__isloading-notice">Loading...</div>
+  <div ng-show="predictionList.isLoadingComplete">
+    <ul class="predictions">
+      <li class="prediction" ng-class="{'prediction--expanded': prediction.isExpanded}" ng-repeat="prediction in predictionList.predictions | orderBy:'-created' track by prediction.id">
 
+        <div class="prediction__header">
+          <a class="prediction__title" href="#">{{::prediction.title}}</a>
+          <span class="prediction__topics">
+            <a class="prediction__topic" ng-repeat="topic in ::prediction.topics" ui-sref="app.search({q:topic.title})">{{::topic.title}}</a>
+          </span>
+        </div>
 
-  <div ng-show="predictionList.isLoading" class="isloading-notice">Loading...</div>
+        <div class="likelihood">
 
-    <h1 ng-show="predictionList.currentTopic">{{predictionList.currentTopic}}</h1>
-
-
-  <div ng-hide="predictionList.isLoading" class="how-likely-are-these-predictions">
-    
-    <div class="instructions">How likely are these predictions, on a scale of 0 to 100%?</div>
-  </div>
-
-  <ul>
-    <li class="prediction" ng-repeat="prediction in predictionList.predictions | orderBy:'-created'">  
-
-      <div class="view-poll-results">View poll results</div>
-
-        <div class="prediction-header">
-
-          <div class="prediction-title" ng-bind="prediction.title"></div>
-          <div class="topics">
-            <a class="topic" ui-sref="app.search({q:prediction.topics[0].title})">{{prediction.topics[0].title}}</a>
+          <div class="likelihood__community-estimate">
+            <div ng-if="prediction.isExpanded">
+              <div class="likelihood__community-estimate__count">{{prediction.communityEstimatesCount}} votes</div>
+              <div class="likelihood__community-estimate__graph">
+                <div class="likelihood__community-estimate__graph-bar" ng-repeat="estimate in prediction.communityEstimates">
+                  <div ng-style="estimate.graphBarHeight"></div>
+                </div>
+              </div>
+            </div>
           </div>
-          
 
-          <div ng-show="{{prediction.imageUrl}}" class="prediction-image-container">
-            <div class="prediction-image-aspect-ratio-container">
-              <div class="prediction-image"></div>
+          <div class="likelihood__user-estimate">
+            <div class="likelihood__user-estimate-option" ng-click="predictionList.toggleLikelihoodEstimate(prediction,estimate.percent)" ng-repeat="estimate in prediction.communityEstimates track by $index" ng-class="{'likelihood__user-estimate-option--active': estimate.percent == prediction.userEstimate}">
+              {{::estimate.percent}}<span class="show-on-active">%<br/>likely</span>
             </div>
           </div>
 
         </div>
-          
-        <div class="overall-vote-count">
-            <span class="count">551 votes</span> by Darragh McCarthy, Thomas Flaherty, more...              
-        </div>
+      </li>
+    </ul>
 
-        <div class="community-opinion">
-
-          <div class="graph">
-            <div class="community-opinion-option graph-bar-empty"></div><div class="community-opinion-option graph-bar-10"></div><div class="community-opinion-option graph-bar-20"></div><div class="community-opinion-option graph-bar-70"></div><div class="community-opinion-option graph-bar-100"></div><div class="community-opinion-option graph-bar-30"></div><div class="community-opinion-option graph-bar-30"></div><div class="community-opinion-option graph-bar-30"></div><div class="community-opinion-option graph-bar-20"></div><div class="community-opinion-option graph-bar-10"></div><div class="community-opinion-option graph-bar-empty"></div>
-          </div>
-
-        </div>
-
-
-
-          <div class="user-estimate">
-
-            <div class="user-estimate-option">
-              <span class="amount">100<span class="show-onselect">%</span></span>
-              <span class="likely show-onselect">likely</span>
-            </div><div class="user-estimate-option">
-              <span class="amount">90<span class="show-onselect">%</span></span>
-              <span class="likely show-onselect">likely</span>
-            </div><div class="user-estimate-option">
-              <span class="amount">80<span class="show-onselect">%</span></span>
-              <span class="likely show-onselect">likely</span>
-            </div><div class="user-estimate-option">
-              <span class="amount">70<span class="show-onselect">%</span></span>
-              <span class="likely show-onselect">likely</span>
-            </div><div class="user-estimate-option">
-              <span class="amount">60<span class="show-onselect">%</span></span>
-              <span class="likely show-onselect">likely</span>
-            </div><div class="user-estimate-option">
-              <span class="amount">50<span class="show-onselect">%</span></span>
-              <span class="likely show-onselect">likely</span>
-            </div><div class="user-estimate-option">
-              <span class="amount">40<span class="show-onselect">%</span></span>
-              <span class="likely show-onselect">likely</span>
-            </div><div class="user-estimate-option">
-              <span class="amount">30<span class="show-onselect">%</span></span>
-              <span class="likely show-onselect">likely</span>
-            </div><div class="user-estimate-option">
-              <span class="amount">20<span class="show-onselect">%</span></span>
-              <span class="likely show-onselect">likely</span>
-            </div><div class="user-estimate-option">
-              <span class="amount">10<span class="show-onselect">%</span></span>
-              <span class="likely show-onselect">likely</span>
-            </div><div class="user-estimate-option">
-              <span class="amount">0<span class="show-onselect">%</span></span>
-              <span class="likely show-onselect">likely</span>
-            </div>
-          </div>
-
-           
-
-    <!--
-        <div class="actions">
-          <ul>
-            <li class="action">Follow</li>
-            <li class="action">Comment</li>
-            <li class="action">Share</li>
-          </ul>
-        </div>
-        <div class="vote-of-timescale"></div>
-        <div class="custom-vote"></div>
-    -->
-    </li>
-  </ul>
-
-  <div ng-show="predictionList.currentTopic">
-    <div ng-hide="predictionList.isLoading" class="kickstart-predictions-notice">
-      This topic is just getting started. Add a prediction to {{predictionList.currentTopic}}<br/>
-      <button class="button--primary">Add {{predictionList.currentTopic}} prediction</button>
+    <div class="pagination">
+      <a ui-sref="app.search({q:predictionList.currentTopic,page:5})">Next page</a>
     </div>
+
+
+    
+    <div class="prediction-list__kickstart-predictions-notice" ng-show="predictionList.currentTopic">
+      This topic is just getting started.
+      <br/>
+      <button class="button--primary" ui-sref="app.make-prediction({topic:predictionList.currentTopic})">Add {{::predictionList.currentTopic}} prediction</button>
+    </div>
+
   </div>
+
+
 
 </div>

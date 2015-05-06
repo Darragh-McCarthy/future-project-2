@@ -17,7 +17,7 @@ function Header( $state, currentUser ) {
 
 	header.logout = logout;
 
-	/*
+	
 	header.topics = [
 		{'title': 'Technology'},
 		{'title': 'Science'},
@@ -32,7 +32,7 @@ function Header( $state, currentUser ) {
 		{'title': 'Startups'},
 		{'title': 'Entertainment'}
 	];
-	*/
+	
 
 	function logout() {
 		currentUser.logout();

@@ -30,11 +30,9 @@
   <!--[if lt IE 7]><p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p><![endif]-->
 
 
-<header>
-  <div ui-view="header"></div>
-</header><main>
-  <div ui-view="content"></div>
-</main>
+  <header><div ui-view="header"></div></header><!--
+--><main><div ui-view="content"></div></main>
+
 
 
   <div id="fb-root"></div>
@@ -66,9 +64,11 @@
   <script src="sharedServices/currentUser.factory.js"></script>
 
   <script src="sharedServices/parse.factory.js"></script>
-  <script src="sharedServices/parseModels/Prediction.factory.js"></script>
-  <script src="sharedServices/parseModels/Topic.factory.js"></script>
-  <script src="sharedServices/parseModels/VoteOfLikelihood.factory.js"></script>
+  <script src="sharedServices/parseServices/PredictionService.factory.js"></script>
+  <script src="sharedServices/parseServices/TopicService.factory.js"></script>
+  <script src="sharedServices/parseServices/LikelihoodEstimateService.factory.js"></script>
+
+  <script src="sharedDirectives/prediction.directive.js"></script>
 
   <script src="login/login.controller.js"></script>
   <script src="header/header.controller.js"></script>
@@ -95,5 +95,43 @@
 
 
 
+
+<script>
+function countWatchers() { 
+    var root = angular.element(document.getElementsByTagName('html'));
+
+    var watchers = [];
+
+    var f = function (element) {
+        angular.forEach(['$scope', '$isolateScope'], function (scopeProperty) { 
+            if (element.data() && element.data().hasOwnProperty(scopeProperty)) {
+                angular.forEach(element.data()[scopeProperty].$$watchers, function (watcher) {
+                    watchers.push(watcher);
+                });
+            }
+        });
+
+        angular.forEach(element.children(), function (childElement) {
+            f(angular.element(childElement));
+        });
+    };
+
+    f(root);
+
+    // Remove duplicate watchers
+    var watchersWithoutDuplicates = [];
+    angular.forEach(watchers, function(item) {
+        if(watchersWithoutDuplicates.indexOf(item) < 0) {
+             watchersWithoutDuplicates.push(item);
+        }
+    });
+
+    console.log('Watchers:'+watchersWithoutDuplicates.length+' (without duplicated)');
+}
+
+</script>
 </body>
 </html>
+
+
+
