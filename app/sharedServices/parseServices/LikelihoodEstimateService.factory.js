@@ -6,10 +6,12 @@ angular.module('myApp.sharedServices')
 
 LikelihoodEstimateService.$inject= ['Parse','$q'];
 function LikelihoodEstimateService ( Parse,  $q ) {
-	var LikelihoodEstimate = Parse.Object.extend('LikelihoodEstimate');
+	var ParseModelLikelihoodEstimate = Parse.Object.extend('LikelihoodEstimate');
+	var likelihoodEstimatesForCurrentUser = null;
 
 	return {
-		'addNew':addNew
+		'addNew':addNew,
+		'getAllByCurrentUser': getAllByCurrentUser
 	}
 
 
@@ -20,7 +22,7 @@ function LikelihoodEstimateService ( Parse,  $q ) {
 				reject();
 			}
 
-			var likelihoodEstimate = new LikelihoodEstimate();
+			var likelihoodEstimate = new ParseModelLikelihoodEstimate();
 			likelihoodEstimate
 				.save({
 					'author':currentUser, 
@@ -32,6 +34,32 @@ function LikelihoodEstimateService ( Parse,  $q ) {
 					resolve();
 				})
 			;
+
+		});
+	}
+	function getAllByCurrentUser() {
+		return $q(function(resolve, reject){
+			if (likelihoodEstimatesForCurrentUser) {
+				resolve(likelihoodEstimatesForCurrentUser);
+			}
+			else {
+
+				var currentUser = Parse.User.current();
+				if ( ! currentUser ) {
+					reject();
+				}
+				else {
+					var query = new Parse.Query(ParseModelLikelihoodEstimate);
+					query.equalTo('author', currentUser);
+					query.find()
+						.then(function(likelihoodEstimates) {
+							likelihoodEstimatesForCurrentUser = likelihoodEstimates;
+							resolve(likelihoodEstimatesForCurrentUser);
+						});
+				}
+				
+
+			}
 
 		});
 	}

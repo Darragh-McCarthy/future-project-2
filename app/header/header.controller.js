@@ -7,17 +7,12 @@
 
 angular
 	.module('myApp')
-	.config(configureStates)
 	.controller('Header', Header);
 
 Header.$inject=['$state','currentUser'];
 function Header( $state, currentUser ) {
 	var header = this;
-	header.currentUser = currentUser;
-
-	header.logout = logout;
-
-	
+	header.currentUser = currentUser;	
 	header.topics = [
 		{'title': 'Technology'},
 		{'title': 'Science'},
@@ -34,28 +29,8 @@ function Header( $state, currentUser ) {
 	];
 	
 
-	function logout() {
-		currentUser.logout();
-		$state.go('app.login');
-	}
+	
 }
-
-
-
-configureStates.$inject=['$stateProvider'];
-function configureStates( $stateProvider ){
-	$stateProvider
-		.state('app.header', {
-			url: '/',
-			views: {
-				'header@': {
-					templateUrl: 'header/header.html'
-				}
-			}
-		})
-	;
-}
-
 
 
 

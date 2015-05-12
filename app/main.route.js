@@ -36,6 +36,14 @@ function configureRoutes( $stateProvider,  $urlRouterProvider ) {
         }
       }
     })
+    .state('app.header', {
+      url: '/',
+      views: {
+        'header@': {
+          templateUrl: 'header/header.html'
+        }
+      }
+    })
     .state('app.search', {
       url: 'search?q&page',
       views: {
@@ -55,7 +63,7 @@ function configureRoutes( $stateProvider,  $urlRouterProvider ) {
           controller: 'MakePrediction as makePrediction'
         },
         'header@': {
-          template: '<a class="header__back-button" ui-sref="app"> < back</a>'
+          template: '<a class="header__back-button" ui-sref="app"> < all predictions</a>'
         }
       }
     })
@@ -69,12 +77,12 @@ function configureRoutes( $stateProvider,  $urlRouterProvider ) {
         }
       }
     })
-    .state('app.browse-topics', {
-      url: 'browse-topics',
+    .state('app.user-profile', {
+      url: 'user-profile/:userId',
       views: {
         'content@': {
-          templateUrl: 'browseTopics/browseTopics.html',
-          controller: 'BrowseTopics as browseTopics'
+          templateUrl:'user-profile/user-profile.template.html',
+          controller: 'UserProfile as userProfile'
         }
       }
     })

@@ -12,32 +12,100 @@ angular
 PredictionService.$inject=['$q','Parse','TopicService','LikelihoodEstimateService'];
 function PredictionService( $q,  Parse,  TopicService,  LikelihoodEstimateService ) {
   
-	var Prediction = Parse.Object.extend('Prediction');
+	var ParsePredictionModel = Parse.Object.extend('Prediction');
+
+  var predictionDataConstraints = {
+    minPredictionTitleCharacters: {
+      value: 15,
+      makeErrorMessage: function(){
+        return 'Your prediction must be at least ' + this.value + ' letters long';
+      }
+    },
+    maxPredictionTitleCharacters: {
+      value: 300,
+      makeErrorMessage: function() {
+        return 'Predictions cannot be more than ' + this.value + ' letters long';
+      }
+    },
+    minTopicsPerPrediction: {
+      value: 1,
+      makeErrorMessage: function() {
+        return 'You must add at least ' + this.value + ' topics';
+      }
+    },
+    maxTopicsPerPrediction: {
+      value: 5,
+      makeErrorMessage: function() {
+        return 'You cannot add more than ' + this.value + ' topics';
+      }
+    },
+    minTopicTitleCharacters: {
+      value: 2,
+      makeErrorMessage: function() {
+        return 'Topics must be at least ' + this.value + ' characters long';
+      }
+    },
+    maxTopicTitleCharacters: {
+      value: 50,
+      makeErrorMessage: function() {
+        return 'Topics cannot be longer than ' + this.value + ' characters';
+      }
+    }
+  };
 
   return {
     'getSomePredictions': getSomePredictions,
     'addNewPrediction': addNewPrediction,
     'getPredictionsByTopicTitle': getPredictionsByTopicTitle,
-    'addLikelihoodEstimate': addLikelihoodEstimate
-    }
+    'addLikelihoodEstimate': addLikelihoodEstimate,
+    'getPredictionsByUserId': getPredictionsByUserId,
+    'validatePredictionData': validatePredictionData
+  };
 
 
+
+
+
+
+  function getPredictionsByUserId(userId) {
+    return $q(function(resolve, reject){
+      var userQuery = new Parse.Query(Parse.User);
+      userQuery.get(userId)
+        .then(function(userObject){          
+          var predictionQuery = new Parse.Query(ParsePredictionModel);
+          predictionQuery.include('topics');
+          predictionQuery.equalTo('author', userObject);
+          predictionQuery
+            .find()
+            .then(function(parsePredictions){
+              var parselessPredictions = [];
+              angular.forEach(parsePredictions, function(parsePrediction){
+                parselessPredictions.push(makeParselessPrediction(parsePrediction));
+              });
+              resolve(parselessPredictions);
+            })
+          ;
+        })
+      ;
+    });
+
+  }
 
 
   function getPredictionsByTopicTitle (topicTitle) {
     return $q(function(resolve, reject) {
 
       getParsePredictionsByTopicTitle(topicTitle)
-        .then(function(parsePredictions){
+        .then(function(predictions){
 
-          var predictions = [];
+          var parselessPredictions = [];
 
-          angular.forEach(parsePredictions, function(parsePrediction){
+          angular.forEach(predictions, function(parsePrediction){
             var prediction = makeParselessPrediction(parsePrediction);
-            predictions.push(prediction)
+            parselessPredictions.push(prediction)
           })
 
-          resolve(predictions);
+          resolve(parselessPredictions);
 
         });
 
@@ -48,7 +116,7 @@ function PredictionService( $q,  Parse,  TopicService,  LikelihoodEstimateServic
 
 
   function getSomePredictions() {
-    var predictionQuery = new Parse.Query(Prediction);
+    var predictionQuery = new Parse.Query(ParsePredictionModel);
 
     return $q(function(resolve, reject) {
       predictionQuery.include('topics');
@@ -78,8 +146,9 @@ function PredictionService( $q,  Parse,  TopicService,  LikelihoodEstimateServic
     var topics = [];
 
     angular.forEach(parsePrediction.get('topics'), function(topic) {
-      var parselessTopic = makeParselessTopic(topic);
-      topics.push(parselessTopic);
+      topics.push(
+        makeParselessTopic(topic)
+      );
     });
 
     var prediction = {
@@ -112,22 +181,95 @@ function PredictionService( $q,  Parse,  TopicService,  LikelihoodEstimateServic
   }
 
 
-  function addNewPrediction ( title, topicTitles ) {
-    return $q(function(resolve, reject) {
-      var currentUser = Parse.User.current();
 
+
+
+
+
+  function validatePredictionData( predictionTitle, topicTitles ) {
+    return {
+      'predictionTitleErrors': validatePredictionTitle(predictionTitle),
+      'topicTitleErrors': validateTopicTitles(topicTitles),
+      'topicCountErrors': validateTopicsCount(topicTitles.length)
+    };
+
+  }
+  function validateTopicsCount(count) {
+    var errors = [];
+    if (count < predictionDataConstraints.minTopicsPerPrediction.value) {
+      errors.push(predictionDataConstraints.minTopicsPerPrediction.makeErrorMessage());
+    }
+    if (count > predictionDataConstraints.maxTopicsPerPrediction.value) {
+      errors.push(predictionDataConstraints.maxTopicsPerPrediction.makeErrorMessage());
+    }
+    return errors;
+  }
+  function validatePredictionTitle( title ) {
+    var errors = [];
+
+    if ( ! title ) {
+      errors.push('Prediction title required');
+    }
+    else if (title.length < predictionDataConstraints.minPredictionTitleCharacters.value) {
+      errors.push(predictionDataConstraints.minPredictionTitleCharacters.makeErrorMessage());
+    }
+    else if (title.length > predictionDataConstraints.maxPredictionTitleCharacters.value) {
+      errors.push(predictionDataConstraints.maxPredictionTitleCharacters.makeErrorMessage());
+    }
+    return errors;
+  }
+  function validateTopicTitles( titles ) {
+    var errors = [];
+      angular.forEach(titles, function(title) {
+        var topicTitleErrors = validateTopicTitle(title);
+        if (errors.indexOf(topicTitleErrors) === -1 ) {
+          angular.forEach(topicTitleErrors, function(topicTitleError) {
+            errors.push(topicTitleError);
+          });
+        }
+      });
+    return errors;
+  }
+
+
+  function validateTopicTitle( title ) {
+    var errors = [];
+    if (title.length < predictionDataConstraints.minTopicTitleCharacters.value) {
+      errors.push(predictionDataConstraints.minTopicTitleCharacters.makeErrorMessage())
+    }
+    else if (title.length > predictionDataConstraints.maxTopicTitleCharacters.value) {
+      errors.push(predictionDataConstraints.maxTopicTitleCharacters.makeErrorMessage())
+    }
+    return errors;
+  }
+
+
+
+  function addNewPrediction( predictionTitle, topicTitles ) {
+    return $q(function(resolve, reject) {
+
+      var predictionValidation = validatePredictionData(predictionTitle, topicTitles);
+      if (predictionValidation.numErrors) {
+        reject(predictionValidation);
+      }
+
+      var currentUser = Parse.User.current();
       if ( ! currentUser) {
         reject();
         console.log('cannot addNewPrediction because user not logged into Parse');
         return;
       }
 
-      if ( ! title || ! topicTitles.length) {
+      if ( ! predictionTitle || ! topicTitles.length) {
         console.log('invalid input; failed to create prediction');
         reject();
         return;
       }
 
+      
+
+
+      /*
       TopicService.getOrCreateNewTopics(topicTitles)
         .then(function(topics) {
           var prediction = new Prediction();
@@ -138,9 +280,9 @@ function PredictionService( $q,  Parse,  TopicService,  LikelihoodEstimateServic
             'author': currentUser
           })
           .then(
-            function() { 
+            function(prediction) { 
               console.log('save successful'); 
-              resolve();
+              resolve(makeParselessPrediction(prediction));
             },
             function() { 
               console.log('save failed'); 
@@ -149,6 +291,7 @@ function PredictionService( $q,  Parse,  TopicService,  LikelihoodEstimateServic
           );
         })
       ;
+      */
 
 
     });
@@ -160,7 +303,7 @@ function PredictionService( $q,  Parse,  TopicService,  LikelihoodEstimateServic
 
       TopicService.getTopicByTitle(topicTitle)
         .then(function(topic){
-          var predictionQuery = new Parse.Query(Prediction);
+          var predictionQuery = new Parse.Query(ParsePredictionModel);
           predictionQuery.include('topics');
           predictionQuery.equalTo('topics', topic);
           predictionQuery
@@ -192,7 +335,7 @@ function PredictionService( $q,  Parse,  TopicService,  LikelihoodEstimateServic
         reject();
       }
 
-      var predictionQuery = new Parse.Query(Prediction);
+      var predictionQuery = new Parse.Query(ParsePredictionModel);
       predictionQuery
         .get(predictionId)
         .then(function(prediction) {

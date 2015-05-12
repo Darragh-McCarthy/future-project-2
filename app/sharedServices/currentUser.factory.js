@@ -23,17 +23,37 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 		'loginWithFacebook': loginWithFacebook,
 		'logout': logoutOfParse,
 		'isLoggedIn': isLoggedIntoParse,
-		'facebookPhotoUrl': null
+		'facebookPhotoUrl': null,
+		'id': null,
+		'name': null
 	};
+
+	if (_user) {
+		currentUserObject.id = _user.id;
+	}
 
 	whenGetProfilePhotoUrl()
 		.then(function( url ) { 
 			currentUserObject.facebookPhotoUrl = url;
 		}
 	);
+
+	//saveBasicFacebookDataToParse()
+
+
 	return currentUserObject;
 
 
+	function getFacebookData() {
+		_whenFacebookSdkLoaded.then(function(){
+			$window.FB.api('/me', function(response) {
+				$timeout(function() {
+					console.log(response);
+					//facebookData.name = response.name;
+			 	});
+		  });
+		});
+	}
 
 
 
@@ -44,9 +64,12 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 	function loginWithFacebook() {
 		return logIntoParseWithFacebook()
 			.then(function() {
+				currentUserObject.id = _user.id;
+
 				getFacebookProfilePhotoUrl(getFacebookIdFromParse())
 					.then(function( url ) {
 						currentUserObject.facebookPhotoUrl = url;
+
 					})
 				;
 			})
@@ -54,27 +77,23 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 	}
 
 
+
+
 	function whenGetProfilePhotoUrl() {
 		return $q(function(resolve, reject) {
 			if (_user) {
-				console.log('User logged in, can seek profile photo url');
-
 				var url = _user.get('profilePhotoUrl');
-
 				if ( !url ) {
 					getFacebookProfilePhotoUrl(getFacebookIdFromParse())
 						.then(function( fbUrl ) {
 							_user.save({
 								'profilePhotoUrl': fbUrl
 							});
-							console.log('fetched profile photo url from Facebook');
 							resolve(fbUrl);
 						})
 					;
 				}
-				console.log('fetched profile photo url from Parse');
 				resolve(url);
-
 			}
 		});
 	}
@@ -93,23 +112,6 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 			});
 		});
 	}
-/*
-function getFacebookProfilePhotoUrl(userId) {
-		return $q(function(resolve, reject) {
-			_whenFacebookSdkLoaded.then(function(){
-				$window.FB.api("/" + userId + "/picture", function(response) {
-		    	if (response && !response.error) {
-		    		resolve(response.data.url);
-		    	}
-		    	else {
-		    		console.log(response.error);
-		    	}
-		    });	
-			});
-		});
-		
-	}	
-*/
 
 	function isLoggedIntoParse() {
 		return !! Parse.User.current();
@@ -176,13 +178,6 @@ function getFacebookProfilePhotoUrl(userId) {
 		})
 	}
 
-	function getFacebookData() {
-		$window.FB.api('/me', function(response) {
-			$timeout(function() {
-				facebookData.name = response.name;
-		 	});
-	  });
-	}
 
 	
 

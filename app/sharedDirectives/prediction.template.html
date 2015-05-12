@@ -1,0 +1,37 @@
+
+
+
+<div class="prediction" ng-class="{'prediction--expanded': predictionCtrl.prediction.isExpanded}">
+  <div class="prediction__header">
+    <a class="prediction__title" href="#">{{::predictionCtrl.prediction.title}}</a>
+    <span class="prediction__topics">
+      <a class="prediction__topic" ng-repeat="topic in ::predictionCtrl.prediction.topics" ui-sref="app.search({q:topic.title})">{{::topic.title}}</a>
+    </span>
+  </div>
+
+  <div class="likelihood">
+
+    <div class="likelihood__community-estimate">
+      <div ng-if="predictionCtrl.prediction.isExpanded">
+        <div class="likelihood__community-estimate__count">{{predictionCtrl.prediction.communityEstimatesCount}} votes</div>
+        <div class="likelihood__community-estimate__graph">
+          <div class="likelihood__community-estimate__graph-bar" ng-repeat="estimate in predictionCtrl.prediction.communityEstimates">
+            <div ng-style="estimate.graphBarHeight"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="likelihood__user-estimate">
+      <div 
+        class="likelihood__user-estimate-option" 
+        ng-click="predictionCtrl.toggleLikelihoodEstimate(predictionCtrl.prediction, estimate.percent)" 
+        ng-repeat="estimate in predictionCtrl.prediction.communityEstimates track by $index" 
+        ng-class="{'likelihood__user-estimate-option--active': estimate.percent == predictionCtrl.prediction.userEstimate}">
+          {{::estimate.percent}}<span class="show-on-active">%<br/>likely</span>
+      </div>
+    </div>
+
+  </div>
+
+</div>

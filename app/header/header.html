@@ -11,23 +11,8 @@ Dropdowns
 <div class="header">
   <div class="header__fill-fixed-position-space"></div>
   <div class="header__fixed-to-top">
-    <img class="header__profile-photo" ng-src="{{header.currentUser.facebookPhotoUrl}}" ng-click="header.logout()">
+    <img class="header__profile-photo" ng-src="{{header.currentUser.facebookPhotoUrl}}" ui-sref="app.user-profile({userId:header.currentUser.id})">
     <button class="header__add-prediction-button button--primary" ui-sref="app.make-prediction">Add prediction</button>  	
-
-  <!--    <div class="header__quick-topic-prediction-selection">
-        <button class="header__show-topics" href="#">Topics</button>
-        <div class="header__topics-dropdown">
-          <ul>
-            <li ng-repeat="topic in header.topics">{{topic.title}}</li>
-          </ul>
-        </div>
-      </div>
-      <div class="header__popular-pages">
-
-        <li class="header__popular-pages__show-popular-predictions" href="#">Popular Predictions</li>
-        <li class="header__popular-pages__show-celebrity-predictions" href="#">Celebrity Predictions</li>
-      </div>
-      -->
-
+  	<a ui-sref="app">All predictions</a>
   </div>
 </div>

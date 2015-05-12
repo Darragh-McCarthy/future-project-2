@@ -1,0 +1,10 @@
+<button ng-click="userProfile.logout()">Logout</button>
+
+<h1>{{userProfile.currentUser.name}}</h1>
+
+<button ng-click="userProfile.getFbData()" >Get FB data</button>
+
+<div class="prediction-list">
+	<fp-prediction prediction="prediction" onexpand="userProfile.expandPrediction(prediction)" ng-repeat="prediction in userProfile.predictions track by prediction.id"></fp-prediction>
+</div>
+
