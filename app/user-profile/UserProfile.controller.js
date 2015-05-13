@@ -13,13 +13,11 @@ function UserProfile( $state,  $stateParams,  currentUser,  PredictionService ) 
 	userProfile.logout = logout;
 	userProfile.expandPrediction = expandPrediction;
 	userProfile.getFbData = getFbData;
+	userProfile.currentUser = currentUser;
 
-	PredictionService
-		.getPredictionsByUserId($stateParams.userId)
-		.then(function(predictions){
-			userProfile.predictions = predictions;
-		})
-	;
+	PredictionService.getPredictionsByUserId($stateParams.userId).then(function(predictions){
+		userProfile.predictions = predictions;
+	});
 
 	function logout() {
 		currentUser.logout();

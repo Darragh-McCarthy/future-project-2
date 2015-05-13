@@ -8,53 +8,51 @@ angular.module('myApp')
 
 MakePrediction.$inject=['PredictionService','TopicService','$stateParams','focusElementById'];
 function MakePrediction( PredictionService,  TopicService,  $stateParams,  focusElementById ) {
-
-	var makePredictionCtrl = this;
-	makePredictionCtrl.newlyAddedPredictions = [];
-	makePredictionCtrl.formErrorMessages = {};
+	
 	var newPrediction = {
 		title: '',
 		topicTitles: []
 	};
+
+	var makePredictionCtrl = this;
+	makePredictionCtrl.newlyAddedPredictions = [];
+	makePredictionCtrl.formErrorMessages = {};
 	makePredictionCtrl.newPrediction = newPrediction;
 	makePredictionCtrl.topic = '';
-	updateAddTopicButtonText(0);
-
-
 	makePredictionCtrl.addTopic 				= addTopic;
 	makePredictionCtrl.removeTopic 			= removeTopic;
 	makePredictionCtrl.makePrediction 	= makePrediction;
 
+	updateAddTopicButtonText(0);
+
 	if ($stateParams.topic) {
-		addUniqueTopicTitle($stateParams.topic);
+		makePredictionCtrl.topic = $stateParams.topic;
+		addTopic();
 	}
 
 
 
 	function addTopic() {
-		addUniqueTopicTitle(makePredictionCtrl.topic);
+		makePredictionCtrl.formErrorMessages = validatePredictionWithNewTitle(newPrediction.predictionTitle, newPrediction.topicTitles, makePredictionCtrl.topic);
+		if ( ! makePredictionCtrl.formErrorMessages.topicTitleErrors.length && ! makePredictionCtrl.formErrorMessages.topicCountErrors.length && newPrediction.topicTitles.indexOf(makePredictionCtrl.topicTitle) === -1 ) {
+			newPrediction.topicTitles.push(makePredictionCtrl.topic);
+		}
 		updateAddTopicButtonText(newPrediction.topicTitles.length);
 		makePredictionCtrl.topic = '';
 		focusElementById('topicTextInput');
 	}
-	function addUniqueTopicTitle(topicTitle) {
-		makePredictionCtrl.formErrorMessages = validatePredictionWithNewTitle(newPrediction.predictionTitle, newPrediction.topicTitles, topicTitle);
-		if ( ! makePredictionCtrl.formErrorMessages.topicTitleErrors.length && ! makePredictionCtrl.formErrorMessages.topicCountErrors.length && newPrediction.topicTitles.indexOf(topicTitle) === -1 ) {
-			newPrediction.topicTitles.push(topicTitle);
-		}
-	}
+
 	function validatePredictionWithNewTitle(predictionTitle, topicTitles, newTopicTitle) {
 		var topicTitlesCopy = newPrediction.topicTitles.slice();
 		topicTitlesCopy.push(newTopicTitle);
 		return PredictionService.validatePredictionData(newPrediction.title,topicTitlesCopy);
 	}
-	function removeTopic(topicTitle) {
-		var index = newPrediction.topicTitles.indexOf(topicTitle);
+	function removeTopic(title) {
+		var index = newPrediction.topicTitles.indexOf(title);
 		newPrediction.topicTitles.splice(index, 1);
 		updateAddTopicButtonText(newPrediction.topicTitles.length);
 	}
 	function makePrediction() {
-		console.log('inside makePrediction');
 		var newPredictionCopy = angular.copy(newPrediction);
 		makePredictionCtrl.formErrorMessages = PredictionService.validatePredictionData(newPredictionCopy.title, newPredictionCopy.topicTitles);
 
@@ -65,23 +63,17 @@ function MakePrediction( PredictionService,  TopicService,  $stateParams,  focus
 		if (errorCount === 0) {
 			newPrediction.topicTitles = [];
 			newPrediction.title = '';
-			/*PredictionService
-				.addNewPrediction(newPredictionCopy.title, newPredictionCopy.topicTitles)
-				.then(function(){
-					newPredictions.push(newPredictionCopy);
-				});*/
-
-			console.log('getting predictions by topic id');
-			PredictionService.getPredictionsByTopicTitle('Film')
-				.then(function(predictions){
-					console.log(predictions);
-					makePredictionCtrl.newlyAddedPredictions = predictions;
+			PredictionService
+				.createNewPrediction(newPredictionCopy.title, newPredictionCopy.topicTitles)
+				.then(function(prediction){
+					makePredictionCtrl.newlyAddedPredictions.push(newPredictionCopy);
 				});
-		}
-		else {
-			console.log(makePredictionCtrl.formErrorMessages);
-		}
 
+			/*PredictionService.getPredictionsByTopicTitle('Film')
+				.then(function(predictions){
+					makePredictionCtrl.newlyAddedPredictions = predictions;
+				});*/
+		}
 	}
 
 

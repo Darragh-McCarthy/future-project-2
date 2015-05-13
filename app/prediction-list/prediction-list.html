@@ -17,9 +17,10 @@ Custom vote
 
     <div class="predictions">
       <fp-prediction 
-        prediction="prediction" 
+        prediction="prediction"
+        topic-to-hide="predictionList.currentTopic" 
         onexpand="predictionList.expandPrediction(prediction)" 
-        ng-repeat="prediction in predictionList.predictions | orderBy:'-created' track by prediction.id"></fp-prediction>
+        ng-repeat="prediction in predictionList.predictions track by prediction.id"></fp-prediction>
     </div>
 
     <div class="pagination">

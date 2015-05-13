@@ -12,12 +12,12 @@ function PredictionList( PredictionService,  TopicService,  $state,  $stateParam
 	predictionList.expandPrediction = expandPrediction;
 	predictionList.currentTopic = $stateParams.q;
 
-	getPredictions()
-		.then(function(predictions) {
-			predictionList.predictions = predictions;
-			predictionList.isLoadingComplete = true;
-		})
-	;
+	getPredictions().then(function(predictions) {
+		predictionList.predictions = predictions;
+		predictionList.isLoadingComplete = true;
+	});
+
+	
 
 
 	function getPredictions() {

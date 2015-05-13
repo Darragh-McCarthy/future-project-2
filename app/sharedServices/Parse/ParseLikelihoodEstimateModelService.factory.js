@@ -2,12 +2,12 @@
 'use strict';
 
 angular.module('myApp.sharedServices')
-	.factory('LikelihoodEstimateService', LikelihoodEstimateService);
+	.factory('ParseLikelihoodEstimateModelService', ParseLikelihoodEstimateModelService);
 
-LikelihoodEstimateService.$inject= ['Parse','$q'];
-function LikelihoodEstimateService ( Parse,  $q ) {
-	var ParseModelLikelihoodEstimate = Parse.Object.extend('LikelihoodEstimate');
-	var likelihoodEstimatesForCurrentUser = null;
+ParseLikelihoodEstimateModelService.$inject= ['Parse','$q'];
+function ParseLikelihoodEstimateModelService ( Parse,  $q ) {
+	var ParseLikelihoodEstimateModel = Parse.Object.extend('LikelihoodEstimate');
+	var likelihoodEstimatesForCurrentUser = [];
 
 	return {
 		'addNew':addNew,
@@ -22,7 +22,7 @@ function LikelihoodEstimateService ( Parse,  $q ) {
 				reject();
 			}
 
-			var likelihoodEstimate = new ParseModelLikelihoodEstimate();
+			var likelihoodEstimate = new ParseLikelihoodEstimateModel();
 			likelihoodEstimate
 				.save({
 					'author':currentUser, 
@@ -32,6 +32,8 @@ function LikelihoodEstimateService ( Parse,  $q ) {
 				.then(function(object){
 					console.log('likelihoodEstimate', object);
 					resolve();
+
+					likelihoodEstimatesForCurrentUser.push(object);
 				})
 			;
 
@@ -49,7 +51,7 @@ function LikelihoodEstimateService ( Parse,  $q ) {
 					reject();
 				}
 				else {
-					var query = new Parse.Query(ParseModelLikelihoodEstimate);
+					var query = new Parse.Query(ParseLikelihoodEstimateModel);
 					query.equalTo('author', currentUser);
 					query.find()
 						.then(function(likelihoodEstimates) {

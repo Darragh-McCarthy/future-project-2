@@ -83,8 +83,9 @@ function configureRoutes( $stateProvider,  $urlRouterProvider ) {
         'content@': {
           templateUrl:'user-profile/user-profile.template.html',
           controller: 'UserProfile as userProfile'
-        }
-      }
+        },
+      },
+
     })
   ;
 

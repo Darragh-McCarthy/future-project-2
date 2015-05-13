@@ -18,41 +18,42 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 	var _whenLoggedIn = $q.defer();
 	var _user = Parse.User.current();
 
-
 	var currentUserObject = {
 		'loginWithFacebook': loginWithFacebook,
-		'logout': logoutOfParse,
+		'logout': logout,
 		'isLoggedIn': isLoggedIntoParse,
-		'facebookPhotoUrl': null,
-		'id': null,
-		'name': null
+		'copyOfBasicFacebookUserData': null,
+		'facebookUserProfilePhotoUrl': null,
+		'userId': null
 	};
 
 	if (_user) {
-		currentUserObject.id = _user.id;
+		currentUserObject.userId = _user.id;
+		currentUserObject.copyOfBasicFacebookUserData = _user.get('copyOfBasicFacebookUserData'); 
+		whenGetProfilePhotoUrl()
+			.then(function( url ) { 
+				currentUserObject.facebookUserProfilePhotoUrl = url;
+			}
+		);
 	}
-
-	whenGetProfilePhotoUrl()
-		.then(function( url ) { 
-			currentUserObject.facebookPhotoUrl = url;
-		}
-	);
-
-	//saveBasicFacebookDataToParse()
-
-
 	return currentUserObject;
 
 
-	function getFacebookData() {
-		_whenFacebookSdkLoaded.then(function(){
-			$window.FB.api('/me', function(response) {
-				$timeout(function() {
+
+	function getBasicFacebookUserData() {
+		return $q(function(resolve, reject){
+			_whenFacebookSdkLoaded.then(function(){
+				$window.FB.api('/me', function(response) {
 					console.log(response);
-					//facebookData.name = response.name;
+					if (response.error){
+						reject();
+					} else {
+						resolve(response);
+					}
 			 	});
-		  });
-		});
+			});
+		})
+			
 	}
 
 
@@ -64,12 +65,21 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 	function loginWithFacebook() {
 		return logIntoParseWithFacebook()
 			.then(function() {
+				_user = Parse.User.current();
 				currentUserObject.id = _user.id;
 
+				if ( ! _user.copyOfBasicFacebookUserData) {
+					getBasicFacebookUserData().then(function(data){
+						_user.set('copyOfBasicFacebookUserData', data);
+						_user.save().then(function(){
+							console.log('successfully saved FB data to Parse');
+							console.log('copyOfBasicFacebookUserData:',_user.get('copyOfBasicFacebookUserData'));
+						});
+					});
+				}
 				getFacebookProfilePhotoUrl(getFacebookIdFromParse())
 					.then(function( url ) {
-						currentUserObject.facebookPhotoUrl = url;
-
+						currentUserObject.facebookUserProfilePhotoUrl = url;
 					})
 				;
 			})
@@ -83,21 +93,18 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 		return $q(function(resolve, reject) {
 			if (_user) {
 				var url = _user.get('profilePhotoUrl');
-				if ( !url ) {
-					getFacebookProfilePhotoUrl(getFacebookIdFromParse())
-						.then(function( fbUrl ) {
-							_user.save({
-								'profilePhotoUrl': fbUrl
-							});
-							resolve(fbUrl);
-						})
-					;
+				if (url) {
+					resolve(url);
 				}
-				resolve(url);
+				else {
+					getFacebookProfilePhotoUrl(getFacebookIdFromParse()).then(function(fbUrl) {
+						_user.save({'profilePhotoUrl': fbUrl});
+						resolve(fbUrl);
+					});
+				}
 			}
 		});
 	}
-
 	function getFacebookProfilePhotoUrl(userId) {
 		return $q(function(resolve, reject) {
 			_whenFacebookSdkLoaded.then(function( fbSdk ){
@@ -117,8 +124,11 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 		return !! Parse.User.current();
 	}
 
-	function logoutOfParse() {
+	function logout() {
 		Parse.User.logOut();
+		FB.logout(function(response) {
+      console.log('logging out of Facebook',response);
+    });
 	}
 
 	function logIntoParseWithFacebook() {
@@ -165,15 +175,12 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 		});
 	}
 
-	function getFacebookLoginStatus(){
+	function isLoggedInToFacebook(){
 		return $q(function(resolve, reject) {
-			_whenFacebookSdkLoaded
-				.then(function( fbSdk ) {
+			_whenFacebookSdkLoaded.then(function(fbSdk) {
 					fbSdk.getLoginStatus(function(response) {
-						resolve(response);
-						console.log(response);
-						//response.status === 'connected'
-					})
+						resolve(response.status === 'connected');
+					});
 			});
 		})
 	}

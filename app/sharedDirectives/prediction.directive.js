@@ -7,7 +7,8 @@ angular.module('myApp')
 	return {
 		templateUrl: 'sharedDirectives/prediction.template.html',
 		scope: {
-			prediction: '=prediction',
+			prediction: '=',
+      topicToHide: '=',
       onexpand: '&onexpand'
 		},
 		bindToController: true,
@@ -30,16 +31,27 @@ function Prediction( PredictionService ) {
   predictionCtrl.removeLikelihoodEstimate = removeLikelihoodEstimate;
   allocateGraphBarHeights(predictionCtrl.prediction.communityEstimates);
 
+
+  (function removeTopicFromPredictions() {
+    if (predictionCtrl.topicToHide) {
+      for (var i = 0; i < predictionCtrl.prediction.topics.length; i++) {
+        if (predictionCtrl.prediction.topics[i].title === predictionCtrl.topicToHide) {
+          var index = predictionCtrl.prediction.topics.indexOf(predictionCtrl.prediction.topics[i]);
+          predictionCtrl.prediction.topics.splice(index, 1);
+        }
+      }
+    }
+  })();
+
   function toggleLikelihoodEstimate(prediction, percent){
     if (prediction.userEstimate === percent) {
-        removeLikelihoodEstimate(prediction, percent);
+      removeLikelihoodEstimate(prediction, percent);
     } else {
-        addLikelihoodEstimate(prediction, percent);
+      addLikelihoodEstimate(prediction, percent);
     }
   }
   function addLikelihoodEstimate(prediction, percent) {
     predictionCtrl.onexpand();
-
 
     PredictionService
         .addLikelihoodEstimate(prediction.id, percent)

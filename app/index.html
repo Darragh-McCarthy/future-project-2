@@ -46,7 +46,6 @@
 
   <script src="//www.parsecdn.com/js/parse-1.3.5.min.js"></script>
 
-  <!-- lodash should be better than underscore -->
   <script src="bower_components/lodash/lodash.js"></script>
 
   <!-- build:js scripts/app.js -->
@@ -63,10 +62,15 @@
   <script src="sharedServices/sharedServices.module.js"></script>
   <script src="sharedServices/currentUser.factory.js"></script>
 
-  <script src="sharedServices/parse.factory.js"></script>
-  <script src="sharedServices/parseServices/PredictionService.factory.js"></script>
-  <script src="sharedServices/parseServices/TopicService.factory.js"></script>
-  <script src="sharedServices/parseServices/LikelihoodEstimateService.factory.js"></script>
+  <script src="sharedServices/Parse/Parse.factory.js"></script>
+  <script src="sharedServices/Parse/ParsePredictionModelService.factory.js"></script>
+  <script src="sharedServices/Parse/ParseTopicModelService.factory.js"></script>
+  <script src="sharedServices/Parse/ParseLikelihoodEstimateModelService.factory.js"></script>
+
+  <script src="sharedServices/PredictionService.factory.js"></script>
+  <script src="sharedServices/TopicService.factory.js"></script>
+  <script src="sharedServices/LikelihoodEstimateService.factory.js"></script>
+
   <script src="sharedServices/focusElementById.factory.js"></script>
 
   <script src="sharedDirectives/prediction.directive.js"></script>

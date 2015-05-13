@@ -5,30 +5,26 @@
 
 angular
 	.module('myApp.sharedServices')
-	.factory('TopicService',TopicService);
+	.factory('ParseTopicModelService',ParseTopicModelService);
 
 
-TopicService.$inject=['$q','Parse'];
-function TopicService( $q,  Parse ) {
+ParseTopicModelService.$inject=['$q','Parse'];
+function ParseTopicModelService( $q,  Parse ) {
 
-	var Topic = Parse.Object.extend("Topic");
+	var ParseTopicModel = Parse.Object.extend("Topic");
 
 	return {
-		'getOrCreateNewTopics': getOrCreateNewTopics,
-    'getTopicsById':getTopicsById,
-    'getTopicByTitle':getTopicByTitle
+		'promiseGetOrCreateNewTopics': promiseGetOrCreateNewTopics,
+    'promiseTopicsById':promiseTopicsById,
+    'promiseTopicByTitle':promiseTopicByTitle
 	};
 
-
-
-
-
-function getOrCreateNewTopics(topicTitles) {
+  function promiseGetOrCreateNewTopics(topicTitles) {
     var promises = [];
     angular.forEach(topicTitles, function(title) {
       title = title.trim();
       promises.push(
-      	getOrCreateNewTopic(title)
+      	promiseGetOrCreateNewTopic(title)
       );
     });
     return $q.all(promises)
@@ -38,25 +34,18 @@ function getOrCreateNewTopics(topicTitles) {
     ;
   }
 
-  function getOrCreateNewTopic(title) {
+  function promiseGetOrCreateNewTopic(title) {
     return $q(function(resolve, reject){
-      getTopicByTitle(title)
-        .then(
-          function(topic) {
-            console.log('successfully found existing topic by same name', topic);
-            resolve(topic);
-          },
-          function() { 
-            console.log('topic lookup failed, creating topic')
-            resolve(createNewTopic(title)); 
-          }
-        );
+      promiseTopicByTitle(title).then(
+        function(topic) { resolve(topic); },
+        function()      { resolve(createNewTopic(title)); }
+      );
     });
   }
 
-	function getTopicByTitle(title) {
+	function promiseTopicByTitle(title) {
 		return $q(function(resolve, reject) {
-      var topicQuery = new Parse.Query(Topic);
+      var topicQuery = new Parse.Query(ParseTopicModel);
       topicQuery.equalTo('title', title);
       topicQuery.first({
         success: function(results){
@@ -79,7 +68,7 @@ function getOrCreateNewTopics(topicTitles) {
 	function createNewTopic(title) {
 		return $q(function(resolve, reject) {
 
-      var topic = new Topic();
+      var topic = new ParseTopicModel();
 
       console.log('createNewTopic', title);
       topic.save({'title':title})
@@ -90,15 +79,14 @@ function getOrCreateNewTopics(topicTitles) {
     });
 	}
 
-  function getTopicsById(ids) {
-    var topicQuery = new Parse.Query(Topic);
+  function promiseTopicsById(ids) {
+    var topicQuery = new Parse.Query(ParseTopicModel);
     return $q(function (resolve, reject) {
       topicQuery.get(ids, {
         success: function(results){
           if (results) {
             resolve(results);
-          }
-          else {
+          } else {
             resolve([]);   
           }
         },
