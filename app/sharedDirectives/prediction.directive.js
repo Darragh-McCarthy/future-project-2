@@ -52,16 +52,16 @@ function Prediction( PredictionService ) {
   }
   function addLikelihoodEstimate(prediction, percent) {
     predictionCtrl.onexpand();
+    prediction.isExpanded = true;
 
     PredictionService
-        .addLikelihoodEstimate(prediction.id, percent)
-        .then(function(updatedPrediction){
-            prediction.communityEstimates = updatedPrediction.communityEstimates;
-            prediction.communityEstimatesCount = updatedPrediction.communityEstimatesCount;
-            prediction.userEstimate = percent;
-            allocateGraphBarHeights(prediction.communityEstimates);
-            //prediction.isExpanded = true;
-        })
+      .addLikelihoodEstimate(prediction.id, percent)
+      .then(function(updatedPrediction){
+        prediction.communityEstimates = updatedPrediction.communityEstimates;
+        prediction.communityEstimatesCount = updatedPrediction.communityEstimatesCount;
+        prediction.userEstimate = percent;
+        allocateGraphBarHeights(prediction.communityEstimates);
+      })
     ;
   }
   function removeLikelihoodEstimate(prediction, percent) {
@@ -69,7 +69,7 @@ function Prediction( PredictionService ) {
   }
   function allocateGraphBarHeights(communityEstimates) {
     var maximumHeight = 100;
-    var minimumHeight = 0;
+    var minimumHeight = 5;
     var largestCount = 0;
 
     angular.forEach(communityEstimates, function(estimate) {
@@ -80,7 +80,7 @@ function Prediction( PredictionService ) {
 
     angular.forEach(communityEstimates, function(estimate) {
       var graphBarHeight = minimumHeight;
-      if (estimate.count > minimumHeight ) {
+      if (estimate.count > 0 ) {
         graphBarHeight = maximumHeight / largestCount * estimate.count;
       }
       estimate.graphBarHeight = {'height':graphBarHeight + 'px'};

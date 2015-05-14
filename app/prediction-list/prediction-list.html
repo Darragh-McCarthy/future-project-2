@@ -10,8 +10,9 @@ Custom vote
 
 
 <div class="prediction-list">
+  <a ng-show="predictionList.currentTopic" ui-sref="app">Back to all predictions</a>
 
-  <h1 ng-bind="predictionList.currentTopic"></h1>
+  <h1 class="prediction-list__topic-title" ng-bind="predictionList.currentTopic"></h1>
   <div ng-hide="predictionList.isLoadingComplete" class="prediction-list__isloading-notice">Loading...</div>
   <div ng-show="predictionList.isLoadingComplete">
 
@@ -23,15 +24,14 @@ Custom vote
         ng-repeat="prediction in predictionList.predictions track by prediction.id"></fp-prediction>
     </div>
 
+<!--
     <div class="pagination">
       <a ui-sref="app.search({q:predictionList.currentTopic,page:5})">Next page</a>
     </div>
 
-
+-->
     
     <div class="prediction-list__kickstart-predictions-notice" ng-show="predictionList.currentTopic">
-      This topic is just getting started.
-      <br/>
       <button class="button--primary" ui-sref="app.make-prediction({topic:predictionList.currentTopic})">Add {{::predictionList.currentTopic}} prediction</button>
     </div>
 

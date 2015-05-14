@@ -11,15 +11,19 @@ topics to suggest to the user
 <form class="make-prediction"> 
 
 	<div class="make-prediction__title">
-		<label class="make-prediction__title-label">What is your prediction?</label>
+		<label for="make-prediction__title-input" class="make-prediction__title-label">
+			<span ng-hide="makePrediction.newlyAddedPredictions.length">What is your prediction?</span>
+			<span ng-show="makePrediction.newlyAddedPredictions.length"><b>Add another prediction</b></span>
+		</label>
 		<ul class="make-prediction__title-error-messages">
 			<li ng-repeat="errorMessage in makePrediction.formErrorMessages.predictionTitleErrors">{{errorMessage}}</li>
 		</ul>
-		<input type="text" ng-model="makePrediction.newPrediction.title" autofocus>
+		<input id="make-prediction__title-input" type="text" ng-model="makePrediction.newPrediction.title" autofocus>
 	</div>
 
 	<div class="make-prediction__topics">
-		<label class="make-prediction__topics-label">Add topics</label>
+
+		<label class="make-prediction__topics-label" for="make-prediction__topic-title-input" ng-hide="makePrediction.newPrediction.topicTitles.length">Add topics</label>
 
 		<div class="make-prediction__topic-list" ng-show="makePrediction.newPrediction.topicTitles.length">
 			<span class="make-prediction__new-topic" ng-repeat="topic in makePrediction.newPrediction.topicTitles">
@@ -27,20 +31,25 @@ topics to suggest to the user
 				<span class="delete" ng-click="makePrediction.removeTopic(topic)">×</span>
 			</span>
 		</div>
+
 		<div class="make-prediction__topic-error-messages">
-			<ul>
-				<li ng-repeat="errorMessage in makePrediction.formErrorMessages.topicTitleErrors">{{errorMessage}}</li>
-			</ul>
-			<ul>
-				<li ng-repeat="errorMessage in makePrediction.formErrorMessages.topicCountErrors">{{errorMessage}}</li>
+			<ul><li ng-repeat="errorMessage in makePrediction.formErrorMessages.topicTitleErrors">{{errorMessage}}</li></ul>
+			<ul><li ng-repeat="errorMessage in makePrediction.formErrorMessages.topicCountErrors">{{errorMessage}}</li></ul>
+		</div>
+
+		<input id="make-prediction__topic-title-input" type="text" ng-model="makePrediction.topic" ng-keyup="$event.keyCode == 13 && makePrediction.addTopicFromFormInput()" />
+		<input class="make-prediction__add-topic-button" ng-show="makePrediction.topic.length >= makePrediction.minimumTopicCharacters" type="button" ng-click="makePrediction.addTopicFromFormInput()" value="Add Topic"/>
+
+		<div class="make-prediction__suggested-topics" ng-hide="makePrediction.topic.length >= makePrediction.minimumTopicCharacters || makePrediction.newPrediction.topicTitles.length">
+			<span class="make-prediction__suggested-topics-title">Suggested topics:</span>
+			<ul class="make-prediction__suggested-topics-list">
+				<li class="make-prediction__suggested-topics-topic" ng-repeat="suggestedTopic in ['Entertainment','Science','Technology','Health','Business']" ng-click="makePrediction.addTopic(suggestedTopic)" ng-show="makePrediction.newPrediction.topicTitles.indexOf(suggestedTopic) == -1">{{suggestedTopic}}</li>
 			</ul>
 		</div>
 
-		<input id="topicTextInput" type="text" ng-model="makePrediction.topic" ng-keyup="$event.keyCode == 13 && makePrediction.addTopic(makePredictionCtrl.topic)" />
-		<input type="button" class="make-prediction__add-topic-button" ng-click="makePrediction.addTopic()" value="{{makePrediction.addTopicButtonText}}"/>
 	</div>
 
-	<input class="make-prediction__add-prediction-button button--primary" type="button"  ng-click="makePrediction.makePrediction(makePrediction.prediction)" value="Add Prediction" />
+	<input ng-show="makePrediction.newPrediction.topicTitles.length && makePrediction.newPrediction.title.length >= makePrediction.minimumPredictionTitleCharacters" class="make-prediction__add-prediction-button button--primary" type="button"  ng-click="makePrediction.makePrediction(makePrediction.prediction)" value="Add Prediction" />
 </form>
 
 

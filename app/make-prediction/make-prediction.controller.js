@@ -20,26 +20,30 @@ function MakePrediction( PredictionService,  TopicService,  $stateParams,  focus
 	makePredictionCtrl.newPrediction = newPrediction;
 	makePredictionCtrl.topic = '';
 	makePredictionCtrl.addTopic 				= addTopic;
+	makePredictionCtrl.addTopicFromFormInput 				= addTopicFromFormInput;
 	makePredictionCtrl.removeTopic 			= removeTopic;
 	makePredictionCtrl.makePrediction 	= makePrediction;
+	makePredictionCtrl.minimumTopicCharacters = 2;
+	makePredictionCtrl.minimumPredictionTitleCharacters = 10;
 
-	updateAddTopicButtonText(0);
 
 	if ($stateParams.topic) {
 		makePredictionCtrl.topic = $stateParams.topic;
-		addTopic();
 	}
 
+	focusElementById('make-prediction__title-input');
 
 
-	function addTopic() {
-		makePredictionCtrl.formErrorMessages = validatePredictionWithNewTitle(newPrediction.predictionTitle, newPrediction.topicTitles, makePredictionCtrl.topic);
-		if ( ! makePredictionCtrl.formErrorMessages.topicTitleErrors.length && ! makePredictionCtrl.formErrorMessages.topicCountErrors.length && newPrediction.topicTitles.indexOf(makePredictionCtrl.topicTitle) === -1 ) {
-			newPrediction.topicTitles.push(makePredictionCtrl.topic);
-		}
-		updateAddTopicButtonText(newPrediction.topicTitles.length);
+	function addTopicFromFormInput() {
+		addTopic(makePredictionCtrl.topic);
 		makePredictionCtrl.topic = '';
-		focusElementById('topicTextInput');
+		focusElementById('make-prediction__topic-title-input');
+	}
+	function addTopic(topicTitle) {
+		makePredictionCtrl.formErrorMessages = validatePredictionWithNewTitle(newPrediction.predictionTitle, newPrediction.topicTitles, topicTitle);
+		if ( ! makePredictionCtrl.formErrorMessages.topicTitleErrors.length && ! makePredictionCtrl.formErrorMessages.topicCountErrors.length && newPrediction.topicTitles.indexOf(makePredictionCtrl.topicTitle) === -1 ) {
+			newPrediction.topicTitles.push(topicTitle);
+		}
 	}
 
 	function validatePredictionWithNewTitle(predictionTitle, topicTitles, newTopicTitle) {
@@ -50,7 +54,6 @@ function MakePrediction( PredictionService,  TopicService,  $stateParams,  focus
 	function removeTopic(title) {
 		var index = newPrediction.topicTitles.indexOf(title);
 		newPrediction.topicTitles.splice(index, 1);
-		updateAddTopicButtonText(newPrediction.topicTitles.length);
 	}
 	function makePrediction() {
 		var newPredictionCopy = angular.copy(newPrediction);
@@ -66,20 +69,9 @@ function MakePrediction( PredictionService,  TopicService,  $stateParams,  focus
 			PredictionService
 				.createNewPrediction(newPredictionCopy.title, newPredictionCopy.topicTitles)
 				.then(function(prediction){
-					makePredictionCtrl.newlyAddedPredictions.push(newPredictionCopy);
+					makePredictionCtrl.newlyAddedPredictions.push(prediction);
 				});
-
-			/*PredictionService.getPredictionsByTopicTitle('Film')
-				.then(function(predictions){
-					makePredictionCtrl.newlyAddedPredictions = predictions;
-				});*/
 		}
-	}
-
-
-	
-	function updateAddTopicButtonText(topicsCount) {
-		makePredictionCtrl.addTopicButtonText = topicsCount ? 'Add another topic' : 'Add topic';
 	}
 
 }

@@ -14,6 +14,8 @@ angular
 currentUser.$inject=['$q','$window','$timeout','Parse'];
 function currentUser( $q,  $window,  $timeout,  Parse ) {
 
+	var facebookBigProfilePictureWidth = 200;
+	var facebookBigProfilePictureHeight = 200;
 	var _whenFacebookSdkLoaded = loadAndInitializeFacebookSdk();
 	var _whenLoggedIn = $q.defer();
 	var _user = Parse.User.current();
@@ -23,18 +25,19 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 		'logout': logout,
 		'isLoggedIn': isLoggedIntoParse,
 		'copyOfBasicFacebookUserData': null,
-		'facebookUserProfilePhotoUrl': null,
+		'userThumbnailUrl': null,
 		'userId': null
 	};
 
 	if (_user) {
 		currentUserObject.userId = _user.id;
 		currentUserObject.copyOfBasicFacebookUserData = _user.get('copyOfBasicFacebookUserData'); 
-		whenGetProfilePhotoUrl()
-			.then(function( url ) { 
-				currentUserObject.facebookUserProfilePhotoUrl = url;
-			}
-		);
+		getUserThumbnailUrl().then(function(url){ 
+			currentUserObject.userThumbnailUrl = url;
+		});
+		getUserBigPictureUrl().then(function(url){
+			currentUserObject.userBigPictureUrl = url;
+		})
 	}
 	return currentUserObject;
 
@@ -52,8 +55,7 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 					}
 			 	});
 			});
-		})
-			
+		})		
 	}
 
 
@@ -77,11 +79,9 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 						});
 					});
 				}
-				getFacebookProfilePhotoUrl(getFacebookIdFromParse())
-					.then(function( url ) {
-						currentUserObject.facebookUserProfilePhotoUrl = url;
-					})
-				;
+				getUserThumbnailUrl().then(function(url) {
+					currentUserObject.userThumbnailUrl = url;
+				});
 			})
 		;
 	}
@@ -89,33 +89,53 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 
 
 
-	function whenGetProfilePhotoUrl() {
+
+	function getUserThumbnailUrl() {
 		return $q(function(resolve, reject) {
 			if (_user) {
-				var url = _user.get('profilePhotoUrl');
+				var url = _user.get('userThumbnailUrl');
 				if (url) {
 					resolve(url);
-				}
-				else {
-					getFacebookProfilePhotoUrl(getFacebookIdFromParse()).then(function(fbUrl) {
-						_user.save({'profilePhotoUrl': fbUrl});
-						resolve(fbUrl);
+				} else {
+					getFacebookUserProfilePictureUrl(getFacebookIdFromParse()).then(function(url) {
+						_user.save({'userThumbnailUrl': url});
+						resolve(url);
 					});
 				}
 			}
 		});
 	}
-	function getFacebookProfilePhotoUrl(userId) {
+	function getUserBigPictureUrl() {
+		return $q(function(resolve, reject) {
+			if (_user) {
+				var url = _user.get('userBigPictureUrl');
+				if (url) {
+					resolve(url);
+				} else {
+					getFacebookUserProfilePictureUrl(getFacebookIdFromParse(), facebookBigProfilePictureWidth, facebookBigProfilePictureHeight).then(function(url) {
+						_user.save({'userBigPictureUrl': url});
+						resolve(url);
+					});
+				}
+			}
+		});
+	}
+	function getFacebookUserProfilePictureUrl(userId, width, height) {
+		var apiUrl = "/" + userId + "/picture";
+
+		if (width && height) {
+			apiUrl += '?width=' + width + '&height=' + height;
+		}
+
 		return $q(function(resolve, reject) {
 			_whenFacebookSdkLoaded.then(function( fbSdk ){
-				fbSdk.api("/" + userId + "/picture", function(response) {
+				fbSdk.api(apiUrl, function(response) {
 		    	if (response && !response.error) {
 		    		resolve(response.data.url);
-		    	}
-		    	else {
+		    	} else {
 		    		console.log(response.error);
 		    	}
-		    });	
+		    });
 			});
 		});
 	}

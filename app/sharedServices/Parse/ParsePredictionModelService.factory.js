@@ -12,7 +12,7 @@ angular
 ParsePredictionModelService.$inject=['$q','Parse','ParseTopicModelService','ParseLikelihoodEstimateModelService'];
 function ParsePredictionModelService( $q,  Parse,  ParseTopicModelService,  ParseLikelihoodEstimateModelService ) {
   
-    var ParsePredictionModel = Parse.Object.extend('Prediction');
+  var ParsePredictionModel = Parse.Object.extend('Prediction');
 
   return {
     'getSomePredictions': getSomePredictions,
@@ -20,21 +20,13 @@ function ParsePredictionModelService( $q,  Parse,  ParseTopicModelService,  Pars
     'getPredictionsByAuthorId': getPredictionsByAuthorId,
     'createNewPredictionWithTopicTitles': createNewPredictionWithTopicTitles,
     'createNewLikelihoodEstimate': createNewLikelihoodEstimate,
-    'validatePredictionData': returnEmptyArray//validatePredictionData
   };
-
-  function returnEmptyArray() {
-    return [];
-  }
-
-
-
 
 
   function getPredictionsByAuthorId(authorId) {
-    var query = new Parse.Query(Parse.User);
-    var promise = query.get(authorId)
-    return promise.then(getPredictionsByAuthor);
+    var user = new Parse.User();
+    user.id = authorId;
+    return getPredictionsByAuthor(user)
   }
   function getPredictionsByAuthor(author) {
     var query = new Parse.Query(ParsePredictionModel);
@@ -67,7 +59,6 @@ function ParsePredictionModelService( $q,  Parse,  ParseTopicModelService,  Pars
     });
   }
   function createNewPrediction(author, title, topics) {
-    console.log(author, title, topics);
     var prediction = new ParsePredictionModel();
     return prediction.save({
       'title': title,
@@ -75,22 +66,15 @@ function ParsePredictionModelService( $q,  Parse,  ParseTopicModelService,  Pars
       'author': author
     });
   }
-
-  
-
   function createNewLikelihoodEstimate(author, predictionId, percent) {
     var predictionQuery = new Parse.Query(ParsePredictionModel);
     var createEstimatePromise = predictionQuery.get(predictionId).then(function(prediction){
-      ParseLikelihoodEstimateModelService.addNew(author, prediction, percent);
-      return prediction;
-    });
-
-    var updatePredictionPromise = createEstimatePromise.then(function(prediction){
       prediction.increment('percentEstimateCount' + percent);
-      return prediction.save();
+      return ParseLikelihoodEstimateModelService.addNew(author, prediction, percent).then(function(){
+        return prediction;
+      });
     });
-
-    return updatePredictionPromise;
+    return createEstimatePromise;
   }
   
 
@@ -105,21 +89,6 @@ function ParsePredictionModelService( $q,  Parse,  ParseTopicModelService,  Pars
 })();
 /*
 
-
-// Declare the types.
-var Post = Parse.Object.extend("Post");
-var Comment = Parse.Object.extend("Comment");
- 
-var myPost = new Post();
-myPost.set("title", "I'm Hungry");
-myPost.set("content", "Where should we go for lunch?");
-
-var myComment = new Comment();
-myComment.set("content", "Let's do Sushirrito.");
-myComment.set("parent", myPost);
- 
-// This will save both myPost and myComment
-myComment.save();
 
 
 //You can also link objects using just their objectIds like so:

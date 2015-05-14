@@ -1,0 +1,7 @@
+pagination
+add likelihood estimate loading sign
+undoing likelihood estimate
+logo - name
+assign access rights to different Parse models
+DOM manipulation of Prediction graph
+notifications

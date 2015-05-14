@@ -36,7 +36,7 @@ li {
 
 .header__fill-fixed-position-space {
   display: block;
-  height: 120px;
+  height: 80px;
 }
 .header__fixed-to-top {
   position:fixed;
@@ -44,23 +44,54 @@ li {
   top:0;
   right:0;
   left:0;
-  background:rgb(245,245,245);
-  border-bottom:1px solid #ddd;
+  background:#555;
+}
+.header__navigation {
+  display: inline-block;
+
+
+  a {
+    color:#fff;
+    font-weight: normal;
+    text-decoration: none;
+  }
+  a + a {
+    margin-left:1em;
+  }
+  .feedback {
+    color:#ccc;
+  }
 }
 .header__add-prediction-button {
   margin:6px 15px;
   display: inline-block;
+  font-weight: normal;
+  &:hover {
+    background:#444;
+    color: #ccc;
+  }
 }
 .header__back-button {
+    font-weight:normal;
+    background:#eee;
   &,
   &:hover,
   &:visited {
-    font-size:20px;
+    color:#777;
+    font-size:18px;
     padding:20px;
-    padding-left:40px;
     display:block;
     text-decoration: none;
-    color:rgb(70,120,230);
+
+    background:rgb(220,220,220);
+    padding-left:25px;
+  }
+  &:hover {
+    //color:rgb(70,120,230);
+    //padding-left:15px;
+    //background:rgb(225,233,240);
+    background:#ccc;
+    color:#222;
   }
 }
 .header__profile-photo {
@@ -81,13 +112,21 @@ li {
 
 main {
   display: block;
-  width:96%;
-  margin-left: 2%;
-  margin-right: 2%;
   margin-top:20px;
   margin-bottom:50px;
 }
 
+.footer {
+
+  margin:0 auto;
+  max-width: 700px;
+}
+.footer__made-by {
+  padding:20px;
+  margin:50px 0;
+  background:#eee;
+  font-weight: normal;
+}
 
 
 
@@ -116,10 +155,13 @@ main {
   box-shadow:0 3px 3px #ccc;
 
   [type="text"] {
-    padding:.5em;
+    padding:.7em;
     width:100%;
     display:block;
     color:rgb(50,150,100);
+    font-size:17px;
+    border-radius:.3em;
+    border:1px solid #ccc;
 
     &:focus {
       outline:none;
@@ -136,24 +178,26 @@ main {
   }
 }
 .make-prediction__topics-label {
-  font-size: 20px;
+  font-size: 18px;
   margin-top:10px;
   display: block;
-  font-weight: bold;
+  font-weight: normal;
 }
 .make-prediction__title-label {
-  font-size:25px;
-  font-weight: bold;
+  font-size:24px;
+  font-weight: normal;
 }
+
 .make-prediction__add-topic-button {
   margin-top:5px;
   border:none;
   border-radius:3px;
-  box-shadow:0 2px 3px #ccc;
-  padding:.4em 2em;
+  box-shadow:0 2px 3px #ddd;
+  padding:.3em 1em;
   font-weight: normal;
-  background:#fff;
-  border:2px solid #ccc;
+  background:#eee;
+  border:1px solid #999;
+  display:block; 
   &:focus {
     outline: none;
   }
@@ -164,8 +208,13 @@ main {
     color:#999;
   }
 }
+/*
+#topicTextInput:focus + .make-prediction__add-topic-button {
+  display:block; 
+}
+*/
 .make-prediction__topic-list {
-  margin:0 0 10px;
+  margin:20px 0 5px;
   padding:0;
 
 }
@@ -199,8 +248,31 @@ main {
 .make-prediction__newly-added-predictions {
   width:700px;
   margin:auto;
+
 }
 
+
+.make-prediction__suggested-topics {
+  font-size:14px;
+  color:#555;
+  margin-top:5px;
+}
+.make-prediction__suggested-topics-title {}
+.make-prediction__suggested-topics-list {
+  display: inline-block;
+  font-size: inherit;
+}
+.make-prediction__suggested-topics-topic {
+  margin-left:.2em;
+  display:inline-block;
+  padding:0;
+  cursor: pointer;
+  background: rgb(245,245,245);
+  padding:.2em .5em;
+  border-radius:.3em;
+  color:#777;
+
+}
 
 
 
@@ -247,7 +319,10 @@ main {
   display: block;
   margin:auto;
   width: 100%;
-  max-width:600px;
+  max-width:700px;
+}
+.prediction-list__topic-title {
+  margin-bottom:20px;
 }
 .prediction-list__instructions {
   margin:10px 0 50px;
@@ -260,7 +335,7 @@ main {
   font-weight: bold;
 }
 .prediction-list__kickstart-predictions-notice {
-  margin-top:50px;
+  margin-top:15px;
 }
 
 
@@ -277,6 +352,7 @@ main {
   padding:0;
   margin:0;
 }
+
 fp-prediction + fp-prediction,
 .prediction + .prediction {
   margin-top:25px;
@@ -455,5 +531,47 @@ fp-prediction + fp-prediction,
 
 
 
+
+
+
+
+.user-profile {
+  position:relative;
+}
+.user-profile__centered-box {
+  width: 700px;
+  margin:auto;  
+}
+.user-profile__user-overview {
+}
+.user-profile__user-text {
+  display: inline-block;
+  vertical-align: top;
+  margin-left: 10px;
+}
+.user-profile__fullname {
+  font-size:25px;
+  font-weight:bold;
+}
+.user-profile__user-photo-big {
+  border-radius:3px;
+  height:200px;
+  width:200px;
+  background:#ddd;
+}
+.user-profile__prediction-list {
+  margin-top:20px;
+}
+.user-profile__prediction-list__title {
+  font-size:25px;
+}
+.user-profile__logout-button {
+  border:1px solid #ccc;
+  background:#fff;
+  border-radius:3px;
+  padding:.1em 1em;
+  box-shadow:0 2px 3px #ddd;
+  margin-top:.3em;
+}
 
 

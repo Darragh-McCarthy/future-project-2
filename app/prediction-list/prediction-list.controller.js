@@ -31,7 +31,6 @@ function PredictionList( PredictionService,  TopicService,  $state,  $stateParam
 		angular.forEach(predictionList.predictions, function(eachPrediction){
 			eachPrediction.isExpanded = false;
 		});
-		expandedPrediction.isExpanded = true;
 	}
 
 }

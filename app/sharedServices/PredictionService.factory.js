@@ -9,7 +9,7 @@ function PredictionService( $q,  ParsePredictionModelService,  TopicService ) {
 
   var predictionDataConstraints = {
     minPredictionTitleCharacters: {
-      value: 15,
+      value: 10,
       makeErrorMessage: function() { return 'Predictions must be at least ' + this.value + ' characters long'; }
     },
     maxPredictionTitleCharacters: {
@@ -33,6 +33,8 @@ function PredictionService( $q,  ParsePredictionModelService,  TopicService ) {
       makeErrorMessage: function() { return 'Topics cannot be longer than ' + this.value + ' characters'; }
     }
   };
+
+
 
 
 
@@ -73,7 +75,7 @@ function PredictionService( $q,  ParsePredictionModelService,  TopicService ) {
       });
     });
   }
-  function createNewPrediction( predictionTitle, topicTitles ) {
+  function createNewPrediction(predictionTitle, topicTitles) {
     return $q(function(resolve, reject) {
       var predictionValidation = validatePredictionData(predictionTitle, topicTitles);
       var currentUser = Parse.User.current();
@@ -87,12 +89,9 @@ function PredictionService( $q,  ParsePredictionModelService,  TopicService ) {
         return;
       }
 
-      ParsePredictionModelService
-        .createNewPredictionWithTopicTitles(currentUser, predictionTitle, topicTitles)
-        .then(function(prediction){
-          console.log('works');
-          resolve(prediction);
-        });
+      ParsePredictionModelService.createNewPredictionWithTopicTitles(currentUser, predictionTitle, topicTitles).then(function(prediction){
+        resolve(castParsePredictionAsPlainObject(prediction));
+      });
 
     });
 
@@ -187,8 +186,10 @@ function PredictionService( $q,  ParsePredictionModelService,  TopicService ) {
   }
   function validatePredictionTitle( title ) {
     var errors = [];
-
-    if ( ! title || title.length < predictionDataConstraints.minPredictionTitleCharacters.value) {
+    if (title === '') {
+      errors.push('Required');
+    }
+    else if ( ! title || title.length < predictionDataConstraints.minPredictionTitleCharacters.value) {
       errors.push(predictionDataConstraints.minPredictionTitleCharacters.makeErrorMessage());
     }
     else if (title.length > predictionDataConstraints.maxPredictionTitleCharacters.value) {
