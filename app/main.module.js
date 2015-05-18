@@ -12,7 +12,8 @@ angular
     'parse-angular',
     'ui.router'
   ])
-  .config(mainConfigurations);
+  .config(mainConfigurations)
+  .constant('_', _);
 
 
 

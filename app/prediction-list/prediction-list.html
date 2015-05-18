@@ -9,7 +9,26 @@ Custom vote
 
 
 
+
 <div class="prediction-list">
+
+
+  
+  <div class="prediction-list__pagination">
+    <ul class="prediction-list__pagination-list">
+      <li class="prediction-list__pagination-page" ng-repeat="page in [
+        {'title':'1','index':0},
+        {'title':'2','index':1},
+        {'title':'3','index':2},
+        {'title':'4','index':3},
+        {'title':'next','index':4}]">
+        <a class="prediction-list__pagination-page-hyperlink" 
+        ui-sref="app.search({'page':page.index})" 
+        ng-class="{active:predictionList.currentPage == page.index}">{{page.title}}</a>
+      </li>
+    </ul>
+  </div>
+
   <a ng-show="predictionList.currentTopic" ui-sref="app">Back to all predictions</a>
 
   <h1 class="prediction-list__topic-title" ng-bind="predictionList.currentTopic"></h1>
@@ -35,6 +54,25 @@ Custom vote
       <button class="button--primary" ui-sref="app.make-prediction({topic:predictionList.currentTopic})">Add {{::predictionList.currentTopic}} prediction</button>
     </div>
 
+  </div>
+
+
+
+
+  
+  <div class="prediction-list__pagination">
+    <ul class="prediction-list__pagination-list">
+      <li class="prediction-list__pagination-page" ng-repeat="page in [
+        {'title':'1','index':0},
+        {'title':'2','index':1},
+        {'title':'3','index':2},
+        {'title':'4','index':3},
+        {'title':'next','index':4}]">
+        <a class="prediction-list__pagination-page-hyperlink" 
+        ui-sref="app.search({'page':page.index})" 
+        ng-class="{active:predictionList.currentPage == page.index}">{{page.title}}</a>
+      </li>
+    </ul>
   </div>
 
 

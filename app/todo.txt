@@ -5,3 +5,11 @@ logo - name
 assign access rights to different Parse models
 DOM manipulation of Prediction graph
 notifications
+pagination is going to break if first arriving by URL to anything other than first page
+
+Dad demo:
+Not interactive enough
+Thought predictions would be added once entered
+Didn't understand what the topics field was for
+
+loading on any page other than the first causes earlier pages to fail to display/load

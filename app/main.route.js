@@ -63,7 +63,7 @@ function configureRoutes( $stateProvider,  $urlRouterProvider ) {
           controller: 'MakePrediction as makePrediction'
         },
         'header@': {
-          template: '<a class="header__back-button" ui-sref="app"> <b><</b> Back to all predictions</a>'
+          template: '<a class="header__back-button" ui-sref="app">◃ Back to all predictions</a>'
         }
       }
     })

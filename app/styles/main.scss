@@ -26,9 +26,21 @@ li {
   margin:0;
 }
 
+
 [type="text"] {
   font-weight:normal;
-}
+    padding:.7em;
+    width:100%;
+    display:block;
+    color:rgb(50,150,100);
+    font-size:17px;
+    border-radius:.3em;
+    border:1px solid #ccc;
+
+    &:focus {
+      outline:none;
+    }
+  }
 
 
 
@@ -36,7 +48,7 @@ li {
 
 .header__fill-fixed-position-space {
   display: block;
-  height: 80px;
+  height: 50px;
 }
 .header__fixed-to-top {
   position:fixed;
@@ -73,25 +85,28 @@ li {
 }
 .header__back-button {
     font-weight:normal;
-    background:#eee;
+    //background:#eee;
+    //border-bottom:1px solid #eee;
   &,
   &:hover,
   &:visited {
     color:#777;
+    color:rgb(70,140,240);
     font-size:18px;
     padding:20px;
     display:block;
     text-decoration: none;
 
-    background:rgb(220,220,220);
+    //background:rgb(220,220,220);
     padding-left:25px;
   }
   &:hover {
     //color:rgb(70,120,230);
     //padding-left:15px;
     //background:rgb(225,233,240);
-    background:#ccc;
+    background:#eee;
     color:#222;
+    padding-left:20px;
   }
 }
 .header__profile-photo {
@@ -147,26 +162,12 @@ main {
 
 .make-prediction {
   width:100%;
-  max-width:600px;
+  max-width:700px;
   padding:50px 30px;
   margin:0 auto 40px;
   background:#fff;
   border-radius:5px;
   box-shadow:0 3px 3px #ccc;
-
-  [type="text"] {
-    padding:.7em;
-    width:100%;
-    display:block;
-    color:rgb(50,150,100);
-    font-size:17px;
-    border-radius:.3em;
-    border:1px solid #ccc;
-
-    &:focus {
-      outline:none;
-    }
-  }
 }
 
 .make-prediction__title-error-messages,
@@ -250,7 +251,10 @@ main {
   margin:auto;
 
 }
-
+.make-prediction__newly-added-predictions__title {
+  margin-bottom:10px;
+  font-size:25px;
+}
 
 .make-prediction__suggested-topics {
   font-size:14px;
@@ -340,18 +344,43 @@ main {
 
 
 
-.pagination {
-  margin-top:30px;
-  font-size: 20px;
+
+.prediction-list__pagination {
+  margin-top:50px;
 }
-
-
-
+.prediction-list__pagination-list {}
+.prediction-list__pagination-page {
+  & + & {
+    margin-left:.2em;
+  }
+  display: inline-block;
+  padding:0;
+}
+.prediction-list__pagination-page-hyperlink {
+  text-decoration: none;
+  font-weight: bold;
+  &,
+  &:visited {
+    color:rgb(50,100,200);
+    background:rgb(200,220,240);
+    padding:.5em 1em;
+    border-radius:.3em;
+  }
+  &:hover {
+    background:#aaa;;
+    color:#222;
+  }
+  &.active {
+    background:#ddd;
+    color:#bbb;
+  }
+}
 
 .predictions {
   padding:0;
   margin:0;
 }
+
 
 fp-prediction + fp-prediction,
 .prediction + .prediction {
@@ -370,7 +399,11 @@ fp-prediction + fp-prediction,
   border:1px solid #ccc;
 }
 .prediction__header {
-  padding:10px 20px 0;
+  padding:15px 20px 0;
+}
+.prediction__created-at {
+  font-size: 15px;
+  display: inline-block;
 }
 
 .prediction__topic,
@@ -405,6 +438,11 @@ fp-prediction + fp-prediction,
     text-decoration: none;  
   }
 }
+.prediction__add-topics {
+  padding:10px 20px 30px;;
+}
+
+
 
 
 
@@ -412,7 +450,7 @@ fp-prediction + fp-prediction,
 
 .likelihood {
   margin-top:10px;
-  border-top:1px solid #ccc;
+  border-top:1px solid #ddd;
 }
 .likelihood__community-estimate {}
 .likelihood__community-estimate__graph {
@@ -569,7 +607,7 @@ fp-prediction + fp-prediction,
   border:1px solid #ccc;
   background:#fff;
   border-radius:3px;
-  padding:.1em 1em;
+  padding:.1em .7em;
   box-shadow:0 2px 3px #ddd;
   margin-top:.3em;
 }

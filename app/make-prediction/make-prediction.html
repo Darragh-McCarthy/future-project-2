@@ -13,14 +13,16 @@ topics to suggest to the user
 	<div class="make-prediction__title">
 		<label for="make-prediction__title-input" class="make-prediction__title-label">
 			<span ng-hide="makePrediction.newlyAddedPredictions.length">What is your prediction?</span>
-			<span ng-show="makePrediction.newlyAddedPredictions.length"><b>Add another prediction</b></span>
+			<span ng-show="makePrediction.newlyAddedPredictions.length">Add another prediction</span>
 		</label>
 		<ul class="make-prediction__title-error-messages">
 			<li ng-repeat="errorMessage in makePrediction.formErrorMessages.predictionTitleErrors">{{errorMessage}}</li>
 		</ul>
-		<input id="make-prediction__title-input" type="text" ng-model="makePrediction.newPrediction.title" autofocus>
+		<input id="make-prediction__title-input" type="text" ng-model="makePrediction.newPrediction.title" autofocus ng-keyup="$event.keyCode == 13 && makePrediction.makePrediction(makePrediction.prediction)" >
 	</div>
+	<input class="make-prediction__add-topic-button" ng-show="makePrediction.newPrediction.title.length >= makePrediction.minimumPredictionTitleCharacters" type="button" ng-click="makePrediction.makePrediction(makePrediction.prediction)" value="Add Prediction"/>
 
+	<!--
 	<div class="make-prediction__topics">
 
 		<label class="make-prediction__topics-label" for="make-prediction__topic-title-input" ng-hide="makePrediction.newPrediction.topicTitles.length">Add topics</label>
@@ -47,17 +49,27 @@ topics to suggest to the user
 			</ul>
 		</div>
 
-	</div>
+	</div>-->
 
-	<input ng-show="makePrediction.newPrediction.topicTitles.length && makePrediction.newPrediction.title.length >= makePrediction.minimumPredictionTitleCharacters" class="make-prediction__add-prediction-button button--primary" type="button"  ng-click="makePrediction.makePrediction(makePrediction.prediction)" value="Add Prediction" />
+<!--	<input ng-show="makePrediction.newPrediction.title.length >= makePrediction.minimumPredictionTitleCharacters" class="make-prediction__add-prediction-button button--primary" type="button"  ng-click="makePrediction.makePrediction(makePrediction.prediction)" value="Add Prediction" />
+-->
 </form>
 
 
 <div class="make-prediction__newly-added-predictions" ng-show="makePrediction.newlyAddedPredictions.length" >
-	<h2>Newly added predictions</h2>
-	<ul>
+<!--	<h2 class="make-prediction__newly-added-predictions__title">Prediction added successfully</h2>
+	<h3>Add some topics to help people find your prediction</h3>
+-->	<ul class="make-prediction__newly-added-predictions__list">
 		<fp-prediction prediction="prediction" ng-repeat="prediction in makePrediction.newlyAddedPredictions"></prediction>
-	</ul>	
+	</ul>
+
+
+
+
+
+
+
+
 </div>
 
 

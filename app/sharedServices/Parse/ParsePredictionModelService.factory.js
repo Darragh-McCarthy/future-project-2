@@ -9,13 +9,19 @@ angular
 
 
 
-ParsePredictionModelService.$inject=['$q','Parse','ParseTopicModelService','ParseLikelihoodEstimateModelService'];
-function ParsePredictionModelService( $q,  Parse,  ParseTopicModelService,  ParseLikelihoodEstimateModelService ) {
+ParsePredictionModelService.$inject=['_','$q','Parse','ParseTopicModelService','ParseLikelihoodEstimateModelService'];
+function ParsePredictionModelService(_, $q,  Parse,  ParseTopicModelService,  ParseLikelihoodEstimateModelService ) {
   
   var ParsePredictionModel = Parse.Object.extend('Prediction');
 
+
+
+  var recentPredictionsCache = {};
+  var predictionsPerPage = 10;
+
+
   return {
-    'getSomePredictions': getSomePredictions,
+    'getRecentPredictions': getRecentPredictions,
     'getPredictionsByTopicTitle': getPredictionsByTopicTitle,
     'getPredictionsByAuthorId': getPredictionsByAuthorId,
     'createNewPredictionWithTopicTitles': createNewPredictionWithTopicTitles,
@@ -23,6 +29,74 @@ function ParsePredictionModelService( $q,  Parse,  ParseTopicModelService,  Pars
   };
 
 
+  function getRecentPredictions(pagesToSkip, preloadNextPage) {
+    pagesToSkip = parseInt(pagesToSkip, 10);
+    return $q(function(resolve, reject){
+
+      var indexOfRequestedPage  = pagesToSkip;
+      var indexOfNextPage       = pagesToSkip +1;
+      var indexOfPreviousPage   = pagesToSkip -1;
+
+      if (recentPredictionsCache[ indexOfRequestedPage ]) {
+        resolve(recentPredictionsCache[ indexOfRequestedPage ]);
+        if (preloadNextPage) {
+          console.log('caching next page');
+          getRecentPredictions(indexOfNextPage);
+        }
+      }
+      else if (_.size(recentPredictionsCache) === 0 || ! recentPredictionsCache[ indexOfPreviousPage ] || recentPredictionsCache[ indexOfPreviousPage ].length === predictionsPerPage) {
+
+        var numPredictionsToSkip = pagesToSkip * predictionsPerPage;
+        queryParseForRecentPredictions(numPredictionsToSkip).then(function(response){
+          if ( ! response || response.error) {
+            resolve([]);
+          }
+          else if (response.length / predictionsPerPage < 1) {
+            recentPredictionsCache[ indexOfRequestedPage ] = response;
+            resolve(response);
+          }
+          else {
+            var numFullPagesWorthOfPredictions = Math.floor(response.length / predictionsPerPage);
+            for (var i = 0; i < numFullPagesWorthOfPredictions; i++) {
+              var indexOfEmptyPage = indexOfRequestedPage + i;
+              recentPredictionsCache[indexOfEmptyPage] = response.splice(0, predictionsPerPage);
+            }
+            if (response.length % predictionsPerPage) {
+              recentPredictionsCache[indexOfRequestedPage + numFullPagesWorthOfPredictions] = response;
+            }
+            resolve(recentPredictionsCache[ indexOfRequestedPage ]);
+
+            if (preloadNextPage) {
+              console.log('caching next page');
+              getRecentPredictions(indexOfNextPage);
+            }
+            
+          }
+        });
+
+        for (var i = 0; i < recentPredictionsCache.length; i++) {
+          console.log(recentPredictionsCache[i]);
+        }
+
+      }
+      else {
+        resolve([]);
+      }
+    });
+  
+  }
+
+  function queryParseForRecentPredictions(numPredictionsToSkip) {
+    var query = new Parse.Query(ParsePredictionModel);
+    query.include('topics');
+    query.descending('createdAt');
+    query.skip(numPredictionsToSkip);
+    query.limit(10);
+    return query.find();
+  }
+
+
+  
   function getPredictionsByAuthorId(authorId) {
     var user = new Parse.User();
     user.id = authorId;
@@ -43,12 +117,6 @@ function ParsePredictionModelService( $q,  Parse,  ParseTopicModelService,  Pars
     var query = new Parse.Query(ParsePredictionModel);
     query.include('topics');
     query.equalTo('topics', topic);
-    query.descending('createdAt');
-    return query.find();
-  }
-  function getSomePredictions() {
-    var query = new Parse.Query(ParsePredictionModel);
-    query.include('topics');
     query.descending('createdAt');
     return query.find();
   }

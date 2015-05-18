@@ -29,7 +29,10 @@ function Prediction( PredictionService ) {
   predictionCtrl.toggleLikelihoodEstimate = toggleLikelihoodEstimate;
   predictionCtrl.addLikelihoodEstimate = addLikelihoodEstimate;
   predictionCtrl.removeLikelihoodEstimate = removeLikelihoodEstimate;
+  predictionCtrl.prediction.createdAt = formatPredictionCreatedAt(predictionCtrl.prediction.createdAt);
   allocateGraphBarHeights(predictionCtrl.prediction.communityEstimates);
+
+
 
 
   (function removeTopicFromPredictions() {
@@ -87,6 +90,32 @@ function Prediction( PredictionService ) {
     });
 
   }
+  function formatPredictionCreatedAt(dateToFormat) {
+    var currentYear =  new Date().getFullYear();
+    var dateToFormatYear = dateToFormat.getFullYear();
+    var dateToFormatDay = dateToFormat.getDate();
+    var dateToFormatMonth = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ][dateToFormat.getMonth()];
+
+    if (currentYear === dateToFormatYear) {
+      return dateToFormatMonth + ' ' + dateToFormatDay;
+    } else {
+      return dateToFormatYear + ' ' + dateToFormatMonth + ' ' + dateToFormatDay;    
+    }
+  }
+
 }
 
 })();

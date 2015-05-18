@@ -17,7 +17,7 @@ function PredictionService( $q,  ParsePredictionModelService,  TopicService ) {
       makeErrorMessage: function() { return 'Predictions cannot be more than ' + this.value + ' letters long'; }
     },
     minTopicsPerPrediction: {
-      value: 1,
+      value: 0,
       makeErrorMessage: function() { return 'You must add at least ' + this.value + ' topics'; }
     },
     maxTopicsPerPrediction: {
@@ -39,8 +39,10 @@ function PredictionService( $q,  ParsePredictionModelService,  TopicService ) {
 
 
 
+
+
   return {
-    'getSomePredictions': getSomePredictions,
+    'getRecentPredictions': getRecentPredictions,
     'createNewPrediction': createNewPrediction,
     'getPredictionsByTopicTitle': getPredictionsByTopicTitle,
     'addLikelihoodEstimate': addLikelihoodEstimate,
@@ -51,9 +53,9 @@ function PredictionService( $q,  ParsePredictionModelService,  TopicService ) {
 
 
 
-  function getSomePredictions() {
+  function getRecentPredictions(pageNumber) {
     return $q(function(resolve) {
-      ParsePredictionModelService.getSomePredictions().then(function(parsePredictions){
+      ParsePredictionModelService.getRecentPredictions(pageNumber, true).then(function(parsePredictions){
         var predictions = castParsePredictionsAsPlainObjects(parsePredictions);
         resolve(predictions);
       });
@@ -131,7 +133,7 @@ function PredictionService( $q,  ParsePredictionModelService,  TopicService ) {
   function castParsePredictionAsPlainObject( parsePrediction ) {
     var prediction = {
       'id':                       parsePrediction.id,
-      'created':                  parsePrediction.createdAt,
+      'createdAt':                parsePrediction.createdAt,
       'title':                    parsePrediction.get('title'),
       'topics':                   TopicService.castParseTopicsAsPlainObjects(parsePrediction.get('topics')),
       'communityEstimates':       [],

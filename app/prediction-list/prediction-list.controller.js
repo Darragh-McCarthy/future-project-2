@@ -11,20 +11,25 @@ function PredictionList( PredictionService,  TopicService,  $state,  $stateParam
 	var predictionList = this;
 	predictionList.expandPrediction = expandPrediction;
 	predictionList.currentTopic = $stateParams.q;
+	if ($stateParams.page) {
+		predictionList.currentPage = $stateParams.page;
+	} else {
+		predictionList.currentPage = 0;
+	}
 
 	getPredictions().then(function(predictions) {
 		predictionList.predictions = predictions;
 		predictionList.isLoadingComplete = true;
 	});
 
-	
+
 
 
 	function getPredictions() {
 		if (predictionList.currentTopic) {
-			return PredictionService.getPredictionsByTopicTitle(predictionList.currentTopic);			
+			return PredictionService.getPredictionsByTopicTitle(predictionList.currentTopic);	
 		} else {
-			return PredictionService.getSomePredictions();
+			return PredictionService.getRecentPredictions(predictionList.currentPage);
 		}
 	}
 	function expandPrediction(expandedPrediction) {
