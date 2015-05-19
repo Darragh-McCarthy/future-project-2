@@ -21,7 +21,8 @@ Custom vote
         {'title':'2','index':1},
         {'title':'3','index':2},
         {'title':'4','index':3},
-        {'title':'next','index':4}]">
+        {'title':'next','index':4}
+      ]">
         <a class="prediction-list__pagination-page-hyperlink" 
         ui-sref="app.search({'page':page.index})" 
         ng-class="{active:predictionList.currentPage == page.index}">{{page.title}}</a>
@@ -31,7 +32,8 @@ Custom vote
 
   <a ng-show="predictionList.currentTopic" ui-sref="app">Back to all predictions</a>
 
-  <h1 class="prediction-list__topic-title" ng-bind="predictionList.currentTopic"></h1>
+  <h1 class="prediction-list__title" ng-bind="predictionList.currentTopic"></h1>
+  <h1 class="prediction-list__title" ng-hide="predictionList.currentTopic">Recent predictions</h1>
   <div ng-hide="predictionList.isLoadingComplete" class="prediction-list__isloading-notice">Loading...</div>
   <div ng-show="predictionList.isLoadingComplete">
 

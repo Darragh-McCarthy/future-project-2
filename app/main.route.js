@@ -87,6 +87,14 @@ function configureRoutes( $stateProvider,  $urlRouterProvider ) {
       },
 
     })
+    .state('app.prediction-guidelines', {
+      url: 'prediction-guidelines',
+      views: {
+        'content@': {
+          templateUrl: 'prediction-guidelines.template.html'
+        }
+      }
+    })
   ;
 
   $urlRouterProvider.otherwise('/');

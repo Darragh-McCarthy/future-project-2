@@ -25,62 +25,58 @@ angular.module('myApp')
 
 Prediction.$inject=['PredictionService'];
 function Prediction( PredictionService ) {
-	var predictionCtrl = this;
-  predictionCtrl.toggleLikelihoodEstimate = toggleLikelihoodEstimate;
-  predictionCtrl.addLikelihoodEstimate = addLikelihoodEstimate;
-  predictionCtrl.removeLikelihoodEstimate = removeLikelihoodEstimate;
-  predictionCtrl.prediction.createdAt = formatPredictionCreatedAt(predictionCtrl.prediction.createdAt);
-  allocateGraphBarHeights(predictionCtrl.prediction.communityEstimates);
+	var _this = this;
+  _this.toggleLikelihoodEstimate   = toggleLikelihoodEstimate;
+  _this.prediction.createdAt       = formatPredictionCreatedAt(_this.prediction.createdAt);
+  _this.isLikelihoodSelectionVisible = false;
 
+  _this.isEditingTopics = true;
+  _this.newTopicTitle = '';
+  _this.addNewTopic = addNewTopic;
+
+  allocateGraphBarHeights(_this.prediction.communityEstimates);
 
 
 
   (function removeTopicFromPredictions() {
-    if (predictionCtrl.topicToHide) {
-      for (var i = 0; i < predictionCtrl.prediction.topics.length; i++) {
-        if (predictionCtrl.prediction.topics[i].title === predictionCtrl.topicToHide) {
-          var index = predictionCtrl.prediction.topics.indexOf(predictionCtrl.prediction.topics[i]);
-          predictionCtrl.prediction.topics.splice(index, 1);
+    if (_this.topicToHide) {
+      for (var i = 0; i < _this.prediction.topics.length; i++) {
+        if (_this.prediction.topics[i].title === _this.topicToHide) {
+          var index = _this.prediction.topics.indexOf(_this.prediction.topics[i]);
+          _this.prediction.topics.splice(index, 1);
         }
       }
     }
   })();
 
-  function toggleLikelihoodEstimate(prediction, percent){
-    if (prediction.userEstimate === percent) {
-      removeLikelihoodEstimate(prediction, percent);
+  function toggleLikelihoodEstimate(percent){
+    if (_this.prediction.userEstimate === percent) {
+      removeLikelihoodEstimate(percent);
     } else {
-      addLikelihoodEstimate(prediction, percent);
+      addLikelihoodEstimate(percent);
     }
   }
-  function addLikelihoodEstimate(prediction, percent) {
-    predictionCtrl.onexpand();
-    prediction.isExpanded = true;
+  function addLikelihoodEstimate(percent) {
+    _this.onexpand();
+    _this.prediction.isExpanded = true;
 
-    PredictionService
-      .addLikelihoodEstimate(prediction.id, percent)
-      .then(function(updatedPrediction){
-        prediction.communityEstimates = updatedPrediction.communityEstimates;
-        prediction.communityEstimatesCount = updatedPrediction.communityEstimatesCount;
-        prediction.userEstimate = percent;
-        allocateGraphBarHeights(prediction.communityEstimates);
-      })
-    ;
+    PredictionService.addLikelihoodEstimate(_this.prediction.id, percent).then(function(updatedPrediction){
+      _this.prediction.userEstimate = percent;
+      _this.prediction.communityEstimates = updatedPrediction.communityEstimates;
+      _this.prediction.communityEstimatesCount = updatedPrediction.communityEstimatesCount;
+      allocateGraphBarHeights(_this.prediction.communityEstimates);
+    });
   }
-  function removeLikelihoodEstimate(prediction, percent) {
-    prediction.userEstimate = null;
+  function removeLikelihoodEstimate(percent) {
+    _this.prediction.userEstimate = null;
   }
   function allocateGraphBarHeights(communityEstimates) {
     var maximumHeight = 100;
     var minimumHeight = 5;
     var largestCount = 0;
-
     angular.forEach(communityEstimates, function(estimate) {
-      if (estimate.count > largestCount) {
-        largestCount = estimate.count;
-      }
+      largestCount = Math.max(largestCount, estimate.count);
     });
-
     angular.forEach(communityEstimates, function(estimate) {
       var graphBarHeight = minimumHeight;
       if (estimate.count > 0 ) {
@@ -88,154 +84,36 @@ function Prediction( PredictionService ) {
       }
       estimate.graphBarHeight = {'height':graphBarHeight + 'px'};
     });
-
   }
   function formatPredictionCreatedAt(dateToFormat) {
     var currentYear =  new Date().getFullYear();
-    var dateToFormatYear = dateToFormat.getFullYear();
-    var dateToFormatDay = dateToFormat.getDate();
-    var dateToFormatMonth = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December"
-    ][dateToFormat.getMonth()];
-
-    if (currentYear === dateToFormatYear) {
-      return dateToFormatMonth + ' ' + dateToFormatDay;
-    } else {
-      return dateToFormatYear + ' ' + dateToFormatMonth + ' ' + dateToFormatDay;    
+    var formattedDate = '';
+    if (dateToFormat.getFullYear() !== currentYear) {
+      formattedDate += dateToFormat.getFullYear();
     }
+    formattedDate += ' ' + ["Jan","Feb","Mar","Apr","May","June","July","Aug","Sept","Oct","Nov","Dec"][dateToFormat.getMonth()];
+    formattedDate += ' ' + dateToFormat.getDate();
+    return formattedDate;
   }
+  function addNewTopic() {
+    PredictionService.addTopicByTitleToPrediction(_this.prediction.id,_this.newTopicTitle).then(function(response){
+      /*if (response.errors) {
+        _this.topicValidationErrors = topic.errors;
+      } else {
+        _this.prediction.topics.push();
+      }*/
+    });
+    _this.newTopicTitle = '';
+
+    /*
+    _this.formErrorMessages = validatePredictionWithNewTitle(newPrediction.predictionTitle, newPrediction.topicTitles, topicTitle);
+    if ( ! _this.formErrorMessages.topicTitleErrors.length && ! _this.formErrorMessages.topicCountErrors.length && newPrediction.topicTitles.indexOf(_this.topicTitle) === -1 ) {
+      newPrediction.topicTitles.push(topicTitle);
+    }*/
+  }
+
 
 }
 
 })();
 
-
-/*
-app.directive("enter", function() {
-    return function(scope, element, attrs) {
-        element.bind("mouseenter", function() {
-            scope.$apply(attrs.enter);
-        });
-    };
-});
-*/
-
-
-
-
-/*
-var app = angular.module("choreApp", []);
-
-app.controller("ChoreCtrl", function() {
-    var choreCtrl = this; 
-    choreCtrl.logChore = function(chore) {
-        alert(chore + " is done!");
-    };
-});
-
-app.directive("kid", function() {
-    return {
-        restrict: "E",
-        scope: {
-            done: "&"
-        },
-        template: '<input type="text" ng-model="chore">' +
-          ' {{chore}}' +
-          ' <div class="button" ng-click="done({chore:chore})">I\'m done!</div>'
-    };
-});
-
-
-
-<div ng-controller="ChoreCtrl as choreCtrl">
-        <kid done="choreCtrl.logChore(chore)"></kid>
-    </div>
-
-
-
-
-
-
-
-
-
-angular.module("app", [])
-
-    .directive("note", function note() {
-        return {
-            scope: {
-                message: "@"
-            },
-            bindToController: true,
-            controller: "NoteCtrl as note",
-            template: "<div>{{note.message}}</div>"
-        };
-    })
-
-    .controller("NoteCtrl", function NoteCtrl() {
-        var note = this;
-    })
-
-    .directive("pad", function pad() {
-        return {
-            scope: {
-                message: "@"
-            },
-            bindToController: true,
-            controller: "PadCtrl as pad",
-            template: "<div>{{pad.message}}</div>"
-        };
-    })
-
-    .controller("PadCtrl", function PadCtrl() {
-        var pad = this;
-    });
-
-*/
-
-
-
-
-
-
-
-/*
-
-var app = angular.module("app", []);
-
-app.directive("dumbPassword", function() {
-    var validElement = angular.element("<div>{{model.input}}</div>");
-
-    //in the video, I accidentally typed "this.link". "this" in a directive is "Window". Instead, use "var link" as shown below. 
-    var link = function(scope) {
-        scope.$watch("model.input", function(value) {
-            if (value === "password") {
-                validElement.toggleClass("alert-danger alert");
-            }
-        });
-    };
-
-    return {
-        restrict: "E",
-        replace: true,
-        template: "<div>\n  <input type=\"text\" ng-model=\"model.input\">\n  \n  \n<div>",
-        compile: function(tElem) {
-            tElem.append(validElement);
-
-            return link;
-        }
-    };
-});
-
-*/

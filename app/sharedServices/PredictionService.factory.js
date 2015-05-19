@@ -7,39 +7,19 @@ angular.module('myApp')
 PredictionService.$inject=['$q','ParsePredictionModelService','TopicService'];
 function PredictionService( $q,  ParsePredictionModelService,  TopicService ) {
 
-  var predictionDataConstraints = {
-    minPredictionTitleCharacters: {
-      value: 10,
-      makeErrorMessage: function() { return 'Predictions must be at least ' + this.value + ' characters long'; }
-    },
-    maxPredictionTitleCharacters: {
-      value: 300,
-      makeErrorMessage: function() { return 'Predictions cannot be more than ' + this.value + ' letters long'; }
-    },
-    minTopicsPerPrediction: {
-      value: 0,
-      makeErrorMessage: function() { return 'You must add at least ' + this.value + ' topics'; }
-    },
-    maxTopicsPerPrediction: {
-      value: 5,
-      makeErrorMessage: function() { return 'You cannot add more than ' + this.value + ' topics'; }
-    },
-    minTopicTitleCharacters: {
-      value: 2,
-      makeErrorMessage: function() { return 'Topics must be at least ' + this.value + ' characters long'; }
-    },
-    maxTopicTitleCharacters: {
-      value: 50,
-      makeErrorMessage: function() { return 'Topics cannot be longer than ' + this.value + ' characters'; }
+  var newPredictionDataConstraints = {
+    predictionTitleCharacters: {
+      min: {
+        value: 10, getErrorMessage: function() { return 'Your prediction is too short. It must be at least ' + this.value + ' characters long' }
+      },
+      max: {
+        value: 300, getErrorMessage: function() { return 'Your prediction is too long. It cannot be more than ' + this.value + ' characters long'}
+      },
+      notAllowed: {
+        value: ['?'], getErrorMessage: function() { return 'Predictions cannot be questions.' }
+      }
     }
   };
-
-
-
-
-
-
-
 
   return {
     'getRecentPredictions': getRecentPredictions,
@@ -47,51 +27,38 @@ function PredictionService( $q,  ParsePredictionModelService,  TopicService ) {
     'getPredictionsByTopicTitle': getPredictionsByTopicTitle,
     'addLikelihoodEstimate': addLikelihoodEstimate,
     'getPredictionsByUserId': getPredictionsByUserId,
-    'validatePredictionData': validatePredictionData
+    'validateNewPrediction': validateNewPrediction,
+    'newPredictionDataConstraints': newPredictionDataConstraints,
+    'addTopicByTitleToPrediction': addTopicByTitleToPrediction
   };
 
-
-
-
+  function addTopicByTitleToPrediction(predictionId, newTopicTitle) {
+    return ParsePredictionModelService.addTopicByTitleToPrediction(predictionId, newTopicTitle);
+  }
   function getRecentPredictions(pageNumber) {
-    return $q(function(resolve) {
-      ParsePredictionModelService.getRecentPredictions(pageNumber, true).then(function(parsePredictions){
-        var predictions = castParsePredictionsAsPlainObjects(parsePredictions);
-        resolve(predictions);
-      });
+    return ParsePredictionModelService.getRecentPredictions(pageNumber, true).then(function(parsePredictions){
+      return castParsePredictionsAsPlainObjects(parsePredictions);
     });
   }
   function getPredictionsByUserId(authorId) {
-    return $q(function(resolve){
-      ParsePredictionModelService.getPredictionsByAuthorId(authorId).then(function(parsePredictions){
-        var predictions = castParsePredictionsAsPlainObjects(parsePredictions)
-        resolve(predictions);
-      });
+    return ParsePredictionModelService.getPredictionsByAuthorId(authorId).then(function(parsePredictions){
+      return castParsePredictionsAsPlainObjects(parsePredictions)
     });
   }
   function getPredictionsByTopicTitle(topicTitle) {
-    return $q(function(resolve) {
-      ParsePredictionModelService.getPredictionsByTopicTitle(topicTitle).then(function(parsePredictions){
-        var predictions = castParsePredictionsAsPlainObjects(parsePredictions);
-        resolve(predictions);
-      });
+    return ParsePredictionModelService.getPredictionsByTopicTitle(topicTitle).then(function(parsePredictions){
+      return castParsePredictionsAsPlainObjects(parsePredictions);
     });
   }
-  function createNewPrediction(predictionTitle, topicTitles) {
+  function createNewPrediction(predictionTitle) {
     return $q(function(resolve, reject) {
-      var predictionValidation = validatePredictionData(predictionTitle, topicTitles);
+      var predictionValidation = validateNewPrediction(predictionTitle);
       var currentUser = Parse.User.current();
-
-      if (predictionValidation.numErrors) {
-        reject(predictionValidation);
-        return;
-      }
-      if ( ! currentUser) {
+      if (_.size(predictionValidation) ||  ! currentUser) {
         reject();
         return;
       }
-
-      ParsePredictionModelService.createNewPredictionWithTopicTitles(currentUser, predictionTitle, topicTitles).then(function(prediction){
+      ParsePredictionModelService.createNewPrediction(currentUser, predictionTitle, []).then(function(prediction){
         resolve(castParsePredictionAsPlainObject(prediction));
       });
 
@@ -156,75 +123,42 @@ function PredictionService( $q,  ParsePredictionModelService,  TopicService ) {
 
 
 
+  function validateNewPrediction(predictionTitle) {
+    var errors = {};
+    var predictionTitleLengthErrors = validateNewPredictionTitleLength(predictionTitle);
+    var predictionTitleContentErrors = validateNewPredictionTitleContents(predictionTitle);
 
+    if (predictionTitleLengthErrors.length) { errors.predictionTitleLengthErrors = predictionTitleLengthErrors; }
+    if (predictionTitleContentErrors.length) { errors.predictionTitleContentErrors = predictionTitleContentErrors; }
 
-
-
-
-
-
-
-
-
-
-
-  function validatePredictionData( predictionTitle, topicTitles ) {
-    return {
-      'predictionTitleErrors': validatePredictionTitle(predictionTitle),
-      'topicTitleErrors': validateTopicTitles(topicTitles),
-      'topicCountErrors': validateTopicsCount(topicTitles.length)
-    };
-
-  }
-  function validateTopicsCount(count) {
-    var errors = [];
-    if (count < predictionDataConstraints.minTopicsPerPrediction.value) {
-      errors.push(predictionDataConstraints.minTopicsPerPrediction.makeErrorMessage());
+    if (_.size(errors)) {
+      return errors;
+    } else {
+      return null;
     }
-    if (count > predictionDataConstraints.maxTopicsPerPrediction.value) {
-      errors.push(predictionDataConstraints.maxTopicsPerPrediction.makeErrorMessage());
+  }
+  function validateNewPredictionTitleLength(predictionTitle) {
+    var errors = [];
+    if ( ! predictionTitle || predictionTitle.length < newPredictionDataConstraints.predictionTitleCharacters.min.value) {
+      errors.push(newPredictionDataConstraints.predictionTitleCharacters.min.getErrorMessage());
+    }
+    else if (predictionTitle.length > newPredictionDataConstraints.predictionTitleCharacters.max.value) {
+      errors.push(newPredictionDataConstraints.predictionTitleCharacters.max.getErrorMessage());
     }
     return errors;
   }
-  function validatePredictionTitle( title ) {
+  function validateNewPredictionTitleContents(predictionTitle) {
     var errors = [];
-    if (title === '') {
-      errors.push('Required');
-    }
-    else if ( ! title || title.length < predictionDataConstraints.minPredictionTitleCharacters.value) {
-      errors.push(predictionDataConstraints.minPredictionTitleCharacters.makeErrorMessage());
-    }
-    else if (title.length > predictionDataConstraints.maxPredictionTitleCharacters.value) {
-      errors.push(predictionDataConstraints.maxPredictionTitleCharacters.makeErrorMessage());
-    }
-    return errors;
-  }
-  function validateTopicTitles( titles ) {
-    var errors = [];
-      angular.forEach(titles, function(title) {
-        var topicTitleErrors = validateTopicTitle(title);
-        if (errors.indexOf(topicTitleErrors) === -1 ) {
-          angular.forEach(topicTitleErrors, function(topicTitleError) {
-            errors.push(topicTitleError);
-          });
+    if (predictionTitle) { 
+      angular.forEach(newPredictionDataConstraints.predictionTitleCharacters.notAllowed.value, function(notAllowedString){
+        var index = predictionTitle.indexOf(notAllowedString);
+        if (index > -1) {
+          errors.push(newPredictionDataConstraints.predictionTitleCharacters.notAllowed.getErrorMessage());
         }
-      });
-    return errors;
-  }
-
-
-  function validateTopicTitle( title ) {
-    var errors = [];
-    if (title.length < predictionDataConstraints.minTopicTitleCharacters.value) {
-      errors.push(predictionDataConstraints.minTopicTitleCharacters.makeErrorMessage())
-    }
-    else if (title.length > predictionDataConstraints.maxTopicTitleCharacters.value) {
-      errors.push(predictionDataConstraints.maxTopicTitleCharacters.makeErrorMessage())
+      }) 
     }
     return errors;
   }
-
-
 
 
 

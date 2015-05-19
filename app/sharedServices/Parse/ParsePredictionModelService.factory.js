@@ -26,9 +26,27 @@ function ParsePredictionModelService(_, $q,  Parse,  ParseTopicModelService,  Pa
     'getPredictionsByAuthorId': getPredictionsByAuthorId,
     'createNewPredictionWithTopicTitles': createNewPredictionWithTopicTitles,
     'createNewLikelihoodEstimate': createNewLikelihoodEstimate,
+    'createNewPrediction':createNewPrediction,
+    'addTopicByTitleToPrediction':addTopicByTitleToPrediction
   };
 
-
+  function addTopicByTitleToPrediction(predictionId, newTopicTitle) {
+    return ParseTopicModelService.getOrCreateNewTopicsByTitle([newTopicTitle]).then(function(topics){
+      if (topics) {
+        var topic = topics[0];
+        return addTopicToPrediction(predictionId, topic).then(function(updatedPrediction){
+          console.log(updatedPrediction, topic);
+          return topic;
+        });
+      }
+    });
+  }
+  function addTopicToPrediction(predictionId, topic) {
+    var prediction = new ParsePredictionModel;
+    prediction.id = predictionId;
+    prediction.addUnique('topics', topic);
+    return prediction.save();
+  }
   function getRecentPredictions(pagesToSkip, preloadNextPage) {
     pagesToSkip = parseInt(pagesToSkip, 10);
     return $q(function(resolve, reject){
@@ -93,10 +111,7 @@ function ParsePredictionModelService(_, $q,  Parse,  ParseTopicModelService,  Pa
     query.skip(numPredictionsToSkip);
     query.limit(10);
     return query.find();
-  }
-
-
-  
+  }  
   function getPredictionsByAuthorId(authorId) {
     var user = new Parse.User();
     user.id = authorId;
@@ -110,8 +125,9 @@ function ParsePredictionModelService(_, $q,  Parse,  ParseTopicModelService,  Pa
     return query.find();
   }
   function getPredictionsByTopicTitle(title) {
-    var promise = ParseTopicModelService.promiseTopicByTitle(title);
-    return promise.then(getPredictionsByTopic);;
+    return ParseTopicModelService
+      .getTopicByTitle(title)
+      .then(getPredictionsByTopic);
   }
   function getPredictionsByTopic(topic) {
     var query = new Parse.Query(ParsePredictionModel);
@@ -122,7 +138,7 @@ function ParsePredictionModelService(_, $q,  Parse,  ParseTopicModelService,  Pa
   }
 
   function createNewPredictionWithTopicTitles(author, predictionTitle, topicTitles) {
-    return ParseTopicModelService.promiseGetOrCreateNewTopics(topicTitles).then(function(topics){
+    return ParseTopicModelService.getOrCreateNewTopicsByTitle(topicTitles).then(function(topics){
       return createNewPrediction(author, predictionTitle, topics);
     });
   }

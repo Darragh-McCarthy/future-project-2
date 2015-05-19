@@ -14,87 +14,41 @@ function ParseTopicModelService( $q,  Parse ) {
 	var ParseTopicModel = Parse.Object.extend("Topic");
 
 	return {
-		'promiseGetOrCreateNewTopics': promiseGetOrCreateNewTopics,
-    'promiseTopicsById':promiseTopicsById,
-    'promiseTopicByTitle':promiseTopicByTitle
+		'getOrCreateNewTopicsByTitle': getOrCreateNewTopicsByTitle,
+    'getTopicsById':getTopicsById,
+    'getTopicByTitle':getTopicByTitle
 	};
 
-  function promiseGetOrCreateNewTopics(topicTitles) {
+  function getOrCreateNewTopicsByTitle(topicTitles) {
     var promises = [];
-    angular.forEach(topicTitles, function(title) {
-      title = title.trim();
-      promises.push(
-      	promiseGetOrCreateNewTopic(title)
-      );
+    angular.forEach(topicTitles, function(eachTitle) {
+      eachTitle = eachTitle.trim();
+      promises.push(getOrCreateNewTopicByTitle(eachTitle));
     });
-    return $q.all(promises)
-      .then(function(results) {
-        return results;
-      })
-    ;
+    return $q.all(promises);
   }
-
-  function promiseGetOrCreateNewTopic(title) {
-    return $q(function(resolve, reject){
-      promiseTopicByTitle(title).then(
-        function(topic) { resolve(topic); },
-        function()      { resolve(createNewTopic(title)); }
-      );
+  function getOrCreateNewTopicByTitle(topicTitle) {
+    return getTopicByTitle(topicTitle).then(function(existingTopic) { 
+      if (existingTopic) {
+        return existingTopic; 
+      } else {
+        return createNewTopic(topicTitle);
+      }
     });
   }
-
-	function promiseTopicByTitle(title) {
-		return $q(function(resolve, reject) {
-      var topicQuery = new Parse.Query(ParseTopicModel);
-      topicQuery.equalTo('title', title);
-      topicQuery.first({
-        success: function(results){
-          if (results) {
-            resolve(results);
-          } else {
-            reject();
-          }
-        },
-        error: function(error){
-          console.log(error);
-          reject(error);
-        }
-      });
-    });
-	}
-
-
-
-	function createNewTopic(title) {
-		return $q(function(resolve, reject) {
-
-      var topic = new ParseTopicModel();
-
-      console.log('createNewTopic', title);
-      topic.save({'title':title})
-        .then(function(){
-          resolve(topic);
-        });
-
-    });
-	}
-
-  function promiseTopicsById(ids) {
+	function getTopicByTitle(title) {
     var topicQuery = new Parse.Query(ParseTopicModel);
-    return $q(function (resolve, reject) {
-      topicQuery.get(ids, {
-        success: function(results){
-          if (results) {
-            resolve(results);
-          } else {
-            resolve([]);   
-          }
-        },
-        error: function(){
-          console.log()
-        }
-      })
-    })
+    topicQuery.equalTo('title', title);
+    return topicQuery.first();
+	}
+	function createNewTopic(title) {
+    var newTopic = new ParseTopicModel();
+    newTopic.set('title', title);
+    return newTopic.save();
+	}
+  function getTopicsById(ids) {
+    var query = new Parse.Query(ParseTopicModel);
+    return query.get(ids);
   }
 
 
