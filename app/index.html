@@ -81,7 +81,8 @@
 
   <script src="sharedServices/focusElementById.factory.js"></script>
 
-  <script src="sharedDirectives/prediction.directive.js"></script>
+  <script src="sharedDirectives/predictions/fp-prediction-list.directive.js"></script>
+  <script src="sharedDirectives/predictions/fp-prediction.directive.js"></script>
 
   <script src="login/login.controller.js"></script>
   <script src="header/header.controller.js"></script>
@@ -140,7 +141,7 @@ function countWatchers() {
         }
     });
 
-    console.log('Watchers:'+watchersWithoutDuplicates.length+' (without duplicated)');
+    return watchersWithoutDuplicates.length + ' watchers';
 }
 
 </script>

@@ -7,13 +7,13 @@ Vote of timescale
 Custom vote
 -->
 
+<fp-prediction-list></fp-prediction-list>
 
 
 
 <div class="prediction-list">
 
 
-  
   <div class="prediction-list__pagination">
     <ul class="prediction-list__pagination-list">
       <li class="prediction-list__pagination-page" ng-repeat="page in [
@@ -45,19 +45,12 @@ Custom vote
         ng-repeat="prediction in predictionList.predictions track by prediction.id"></fp-prediction>
     </div>
 
-<!--
-    <div class="pagination">
-      <a ui-sref="app.search({q:predictionList.currentTopic,page:5})">Next page</a>
-    </div>
+  </div>
 
--->
     
     <div class="prediction-list__kickstart-predictions-notice" ng-show="predictionList.currentTopic">
       <button class="button--primary" ui-sref="app.make-prediction({topic:predictionList.currentTopic})">Add {{::predictionList.currentTopic}} prediction</button>
     </div>
-
-  </div>
-
 
 
 

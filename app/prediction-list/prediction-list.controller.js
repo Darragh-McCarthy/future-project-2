@@ -5,35 +5,30 @@ angular.module('myApp')
 	.controller('PredictionList', PredictionList);
 
 
-PredictionList.$inject=['PredictionService','TopicService','$state','$stateParams','currentUser'];
-function PredictionList( PredictionService,  TopicService,  $state,  $stateParams,  currentUser ) {
-
-	var predictionList = this;
-	predictionList.expandPrediction = expandPrediction;
-	predictionList.currentTopic = $stateParams.q;
+PredictionList.$inject=['PredictionService','$stateParams'];
+function PredictionList( PredictionService,  $stateParams) {
+	var _this = this;
+	_this.expandPrediction = expandPrediction;
+	_this.currentTopic = $stateParams.q;
+	_this.currentPage = 0;
 	if ($stateParams.page) {
-		predictionList.currentPage = $stateParams.page;
-	} else {
-		predictionList.currentPage = 0;
+		_this.currentPage = $stateParams.page;
 	}
 
 	getPredictions().then(function(predictions) {
-		predictionList.predictions = predictions;
-		predictionList.isLoadingComplete = true;
+		_this.predictions = predictions;
+		_this.isLoadingComplete = true;
 	});
 
-
-
-
 	function getPredictions() {
-		if (predictionList.currentTopic) {
-			return PredictionService.getPredictionsByTopicTitle(predictionList.currentTopic);	
+		if (_this.currentTopic) {
+			return PredictionService.getPredictionsByTopicTitle(_this.currentTopic);	
 		} else {
-			return PredictionService.getRecentPredictions(predictionList.currentPage);
+			return PredictionService.getRecentPredictions(_this.currentPage);
 		}
 	}
 	function expandPrediction(expandedPrediction) {
-		angular.forEach(predictionList.predictions, function(eachPrediction){
+		angular.forEach(_this.predictions, function(eachPrediction){
 			eachPrediction.isExpanded = false;
 		});
 	}

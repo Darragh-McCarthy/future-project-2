@@ -91,7 +91,7 @@ function configureRoutes( $stateProvider,  $urlRouterProvider ) {
       url: 'prediction-guidelines',
       views: {
         'content@': {
-          templateUrl: 'prediction-guidelines.template.html'
+          templateUrl: 'pages/prediction-guidelines.template.html'
         }
       }
     })

@@ -15,7 +15,7 @@ function UserProfile( $state,  $stateParams,  currentUser,  PredictionService ) 
 	userProfile.getFbData = getFbData;
 	userProfile.currentUser = currentUser;
 
-	PredictionService.getPredictionsByUserId($stateParams.userId).then(function(predictions){
+	PredictionService.getPredictionsByAuthorId($stateParams.userId).then(function(predictions){
 		userProfile.predictions = predictions;
 	});
 
