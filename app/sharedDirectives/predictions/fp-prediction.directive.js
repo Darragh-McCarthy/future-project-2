@@ -84,43 +84,40 @@ function Prediction( $q,  $state,  PredictionService ) {
   function toggleLikelihoodEstimate(percent){
     var promises = [];
 
-    var firstCount = [];
+    /*var firstCount = [];
     angular.forEach(_this.prediction.communityEstimates, function (estimate){
       firstCount.push(estimate.count);
     });
-    console.log(firstCount);
+    console.log(firstCount);*/
     var estimateToRemove = _this.prediction.userEstimate;
     if (estimateToRemove) {
       promises.push(removeLikelihoodEstimate());
       _this.prediction.communityEstimatesCount--;
     }
-    if ( ! estimateToRemove || estimateToRemove.percent !== percent) {
+    if ( ! estimateToRemove || estimateToRemove.likelihoodEstimatePercent !== percent) {
      promises.push(addLikelihoodEstimate(percent));
       _this.prediction.communityEstimatesCount++;
     }
+    /*
     var secondCount = [];
     angular.forEach(_this.prediction.communityEstimates, function (estimate){
       secondCount.push(estimate.count);
     });
     console.log(secondCount);
+    */
     $q.all(promises).then(function(){
       allocateGraphBarHeights(_this.prediction.communityEstimates);
     });
   }
   function addLikelihoodEstimate(percent) {
     return $q(function(resolve, reject) {
-
       percent = parseInt(percent, 10);
       if ( ! _this.prediction.isExpanded) {
         _this.onexpand();
         _this.prediction.isExpanded = true;
       }
-      PredictionService.addLikelihoodEstimate(_this.prediction.id, percent).then(function(newLikelihoodEstimateId){
-        console.log('added newLikelihoodEstimateId');
-        _this.prediction.userEstimate = {
-          'id': newLikelihoodEstimateId,
-          'percent': percent
-        };
+      PredictionService.addLikelihoodEstimate(_this.prediction.id, percent).then(function(newLikelihoodEstimate){
+        _this.prediction.userEstimate = newLikelihoodEstimate;
         for (var i = 0; i < _this.prediction.communityEstimates.length; i++) {
           if (_this.prediction.communityEstimates[i].percent == percent) {
             _this.prediction.communityEstimates[i].count++;
@@ -128,17 +125,16 @@ function Prediction( $q,  $state,  PredictionService ) {
         }
         resolve();
       });
-
     });
   }
   function removeLikelihoodEstimate() {
     return $q(function(resolve, reject){ 
       for (var i = 0; i < _this.prediction.communityEstimates.length; i++) {
-        if (_this.prediction.communityEstimates[i].percent == _this.prediction.userEstimate.percent) {
+        if (_this.prediction.communityEstimates[i].percent == _this.prediction.userEstimate.likelihoodEstimatePercent) {
           _this.prediction.communityEstimates[i].count--;
         }
       }
-      PredictionService.removeLikelihoodEstimate(_this.prediction.id, _this.prediction.userEstimate.id, _this.prediction.userEstimate.percent).then(function(){
+      PredictionService.removeLikelihoodEstimate(_this.prediction.id, _this.prediction.userEstimate.id, _this.prediction.userEstimate.likelihoodEstimatePercent).then(function(){
         resolve();
       });
       _this.prediction.userEstimate = null;

@@ -44,11 +44,27 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService ) {
 
 
 
-
-
   function getRecentPredictionsNow(pageNumber) {
     return getRecentPredictions(pageNumber, true).then(function(parsePredictions){
-      return castParsePredictionsAsPlainObjects(parsePredictions);
+      var predictions = castParsePredictionsAsPlainObjects(parsePredictions)
+      return getUserEstimateForPredictions(predictions).then(function(){
+        return predictions;
+      });
+    });
+  }
+  function getUserEstimateForPredictions(predictions) {
+    return $q(function(resolve, reject){
+      var promises = [];
+      for (var i = 0; i < predictions.length; i++) {
+        var promise = (function(predictions, i){
+          LikelihoodEstimateService.getUserEstimateForPrediction(predictions[i].id).then(function(userEstimate){
+            predictions[i].userEstimate = userEstimate;
+//            console.log(userEstimate);
+          });
+        })(predictions, i);
+        promises.push(promise);
+      }
+      resolve($q.all(promises));
     });
   }
   function getRecentPredictions(indexOfRequestedPage, preloadAdjacentPages) {
@@ -222,7 +238,7 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService ) {
         LikelihoodEstimateService.addNew(currentUser, prediction, percent).then(function(newLikelihoodEstimate){
           prediction.increment('percentEstimateCount' + percent);
           prediction.save().then(function(){
-            resolve(newLikelihoodEstimate.id);
+            resolve(newLikelihoodEstimate);
           });
         });
       }

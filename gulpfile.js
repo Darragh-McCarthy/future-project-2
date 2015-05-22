@@ -62,7 +62,9 @@ gulp.task('images', function () {
 gulp.task('copy', function () {
   return gulp.src([
     '!app/*.html',
-    'app/*'
+    'app/*',
+    'app/bower_components/**/*',
+    'app/styles/fonts/*'
   ], {
     base: 'app/',
     dot: true

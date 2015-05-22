@@ -34,7 +34,7 @@ function MakePrediction( $scope,  PredictionService,  TopicService,  $stateParam
 			_this.newPrediction.title = '';
 			_this.areTitleLengthErrorsVisible = false;
 			addPrediction().then(function(newlyAddedPrediction){
-				_this.newlyAddedPredictions.unshift(newlyAddedPrediction);
+				_this.newlyAddedPredictions.push(newlyAddedPrediction);
 				_this.isSavingPredictions = false;
 			});
 		}

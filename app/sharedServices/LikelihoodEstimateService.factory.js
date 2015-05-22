@@ -7,15 +7,48 @@ angular.module('myApp')
 LikelihoodEstimateService.$inject=['Parse','$q'];
 function LikelihoodEstimateService( Parse,  $q) {
 	var ParseLikelihoodEstimateModel = Parse.Object.extend('LikelihoodEstimate');
-	var likelihoodEstimatesForCurrentUser = [];
+	var cachedUserEstimates = {};
+
+
+	var whenEstimatesLoaded = (function get1000LikelihoodEstimateAuthoredByCurrentUser() {
+		return $q(function(resolve, reject){
+			var currentUser = Parse.User.current();
+			if ( ! currentUser ) {
+				reject();
+				return;
+			} 
+			else {
+				new Parse.Query(ParseLikelihoodEstimateModel)
+					.equalTo('author', currentUser)
+					.limit(1000)
+					.find()
+					.then(function(parseEstimates) {
+						var estimates = castParseLikelihoodEstimatesAsPlainObject(parseEstimates);
+						angular.forEach(estimates, function(estimate) {
+							cachedUserEstimates[estimate.predictionId] = estimate;
+						});
+						resolve();
+					});
+			}
+		})
+	})();
+
 
 	return {
 		'addNew':addNew,
-		'deleteEstimate':deleteEstimate,
-		'getAllByCurrentUser': getAllByCurrentUser
+		'deleteEstimate':deleteEstimateById,
+		'getUserEstimateForPrediction':getUserEstimateForPrediction
 	}
 
-	function deleteEstimate(estimateId) {
+
+	
+	function getUserEstimateForPrediction(predictionId) {
+		return whenEstimatesLoaded.then(function(){
+			return cachedUserEstimates[predictionId];
+		});
+	}
+
+	function deleteEstimateById(estimateId) {
 		var likelihoodEstimate = new ParseLikelihoodEstimateModel;
 		likelihoodEstimate.id = estimateId;
 		return likelihoodEstimate.destroy();
@@ -23,20 +56,15 @@ function LikelihoodEstimateService( Parse,  $q) {
 
 	function addNew(author, prediction, percent) {
 		return $q(function(resolve, reject){
-			var currentUser = Parse.User.current();
-			if ( ! currentUser) {
-				reject();
-			}
-			var likelihoodEstimate = new ParseLikelihoodEstimateModel();
-			likelihoodEstimate.save({
-					'author':currentUser, 
+			new ParseLikelihoodEstimateModel().save({
+					'author':author, 
 					'prediction':prediction, 
 					'likelihoodEstimatePercent':percent
 				})
 				.then(function(newLikelihoodEstimate){
 					if (newLikelihoodEstimate && ! newLikelihoodEstimate.errors) {
-						resolve(newLikelihoodEstimate);
-						likelihoodEstimatesForCurrentUser.push(newLikelihoodEstimate);
+						resolve(castParseLikelihoodEstimatesAsPlainObject([newLikelihoodEstimate])[0]);
+						//cachedUserEstimates.push(newLikelihoodEstimate);
 					}
 					else {
 						reject();
@@ -45,32 +73,21 @@ function LikelihoodEstimateService( Parse,  $q) {
 			;
 		});
 	}
-	function getAllByCurrentUser() {
-		return $q(function(resolve, reject){
-			if (likelihoodEstimatesForCurrentUser) {
-				resolve(likelihoodEstimatesForCurrentUser);
-			}
-			else {
 
-				var currentUser = Parse.User.current();
-				if ( ! currentUser ) {
-					reject();
-				}
-				else {
-					var query = new Parse.Query(ParseLikelihoodEstimateModel);
-					query.equalTo('author', currentUser);
-					query.find()
-						.then(function(likelihoodEstimates) {
-							likelihoodEstimatesForCurrentUser = likelihoodEstimates;
-							resolve(likelihoodEstimatesForCurrentUser);
-						});
-				}
-				
-
-			}
-
+	function castParseLikelihoodEstimatesAsPlainObject(parseEstimates) {
+		var estimates = [];
+		angular.forEach(parseEstimates, function(parseEstimate){
+			var estimate = {
+				'id': parseEstimate.id,
+				'authorId': parseEstimate.get('author').id,
+				'predictionId': parseEstimate.get('prediction').id,
+				'likelihoodEstimatePercent': parseEstimate.get('likelihoodEstimatePercent')
+			};
+			estimates.push(estimate);
 		});
+		return estimates;
 	}
+
 }
 
 

@@ -48,7 +48,7 @@ li {
 
 .header__fill-fixed-position-space {
   display: block;
-  height: 50px;
+  height: 60px;
 }
 .header__fixed-to-top {
   position:fixed;
@@ -84,29 +84,20 @@ li {
   }
 }
 .header__back-button {
-    font-weight:normal;
-    //background:#eee;
-    //border-bottom:1px solid #eee;
+  font-weight:normal;
+  padding:15px;
+  display:block;
   &,
   &:hover,
   &:visited {
     color:#777;
     color:rgb(70,140,240);
     font-size:18px;
-    padding:20px;
-    display:block;
     text-decoration: none;
-
-    //background:rgb(220,220,220);
-    //padding-left:25px;
   }
   &:hover {
-    //color:rgb(70,120,230);
-    //padding-left:15px;
-    //background:rgb(225,233,240);
     background:#eee;
     color:#222;
-    //padding-left:20px;
   }
 }
 .header__profile-photo {
@@ -127,8 +118,7 @@ li {
 
 main {
   display: block;
-  margin-top:20px;
-  margin-bottom:50px;
+  margin:0;
 }
 
 .footer {
@@ -158,13 +148,19 @@ main {
 
 
 
+.make-prediction {
+  margin-bottom:300px;
+  padding-left:2%;
+  padding-right:2%;
+  margin-top:10px;
 
+}
 
 .make-prediction-form {
   width:100%;
   max-width:700px;
-  padding:3em 3% 3em;
-  margin:0 auto 0;
+  padding:1.5em 3% 2.5em;
+  margin:0 auto;
   background:#fff;
   border-radius:5px;
   box-shadow:0 3px 3px #ddd;
@@ -185,8 +181,8 @@ main {
 .make-prediction__delete-topic {
   font-size:20px;
   padding:0em .5em .1em;
-  border-radius:.3em;
-  margin-right:-.3em;
+  border-radius: .3em;
+  margin-right: -.3em;
   &:hover {
     background:#ccc;
     color:#fff;
@@ -252,14 +248,10 @@ main {
     color:#999;
   }
 }
-.make-prediction__newly-added-predictions {
-  padding-top: 10px;
-  padding-left:.5em;
-  padding-right:.5em;
-}
+.make-prediction__newly-added-predictions {}
 .make-prediction__newly-added-predictions__is-saving-notice {
   font-size:22px;
-  margin-top: 30px;
+  margin:20px 0;
 }
 .make-prediction__newly-added-predictions__centered {
   max-width:700px;
@@ -270,11 +262,11 @@ main {
   line-height: 1.3em;
 }
 .make-prediction__newly-added-predictions__list {
-  margin-top:20px;
+  margin-bottom:30px;
 }
 .make-prediction__prediction-added-successfully-notice {
   font-size:25px;
-  margin-top:30px;
+  display: none;
 }
 
 
@@ -324,7 +316,9 @@ main {
 
 
 
+.main-content-block {
 
+}
 
 
 
@@ -339,6 +333,7 @@ main {
   max-width:700px;
   padding-left:3%;
   padding-right:3%;
+  margin-top:30px;
 }
 .prediction-list__title {
   margin-bottom:20px;
@@ -416,8 +411,20 @@ fp-prediction + fp-prediction,
   border:1px solid #ccc;
   position: relative;
 }
+.prediction__topics__add-topic-button {
+  background:none;
+  padding:.2em;
+  font-size:13px;
+  border:none;
+  color:#777;
+}
 .prediction__header {
   padding:15px 20px 0;
+ display: block;
+
+  &:first-letter {
+    text-transform: uppercase;
+  }
 }
 .prediction__created-at {
   font-size: 13px;
@@ -430,9 +437,11 @@ fp-prediction + fp-prediction,
   background:none;
   color:#777;
   border:none;
-  float: right;
   font-size:15px;
   font-weight: normal;
+  position:absolute;
+  right:0;
+  top:0;
 
 }
 
@@ -501,7 +510,6 @@ fp-prediction + fp-prediction,
 }
 
 .prediction__title {
-  display: inline-block;
   &,
   &:hover,
   &:visited {
@@ -511,9 +519,7 @@ fp-prediction + fp-prediction,
     color:#333;  
     text-decoration: none;  
   }
-  &:first-letter {
-    text-transform: uppercase;
-  }
+
 }
 
 
@@ -601,33 +607,40 @@ fp-prediction + fp-prediction,
 
 
 .likelihood__user-estimate-option {
-}
-.likelihood__user-estimate-option + .likelihood__user-estimate-option { 
-  border-left:1px solid #eee; 
+  //border-radius:399px;
+  & + & {
+    border-left:1px solid rgb(245,245,245); 
+    .prediction--expanded & {
+      
+    }
+  }
+  &:hover {
+    color:#fff;
+    font-weight: bold;
+    &:nth-child(1)  { background: rgb(20,180,240);  border-left-color: rgb(20,180,240);  }
+    &:nth-child(2)  { background: rgb(70,190,180);  border-left-color: rgb(70,190,180);  }
+    &:nth-child(3)  { background: rgb(120,200,120); border-left-color: rgb(120,200,120); }
+    &:nth-child(4)  { background: rgb(170,210,60);  border-left-color: rgb(170,210,60);  }
+    &:nth-child(5)  { background: rgb(198,204,46);  border-left-color: rgb(198,204,46);  }
+    &:nth-child(6)  { background: rgb(226,197,33);  border-left-color: rgb(226,197,33);  }
+    &:nth-child(7)  { background: rgb(255,190,20);  border-left-color: rgb(255,190,20);  }
+    &:nth-child(8)  { background: rgb(252,169,14);  border-left-color: rgb(252,169,14);  }
+    &:nth-child(9)  { background: rgb(249,147,7);   border-left-color: rgb(249,147,7);   }
+    &:nth-child(10) { background: rgb(246,125,0);   border-left-color: rgb(246,125,0);   }
+    &:nth-child(11) { background: rgb(241,103,0);   border-left-color: rgb(241,103,0);   }
+  }
 }
 .likelihood__user-estimate-option--active {
   .prediction--expanded & {
     border-top-color:#eee;
   }
-
-  background:#777;
+  &,
+  &:hover:nth-child(n),
+  .likelihood__user-estimate-option + & {
+    background:#999;
+    border-left-color:#999;
   color:#fff;
-  border-radius:2px;
-}
-.likelihood__user-estimate-option:hover {
-  color:#fff;
-  font-weight: bold;
-  &:nth-child(1)  { background: rgb(20,180,240);  border-left-color: rgb(20,180,240);  }
-  &:nth-child(2)  { background: rgb(70,190,180);  border-left-color: rgb(70,190,180);  }
-  &:nth-child(3)  { background: rgb(120,200,120); border-left-color: rgb(120,200,120); }
-  &:nth-child(4)  { background: rgb(170,210,60);  border-left-color: rgb(170,210,60);  }
-  &:nth-child(5)  { background: rgb(198,204,46);  border-left-color: rgb(198,204,46);  }
-  &:nth-child(6)  { background: rgb(226,197,33);  border-left-color: rgb(226,197,33);  }
-  &:nth-child(7)  { background: rgb(255,190,20);  border-left-color: rgb(255,190,20);  }
-  &:nth-child(8)  { background: rgb(252,169,14);  border-left-color: rgb(252,169,14);  }
-  &:nth-child(9)  { background: rgb(249,147,7);   border-left-color: rgb(249,147,7);   }
-  &:nth-child(10) { background: rgb(246,125,0);   border-left-color: rgb(246,125,0);   }
-  &:nth-child(11) { background: rgb(241,103,0);   border-left-color: rgb(241,103,0);   }
+  }
 }
 
 
@@ -658,6 +671,7 @@ fp-prediction + fp-prediction,
 
 .user-profile {
   position:relative;
+  margin-top:20px;
 }
 .user-profile__centered-box {
   width: 700px;
@@ -815,3 +829,4 @@ fp-prediction + fp-prediction,
   padding:.5em 2em;
   box-shadow:0 2px 3px #ccc;
 }
+

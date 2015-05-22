@@ -3,13 +3,13 @@
 
 <div class="prediction" ng-class="{'prediction--expanded': predictionCtrl.prediction.isExpanded}">
 
-  <input type="button" class="prediction__toggle-edit-topics" ng-show=" ! predictionCtrl.showTopicEditingByDefault && ! predictionCtrl.isEditingTopics" value="Edit topics" ng-click="predictionCtrl.toggleEditing()" />
+  <input type="button" class="prediction__toggle-edit-topics" ng-show=" ! predictionCtrl.showTopicEditingByDefault && ! predictionCtrl.isEditingTopics" value="Edit" ng-click="predictionCtrl.toggleEditing()" />
   <input type="button" class="prediction__toggle-edit-topics" ng-show=" ! predictionCtrl.showTopicEditingByDefault && predictionCtrl.isEditingTopics" value="Back" ng-click="predictionCtrl.toggleEditing()" />
   <div class="prediction__header">
     <a class="prediction__title" href="#">{{::predictionCtrl.prediction.title}}</a>
       <span class="prediction__topics-not-set-notice" ng-show="predictionCtrl.isEditingTopics && predictionCtrl.prediction.topics.length === 0">This prediction appears in <b>0 topics</b>. Add at least one relevant topic</span>
     <span class="prediction__topics" ng-class="{'editing-prediction-topics': predictionCtrl.isEditingTopics}">
-
+      <!--<button class="prediction__topics__add-topic-button">Add topics</button>-->
       <span class="prediction__topic" ng-repeat="topic in predictionCtrl.prediction.topics" ng-click="predictionCtrl.navigateToTopic(topic.title)">
         {{topic.title}} <span class="edit-prediction__delete-topic" ng-click="predictionCtrl.removeTopicFromPrediction(topic.id)">×</span>
       </span>
@@ -26,7 +26,7 @@
     <form class="edit-prediction__add-topics" ng-if="predictionCtrl.isEditingTopics && predictionCtrl.prediction.topics.length < predictionCtrl.maxTopicsPerPrediction">
       <label class="edit-prediction__add-topics-label" for="edit-prediction__topic-title-input">
         <span ng-show="predictionCtrl.prediction.topics.length === 0">Add Topic</span>
-        <span ng-show="predictionCtrl.prediction.topics.length > 0">Add another topic (optional)</span>
+        <span ng-show="predictionCtrl.prediction.topics.length > 0">Add topic</span>
       </label>
       <input type="text" id="edit-prediction__topic-title-input" ng-model="predictionCtrl.newTopicTitle" />
       <button class="edit-prediction__add-topic-button" 
@@ -68,11 +68,14 @@
       <div class="likelihood__user-estimate-option" 
         ng-click="predictionCtrl.toggleLikelihoodEstimate(estimate.percent)" 
         ng-repeat="estimate in predictionCtrl.prediction.communityEstimates track by $index" 
-        ng-class="{'likelihood__user-estimate-option--active': estimate.percent == predictionCtrl.prediction.userEstimate.percent}">
+        ng-class="{'likelihood__user-estimate-option--active': estimate.percent == predictionCtrl.prediction.userEstimate.likelihoodEstimatePercent}">
           {{::estimate.percent}}<span class="show-on-active">%<br/>likely</span>
       </div>
     </div>
   </div>
+
+
+
 </div>
 
 

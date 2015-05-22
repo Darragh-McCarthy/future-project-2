@@ -8,7 +8,7 @@ predictionList.$inject=[];
 function predictionList(){
 	return {
 		link: function() {
-			console.log('inside predictionList');
+			//console.log('inside predictionList');
 		}
 	}
 }

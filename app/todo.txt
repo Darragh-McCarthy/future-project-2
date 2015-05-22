@@ -1,5 +1,4 @@
 pagination
-add likelihood estimate loading sign
 logo - name
 assign access rights to different Parse models
 DOM manipulation of Prediction graph
@@ -8,14 +7,22 @@ notifications
 
 prediction guidelines
 
-fix likelihood estimate
-add topic to make-prediction before adding prediction to allow for multiple predictions under a single topic
-
 no validations on topic titles
 
 feedback page
 
-Loading sign on pages
+Loading signs: 
+	pages, 
+	on add likelihood estimate
 
 
-Colin confused about adding topics section in make-prediction
+Reasons for prediction
+
+Private predictions for friends: who will date who, etc.
+when selecting from the list of suggested topics, focus is taken from the new topic input field
+
+Please make a prediction in the format... eg.
+What should user predict?
+
+User should only be able to add one likelihood estimate
+Add list of voters to prediction graph

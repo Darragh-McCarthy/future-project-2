@@ -65,25 +65,23 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 	}
 
 	function loginWithFacebook() {
-		return logIntoParseWithFacebook()
-			.then(function() {
-				_user = Parse.User.current();
-				currentUserObject.id = _user.id;
+		return logIntoParseWithFacebook().then(function() {
+			_user = Parse.User.current();
+			currentUserObject.userId = _user.id;
 
-				if ( ! _user.copyOfBasicFacebookUserData) {
-					getBasicFacebookUserData().then(function(data){
-						_user.set('copyOfBasicFacebookUserData', data);
-						_user.save().then(function(){
-							console.log('successfully saved FB data to Parse');
-							console.log('copyOfBasicFacebookUserData:',_user.get('copyOfBasicFacebookUserData'));
-						});
+			if ( ! _user.copyOfBasicFacebookUserData) {
+				getBasicFacebookUserData().then(function(data){
+					_user.set('copyOfBasicFacebookUserData', data);
+					_user.save().then(function(){
+						console.log('successfully saved FB data to Parse');
+						console.log('copyOfBasicFacebookUserData:',_user.get('copyOfBasicFacebookUserData'));
 					});
-				}
-				getUserThumbnailUrl().then(function(url) {
-					currentUserObject.userThumbnailUrl = url;
 				});
-			})
-		;
+			}
+			getUserThumbnailUrl().then(function(url) {
+				currentUserObject.userThumbnailUrl = url;
+			});
+		});
 	}
 
 
@@ -153,17 +151,16 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 
 	function logIntoParseWithFacebook() {
 		return $q(function(resolve, reject){
-			_whenFacebookSdkLoaded
-				.then(function(){
-					Parse.FacebookUtils.logIn('public_profile,email,user_friends', {
-	      		success: function(user) {
-	 	    		  resolve(user);
-	      		},
-	      	 	error: function(user, error) {
-	      			reject();
-		    	  }
-		    	});
-				});
+			_whenFacebookSdkLoaded.then(function(){
+				Parse.FacebookUtils.logIn('public_profile,email,user_friends', {
+      		success: function(user) {
+ 	    		  resolve(user);
+      		},
+      	 	error: function(user, error) {
+      			reject();
+	    	  }
+	    	});
+			});
 		});
 	}
 
@@ -175,7 +172,8 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 		return $q(function(resolve, reject) {
 			$window.fbAsyncInit = function() {
 		    Parse.FacebookUtils.init({
-		      appId      : '867899246628303',
+		    	appId			 : '900144096737151',//localhost
+		      //appId      : '867899246628303',//futureproject.parseapp.com
 		      cookie     : true,  // enable cookies to allow Parse to access the session
 		      version    : 'v2.2',
 		      xfbml      : true,  // initialize Facebook social plugins on the page
