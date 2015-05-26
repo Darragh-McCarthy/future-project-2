@@ -1,40 +1,20 @@
-<div class="make-prediction">
+<a class="header__back-button" ng-click="makePrediction.goBackToPreviousPage()">◃ Back to previous page</a>
+
+
+<div class="make-prediction-page">	
 	
-	
-	<div class="make-prediction__newly-added-predictions">
-			<div class="make-prediction__newly-added-predictions__centered">
-				<div class="make-prediction__prediction-added-successfully-notice" ng-show="makePrediction.newlyAddedPredictions.length">Prediction added successfully</div>
-				<div class="make-prediction__newly-added-predictions__is-saving-notice" ng-show="makePrediction.isSavingPredictions">Saving prediction...</div>
-				<ul class="make-prediction__newly-added-predictions__list" ng-show="makePrediction.newlyAddedPredictions.length">
+	<div class="make-prediction__page__newly-added-predictions">
+			<div class="make-prediction-page__newly-added-predictions__centered">
+				<div class="make-prediction-page__prediction-added-successfully-notice" ng-show="makePrediction.newlyAddedPredictions.length">Prediction added successfully</div>
+				<div class="make-prediction-page__newly-added-predictions__is-saving-notice" ng-show="makePrediction.isSavingPredictions">Saving prediction...</div>
+				<ul class="make-prediction-page__newly-added-predictions__list" ng-show="makePrediction.newlyAddedPredictions.length">
 					<fp-prediction show-topic-editing-by-default="::true" prediction="prediction" ng-repeat="prediction in makePrediction.newlyAddedPredictions"></prediction>
 				</ul>
-			</div>	
+			</div>
 	</div>
 
-	<form class="make-prediction-form">
-		<span ng-if="makePrediction.newPrediction.topic" class="make-prediction__topic">
-			{{::makePrediction.newPrediction.topic}}
-			<span class="make-prediction__delete-topic" ng-click="makePrediction.removeDefaultTopic()">×</span>
-		</span>
-		<div class="make-prediction__title">
-			<label class="make-prediction__title-label">
-				<span ng-hide="makePrediction.newlyAddedPredictions.length">What is your prediction?</span>
-				<span ng-show="makePrediction.newlyAddedPredictions.length"><b>Add another prediction</b></span>
-				<ul class="make-prediction__title-error-messages">
-					<li ng-repeat="errorMessage in makePrediction.predictionValidationErrors.predictionTitleLengthErrors" ng-if="makePrediction.areTitleLengthErrorsVisible">{{errorMessage}}</li>
-					<li ng-repeat="errorMessage in makePrediction.predictionValidationErrors.predictionTitleContentErrors">{{errorMessage}}</li>
-				</ul>
-				<div class="make-prediction__questions-not-allowed-explanation" ng-if="makePrediction.predictionValidationErrors.predictionTitleContentErrors">
-					<a class="make-prediction__how-to-make-prediction-link" ui-sref="app.prediction-guidelines" target="_blank">View Prediction Guidelines</a>
-				</div>
-				<input type="text" id="make-prediction__title-input" ng-model="makePrediction.newPrediction.title" autofocus autocomplete="off" />
-			</label>
-		</div>
-		<button class="make-prediction__add-prediction-button" 
-			ng-show="makePrediction.newPrediction.title.length >= makePrediction.newPredictionDataConstraints.predictionTitleCharacters.min.value"  
-			ng-click="makePrediction.addNewPrediction(makePrediction.newPrediction.title, makePrediction.newPrediction.topic)">
-			Add prediction
-		</button>
-	</form>
+	<div class="make-prediction-page__add-new-prediction-container">
+		<fp-add-new-prediction autofocus="true"></fp-add-new-prediction>	
+	</div>
 
 </div>

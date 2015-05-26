@@ -1,74 +1,43 @@
-<!--
-Follow
-Comments
-Views
-Shares
-Vote of timescale
-Custom vote
--->
+
 
 <fp-prediction-list></fp-prediction-list>
 
 
 
 <div class="prediction-list">
+  <h1 class="prediction-list__title" ng-show="predictionList.currentTopic">{{predictionList.currentTopic}} <!--<button class="follow-topic">Follow</button>--></h1>
 
+  <fp-add-new-prediction autofocus="true" topic="predictionList.currentTopic"></fp-add-new-prediction>
 
-  <div class="prediction-list__pagination">
-    <ul class="prediction-list__pagination-list">
-      <li class="prediction-list__pagination-page" ng-repeat="page in [
-        {'title':'1','index':0},
-        {'title':'2','index':1},
-        {'title':'3','index':2},
-        {'title':'4','index':3},
-        {'title':'next','index':4}
-      ]">
-        <a class="prediction-list__pagination-page-hyperlink" 
-        ui-sref="app.search({'page':page.index})" 
-        ng-class="{active:predictionList.currentPage == page.index}">{{page.title}}</a>
-      </li>
-    </ul>
-  </div>
-
-  <a ng-show="predictionList.currentTopic" ui-sref="app">Back to all predictions</a>
-
-  <h1 class="prediction-list__title" ng-bind="predictionList.currentTopic"></h1>
-  <h1 class="prediction-list__title" ng-hide="predictionList.currentTopic">Recent predictions</h1>
-  <div ng-hide="predictionList.isLoadingComplete" class="prediction-list__isloading-notice">Loading...</div>
-  <div ng-show="predictionList.isLoadingComplete">
-
-    <div class="predictions">
-      <fp-prediction 
-        prediction="prediction"
-        topic-to-hide="predictionList.currentTopic" 
-        onexpand="predictionList.expandPrediction(prediction)" 
-        ng-repeat="prediction in predictionList.predictions track by prediction.id"></fp-prediction>
+  
+  <div class="prediction-list__isloading-notice" ng-hide="predictionList.isLoadingComplete">Loading...</div>
+  <div class="predictions" ng-show="predictionList.isLoadingComplete">
+    <div class="make-prediction__newly-added-predictions">
+      <div class="make-prediction__newly-added-predictions__centered">
+        <div class="make-prediction__prediction-added-successfully-notice" ng-show="predictionList.newlyAddedPredictions.length">Prediction added successfully</div>
+        <div class="make-prediction__newly-added-predictions__is-saving-notice" ng-show="predictionList.isSavingPredictions">Saving prediction...</div>
+        <div class="make-prediction__newly-added-predictions__list" ng-show="predictionList.newlyAddedPredictions.length">
+          <div ng-repeat="prediction in predictionList.newlyAddedPredictions">
+            <span>Added to {{predictionList.currentTopic}} on {{prediction.createdAt}}</span>
+            <fp-prediction show-topic-editing-by-default="::true" prediction="prediction"></prediction>          
+          </div>
+        </div>
+      </div>
     </div>
+    <fp-prediction 
+      prediction="prediction"
+      topic-to-hide="predictionList.currentTopic" 
+      onexpand="predictionList.expandPrediction(prediction)" 
+      ng-repeat="prediction in predictionList.predictions track by prediction.id">
+    </fp-prediction>
+    <button class="button--primary">Next</button>
 
   </div>
-
-    
-    <div class="prediction-list__kickstart-predictions-notice" ng-show="predictionList.currentTopic">
-      <button class="button--primary" ui-sref="app.make-prediction({topic:predictionList.currentTopic})">Add {{::predictionList.currentTopic}} prediction</button>
-    </div>
 
 
 
   
-  <div class="prediction-list__pagination">
-    <ul class="prediction-list__pagination-list">
-      <li class="prediction-list__pagination-page" ng-repeat="page in [
-        {'title':'1','index':0},
-        {'title':'2','index':1},
-        {'title':'3','index':2},
-        {'title':'4','index':3},
-        {'title':'next','index':4}]">
-        <a class="prediction-list__pagination-page-hyperlink" 
-        ui-sref="app.search({'page':page.index})" 
-        ng-class="{active:predictionList.currentPage == page.index}">{{page.title}}</a>
-      </li>
-    </ul>
-  </div>
+
 
 
 

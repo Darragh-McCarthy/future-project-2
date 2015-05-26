@@ -5,7 +5,7 @@
 angular.module('myApp')
 .directive('fpPrediction', function() {
 	return {
-		templateUrl: 'sharedDirectives/predictions/fp-prediction.template.html',
+		templateUrl: 'sharedDirectives/fp-prediction/fp-prediction.template.html',
 		scope: {
 			prediction: '=',
       topicToHide: '=',
@@ -14,19 +14,19 @@ angular.module('myApp')
       showLikelihoodEstimateByDefault: '@'
 		},
 		bindToController: true,
-		controller: 'Prediction as predictionCtrl',
+		controller: 'FpPrediction as predictionCtrl',
 		//link: function(scope, element, attrs) {
 		//	console.log(typeof attrs.prediction)
 		//}
-	}
+	};
 });
 
 
 angular.module('myApp')
-	.controller('Prediction', Prediction);
+	.controller('FpPrediction', FpPrediction);
 
-Prediction.$inject=['$q','$state','PredictionService'];
-function Prediction( $q,  $state,  PredictionService ) {
+FpPrediction.$inject=['$q','$state','PredictionService'];
+function FpPrediction( $q,  $state,  PredictionService ) {
 
   var MAX_GRAPHBAR_HEIGHT = 100;
   var MIN_GRAPHBAR_HEIGHT = 5;
@@ -42,8 +42,6 @@ function Prediction( $q,  $state,  PredictionService ) {
   ];
 
 	var _this = this;
-
-  //Needs to be removed
   _this.maxTopicsPerPrediction = MAX_TOPICS_PER_PREDICTION;
   _this.addTopicFromSuggestedTopics = addTopicFromSuggestedTopics;
   _this.toggleLikelihoodEstimate = toggleLikelihoodEstimate;
@@ -69,13 +67,13 @@ function Prediction( $q,  $state,  PredictionService ) {
   allocateGraphBarHeights(_this.prediction.communityEstimates);
 
 
-
-  (function dontListTopicWhenOnThatTopicPage() {
+  (function placeTopicToHideFirstInTopicsList() {
     if (_this.topicToHide) {
       for (var i = 0; i < _this.prediction.topics.length; i++) {
         if (_this.prediction.topics[i].title === _this.topicToHide) {
           var index = _this.prediction.topics.indexOf(_this.prediction.topics[i]);
-          _this.prediction.topics.splice(index, 1);
+          var removedTopic = _this.prediction.topics.splice(index, 1)[0];
+          _this.prediction.topics.unshift(removedTopic);
         }
       }
     }
@@ -83,12 +81,6 @@ function Prediction( $q,  $state,  PredictionService ) {
 
   function toggleLikelihoodEstimate(percent){
     var promises = [];
-
-    /*var firstCount = [];
-    angular.forEach(_this.prediction.communityEstimates, function (estimate){
-      firstCount.push(estimate.count);
-    });
-    console.log(firstCount);*/
     var estimateToRemove = _this.prediction.userEstimate;
     if (estimateToRemove) {
       promises.push(removeLikelihoodEstimate());
@@ -98,13 +90,6 @@ function Prediction( $q,  $state,  PredictionService ) {
      promises.push(addLikelihoodEstimate(percent));
       _this.prediction.communityEstimatesCount++;
     }
-    /*
-    var secondCount = [];
-    angular.forEach(_this.prediction.communityEstimates, function (estimate){
-      secondCount.push(estimate.count);
-    });
-    console.log(secondCount);
-    */
     $q.all(promises).then(function(){
       allocateGraphBarHeights(_this.prediction.communityEstimates);
     });
@@ -173,7 +158,6 @@ function Prediction( $q,  $state,  PredictionService ) {
     addTopicToPrediction(topicTitle);
   }
   function addTopicToPrediction(newTopicTitle) {
-    console.log(newTopicTitle);
     PredictionService.addTopicByTitleToPrediction(_this.prediction.id, newTopicTitle).then(function(topic){
       if (topic) {
         _this.prediction.topics.push(topic);
@@ -200,8 +184,8 @@ function Prediction( $q,  $state,  PredictionService ) {
   }
   function navigateToTopic(topicTitle) {
     if ( ! _this.isEditingTopics) {
-      $state.go('app.search', {
-        q: topicTitle
+      $state.go('app.topic', {
+        topic: topicTitle
       });
     }
   }

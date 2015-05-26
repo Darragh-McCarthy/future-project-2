@@ -73,6 +73,8 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService ) {
     return $q(function(resolve, reject){
       if (recentPredictionsCache[ indexOfRequestedPage ]) {
         resolve(recentPredictionsCache[ indexOfRequestedPage ]);
+        console.log('found in cache');
+
         if (preloadAdjacentPages) {
           getRecentPredictions(indexOfRequestedPage + 1);
           getRecentPredictions(indexOfRequestedPage - 1);
@@ -99,6 +101,7 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService ) {
               recentPredictionsCache[indexOfRequestedPage + numFullPagesWorthOfPredictions] = response;
             }
             resolve(recentPredictionsCache[ indexOfRequestedPage ]);
+            console.log('fetched from server');
 
             if (preloadAdjacentPages) {
               getRecentPredictions(indexOfRequestedPage + 1);

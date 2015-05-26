@@ -4,7 +4,6 @@
 
 	
 	<div class="user-profile__centered-box">
-	  <a ui-sref="app">Back to all predictions</a>
 		<div class="user-profile__user-overview">
 			<img class="user-profile__user-photo-big" ng-src="{{userProfile.currentUser.userBigPictureUrl}}"/>
 			<div class="user-profile__user-text">
@@ -12,10 +11,16 @@
 				<button class="user-profile__logout-button" ng-click="userProfile.logout()">Logout</button>
 			</div>
 		</div>
+		<div class="user-profile__add-new-prediction-container">
+			<fp-add-new-prediction autofocus="true"></fp-add-new-prediction>		
+		</div>
 		<div class="user-profile__prediction-list">
-			<h2 class="user-profile__prediction-list__title">Predictions added by {{userProfile.currentUser.copyOfBasicFacebookUserData.first_name}}</h2>
 			<div class="user-profile__prediction-list">
-				<fp-prediction prediction="prediction" onexpand="userProfile.expandPrediction(prediction)" ng-repeat="prediction in userProfile.predictions track by prediction.id"></fp-prediction>		
+				<fp-prediction 
+					prediction="prediction" 
+					onexpand="userProfile.expandPrediction(prediction)" 
+					ng-repeat="prediction in userProfile.predictions track by prediction.id">
+				</fp-prediction>
 			</div>
 		</div>
 	</div>

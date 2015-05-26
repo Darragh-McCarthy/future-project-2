@@ -1,0 +1,46 @@
+  <form class="make-prediction">  
+    <label>
+      <div class="make-prediction__prediction-title-label">
+        <span>
+          <span ng-hide="makePrediction.newlyAddedPredictions.length">What is your</span>
+          <span ng-show="makePrediction.newlyAddedPredictions.length"><b>Add another</b></span>        
+        </span>
+        <span class="make-prediction__topic"
+          ng-if="makePrediction.newPrediction.topic">
+          {{::makePrediction.newPrediction.topic}}
+          <span class="make-prediction__delete-topic" ng-click="makePrediction.removeDefaultTopic()">×</span>
+        </span>
+        <span>
+          <span ng-hide="makePrediction.newlyAddedPredictions.length">prediction?</span>
+          <span ng-show="makePrediction.newlyAddedPredictions.length"><b>prediction</b></span>        
+        </span>
+      </div>
+
+      <ul class="make-prediction__title-error-messages">
+        <li ng-repeat="errorMessage in makePrediction.predictionValidationErrors.predictionTitleLengthErrors" 
+          ng-if="makePrediction.areTitleLengthErrorsVisible">
+          {{errorMessage}}
+        </li>
+        <li ng-repeat="errorMessage in makePrediction.predictionValidationErrors.predictionTitleContentErrors">
+          {{errorMessage}}
+        </li>
+      </ul>
+
+      <div class="make-prediction__questions-not-allowed-explanation" 
+        ng-if="makePrediction.predictionValidationErrors.predictionTitleContentErrors">
+        <a class="make-prediction__how-to-make-prediction-link" 
+          ui-sref="app.prediction-guidelines" 
+          target="_blank">
+          View Prediction Guidelines
+        </a>
+      </div>
+
+      <input type="text" id="make-prediction__prediction-title-input" ng-model="makePrediction.newPrediction.title" autofocus autocomplete="off" />
+    </label>
+
+    <button class="make-prediction__add-prediction-button" 
+      ng-show="makePrediction.newPrediction.title.length >= makePrediction.newPredictionDataConstraints.predictionTitleCharacters.min.value"  
+      ng-click="makePrediction.addNewPrediction(makePrediction.newPrediction.title, makePrediction.newPrediction.topic)">
+      Add prediction
+    </button>
+  </form>

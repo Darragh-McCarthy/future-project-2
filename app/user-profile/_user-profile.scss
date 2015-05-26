@@ -1,0 +1,43 @@
+.user-profile {
+  position:relative;
+  margin-top:20px;
+}
+.user-profile__add-new-prediction-container {
+  margin-top:50px;
+  margin-bottom:50px;
+}
+.user-profile__centered-box {
+  width: 650px;
+  margin:auto;  
+}
+.user-profile__user-overview {
+}
+.user-profile__user-text {
+  display: inline-block;
+  vertical-align: top;
+  margin-left: 10px;
+}
+.user-profile__fullname {
+  font-size:25px;
+  font-weight:bold;
+}
+.user-profile__user-photo-big {
+  border-radius:3px;
+  height:200px;
+  width:200px;
+  background:#ddd;
+}
+.user-profile__prediction-list {
+  margin-top:20px;
+}
+.user-profile__prediction-list__title {
+  font-size:25px;
+}
+.user-profile__logout-button {
+  border:1px solid #ccc;
+  background:#fff;
+  border-radius:3px;
+  padding:.1em .7em;
+  box-shadow:0 2px 3px #ddd;
+  margin-top:.3em;
+}

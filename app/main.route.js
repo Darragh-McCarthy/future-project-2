@@ -44,8 +44,8 @@ function configureRoutes( $stateProvider,  $urlRouterProvider ) {
         }
       }
     })
-    .state('app.search', {
-      url: 'search?q&page',
+    .state('app.topic', {
+      url: 'topic/:topic/:page',
       views: {
         'content@': {
           templateUrl: 'prediction-list/prediction-list.html', 
@@ -53,18 +53,31 @@ function configureRoutes( $stateProvider,  $urlRouterProvider ) {
         }
       }
     })
-
-
     .state('app.make-prediction', {
       url: 'make-prediction?topic=',
       views: {
         'content@': {
           templateUrl: 'make-prediction/make-prediction.html',
-          controller: 'MakePrediction as makePrediction'
+          controller: 'MakePrediction as makePrediction',
+          resolve: {
+            previousState: [
+              "$state",
+              function ($state) {
+                var currentStateData = null;
+                if ($state.current) {
+                  var currentStateData = {
+                    name:   $state.current.name,
+                    params: $state.params,
+                    url:    $state.href($state.current.name, $state.params)
+                  };
+                }
+                return currentStateData;
+              }
+            ]
         },
-        'header@': {
-          template: '<a class="header__back-button" ui-sref="app">◃ Back to all predictions</a>'
-        }
+        },
+        'header@': {}
+
       }
     })
     .state('app.login', {

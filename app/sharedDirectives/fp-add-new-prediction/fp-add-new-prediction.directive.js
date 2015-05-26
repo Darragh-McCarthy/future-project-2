@@ -1,39 +1,45 @@
 (function(){
 'use strict';
 
+angular.module('myApp')
+	.directive('fpAddNewPrediction', function() {
+	return {
+		templateUrl:'sharedDirectives/fp-add-new-prediction/fp-add-new-prediction.template.html',
+		scope: {
+ 			topic: '=',
+ 			autofocus: '@'
+		},
+		bindToController: true,
+		controller:'FpAddNewPrediction as makePrediction'
+	};
+});
 
 angular.module('myApp')
-	.controller('MakePrediction', MakePrediction);
+	.controller('FpAddNewPrediction', FpAddNewPrediction);
 
 
-MakePrediction.$inject=['$state','$window','$scope','PredictionService','TopicService','$stateParams','focusElementById','previousState'];
-function MakePrediction( $state,  $window,  $scope,  PredictionService,  TopicService,  $stateParams,  focusElementById,  previousState ) {	
+FpAddNewPrediction.$inject=['$scope','$state','PredictionService','focusElementById'];
+function FpAddNewPrediction( $scope,  $state,  PredictionService,  focusElementById ) {
 	var _this = this;
 	_this.newlyAddedPredictions = [];
-	_this.newPrediction = {
-		title: '',
-		topic: $stateParams.topic
-	};
 	_this.addNewPrediction = addNewPrediction;
 	_this.newPredictionDataConstraints = PredictionService.newPredictionDataConstraints;
 	_this.areTitleLengthErrorsVisible = false;
 	_this.removeDefaultTopic = removeDefaultTopic;
-	_this.goBackToPreviousPage = goBackToPreviousPage;
+	_this.newPrediction = {
+		title: '',
+		topic: _this.topic
+	};
 
-	function goBackToPreviousPage() {
-		if (previousState) {
-			$state.go(previousState.name, previousState.params);
-		}
-		else {
-			$state.go('app');
-		}
+	if (_this.autofocus) {
+		focusElementById('make-prediction__prediction-title-input');
 	}
-
-	focusElementById('make-prediction__title-input');
 
 	$scope.$watch('makePrediction.newPrediction.title', function(newVal, oldVal){
 		_this.predictionValidationErrors = PredictionService.validateNewPrediction(newVal);
 	});
+
+
 
 	function addNewPrediction(newPredictionTitle, newPredictionTopicTitle) {
 		_this.areTitleLengthErrorsVisible = true;
@@ -54,21 +60,11 @@ function MakePrediction( $state,  $window,  $scope,  PredictionService,  TopicSe
 			}
 		}
 	}
-
 	function removeDefaultTopic() {
-		_this.newPrediction.topic = null;
+		//_this.newPrediction.topic = null;
+		$state.go('app.make-prediction');
 	}
 
 }
 
-
-
-
-
-
-
-
-
 })();
-
-

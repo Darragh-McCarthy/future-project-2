@@ -11,10 +11,11 @@ Dropdowns
 <div class="header">
   <div class="header__fill-fixed-position-space"></div>
   <div class="header__fixed-to-top">
-    <img class="header__profile-photo" ng-src="{{header.currentUser.userThumbnailUrl}}" ui-sref="app.user-profile({userId:header.currentUser.userId})">
-    <button class="header__add-prediction-button button--primary" ui-sref="app.make-prediction">Add Prediction</button> 
-    <div class="header__navigation"> 
-     	<a class="feedback" href="mailto:darraghjames@gmail.com" target="_blank">Feedback</a>
-		</div> 	
+    <div class="header__profile-photo-container"  ui-sref="app.user-profile({userId:header.currentUser.userId})">
+      <img class="header__profile-photo" ng-src="{{header.currentUser.userThumbnailUrl}}">
+    </div>
+    <!--<div class="header__body">
+      <button class="header__add-prediction-button button--primary" ui-sref="app.make-prediction">Add Prediction</button> 
+    </div>-->
   </div>
 </div>

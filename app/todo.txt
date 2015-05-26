@@ -1,28 +1,63 @@
-pagination
-logo - name
-assign access rights to different Parse models
-DOM manipulation of Prediction graph
-notifications
 
 
-prediction guidelines
 
-no validations on topic titles
+Prioritise
 
-feedback page
+	pagination
+	assign access rights to different Parse models
+	DOM manipulation of Prediction graph
+	notifications
+	Reasons for prediction
+	Fb permissions for public deployment
 
-Loading signs: 
-	pages, 
-	on add likelihood estimate
 
 
-Reasons for prediction
+Ignorable Bugs
 
-Private predictions for friends: who will date who, etc.
-when selecting from the list of suggested topics, focus is taken from the new topic input field
+	when selecting from the list of suggested topics, focus is taken from the new topic input field
+	When viewing predictions in a topic, edit topics indicated 0 topics
+	reloading make-prediction breaks back header link
 
-Please make a prediction in the format... eg.
-What should user predict?
 
-User should only be able to add one likelihood estimate
-Add list of voters to prediction graph
+
+Less important
+
+	Add list of voters to prediction graph
+	Please make a prediction in the format... eg.
+	What should user predict?
+	Loading signs: 
+		pages, 
+		on add likelihood estimate
+	feedback page
+	logo - name
+	prediction guidelines
+	no validations on topic titles
+	Private predictions for friends: who will date who, etc.
+
+
+
+later
+	Celebrity predictions for the year, results at the end of the year.
+	Trend setting
+	Prediction questions: Youtube celebs
+	Geo/Age/Gender distribution
+
+
+	prediction type questions:
+		scale
+		shares
+
+	Show conflicting reason to someone voting on the likelihood of a prediction
+	after adding a reason for a prediction likelihood. Notify when someone changes their mind because of your reason
+
+	Follow
+	Comments
+	Views
+	Shares
+	Vote of timescale
+	Custom vote
+
+
+
+	removing topic from add topics form, then adding topic, where to put it.
+	topics: hiding first topic not always making sense
