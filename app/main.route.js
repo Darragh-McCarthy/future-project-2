@@ -53,6 +53,15 @@ function configureRoutes( $stateProvider,  $urlRouterProvider ) {
         }
       }
     })
+    .state('app.prediction', {
+      url: 'prediction/:predictionId',
+      views: {
+        'content@': {
+          templateUrl:'prediction/prediction.template.html',
+          controller:'Prediction as prediction'
+        }
+      }
+    })
     .state('app.make-prediction', {
       url: 'make-prediction?topic=',
       views: {

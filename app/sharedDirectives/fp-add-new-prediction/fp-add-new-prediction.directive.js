@@ -7,7 +7,9 @@ angular.module('myApp')
 		templateUrl:'sharedDirectives/fp-add-new-prediction/fp-add-new-prediction.template.html',
 		scope: {
  			topic: '=',
- 			autofocus: '@'
+ 			autofocus: '@',
+ 			onAddNewPredictionSuccess:'&',
+ 			onSavingNewPrediction:'&'
 		},
 		bindToController: true,
 		controller:'FpAddNewPrediction as makePrediction'
@@ -21,7 +23,7 @@ angular.module('myApp')
 FpAddNewPrediction.$inject=['$scope','$state','PredictionService','focusElementById'];
 function FpAddNewPrediction( $scope,  $state,  PredictionService,  focusElementById ) {
 	var _this = this;
-	_this.newlyAddedPredictions = [];
+	_this.isAddingSecondPrediction = undefined;
 	_this.addNewPrediction = addNewPrediction;
 	_this.newPredictionDataConstraints = PredictionService.newPredictionDataConstraints;
 	_this.areTitleLengthErrorsVisible = false;
@@ -39,29 +41,27 @@ function FpAddNewPrediction( $scope,  $state,  PredictionService,  focusElementB
 		_this.predictionValidationErrors = PredictionService.validateNewPrediction(newVal);
 	});
 
-
-
 	function addNewPrediction(newPredictionTitle, newPredictionTopicTitle) {
 		_this.areTitleLengthErrorsVisible = true;
 		if ( ! _this.predictionValidationErrors) {
 			_this.isSavingPredictions = true;
 			_this.newPrediction.title = '';
 			_this.areTitleLengthErrorsVisible = false;
-			addPrediction().then(function(newlyAddedPrediction){
-				_this.newlyAddedPredictions.push(newlyAddedPrediction);
-				_this.isSavingPredictions = false;
+			_this.isAddingSecondPrediction = true;
+			_this.onSavingNewPrediction({test:'test'});
+			(function() {
+				if (newPredictionTopicTitle) {
+					return PredictionService.createNewPredictionWithTopicTitle(newPredictionTitle, newPredictionTopicTitle);
+				} else {
+					return PredictionService.createNewPrediction(newPredictionTitle);
+				}
+			})().then(function(newlyAddedPrediction){
+				_this.onAddNewPredictionSuccess({'newPrediction':newlyAddedPrediction});
 			});
 		}
-		function addPrediction() {
-			if (newPredictionTopicTitle) {
-				return PredictionService.createNewPredictionWithTopicTitle(newPredictionTitle, newPredictionTopicTitle);
-			} else {
-				return PredictionService.createNewPrediction(newPredictionTitle);
-			}
-		}
 	}
+	
 	function removeDefaultTopic() {
-		//_this.newPrediction.topic = null;
 		$state.go('app.make-prediction');
 	}
 

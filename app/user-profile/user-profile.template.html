@@ -11,18 +11,12 @@
 				<button class="user-profile__logout-button" ng-click="userProfile.logout()">Logout</button>
 			</div>
 		</div>
-		<div class="user-profile__add-new-prediction-container">
-			<fp-add-new-prediction autofocus="true"></fp-add-new-prediction>		
-		</div>
-		<div class="user-profile__prediction-list">
-			<div class="user-profile__prediction-list">
-				<fp-prediction 
-					prediction="prediction" 
-					onexpand="userProfile.expandPrediction(prediction)" 
-					ng-repeat="prediction in userProfile.predictions track by prediction.id">
-				</fp-prediction>
-			</div>
-		</div>
 	</div>
+	
+  <fp-prediction-list 
+    predictions="userProfile.predictions" 
+    show-add-prediction-form="true">
+  </fp-prediction-list>
+
 </div>
 

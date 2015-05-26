@@ -2,8 +2,8 @@
     <label>
       <div class="make-prediction__prediction-title-label">
         <span>
-          <span ng-hide="makePrediction.newlyAddedPredictions.length">What is your</span>
-          <span ng-show="makePrediction.newlyAddedPredictions.length"><b>Add another</b></span>        
+          <span ng-hide="::makePrediction.isAddingSecondPrediction">What is your</span>
+          <span ng-show="::makePrediction.isAddingSecondPrediction"><b>Add another</b></span>        
         </span>
         <span class="make-prediction__topic"
           ng-if="makePrediction.newPrediction.topic">
@@ -11,8 +11,8 @@
           <span class="make-prediction__delete-topic" ng-click="makePrediction.removeDefaultTopic()">×</span>
         </span>
         <span>
-          <span ng-hide="makePrediction.newlyAddedPredictions.length">prediction?</span>
-          <span ng-show="makePrediction.newlyAddedPredictions.length"><b>prediction</b></span>        
+          <span ng-hide="::makePrediction.isAddingSecondPrediction">prediction?</span>
+          <span ng-show="::makePrediction.isAddingSecondPrediction"><b>prediction</b></span>        
         </span>
       </div>
 

@@ -13,7 +13,7 @@
         value="Edit" 
         ng-click="predictionCtrl.toggleEditing()" />
       <div class="prediction__header">
-        <a class="prediction__title" href="#">{{::predictionCtrl.prediction.title}}</a>
+        <a ui-sref="app.prediction({predictionId:predictionCtrl.prediction.id})" class="prediction__title" href="#">{{::predictionCtrl.prediction.title}}</a>
         <span class="prediction__topics" ng-class="{'hide-first-topic':predictionList.currentTopic}">
           <span class="prediction__topic-container" ng-repeat="topic in predictionCtrl.prediction.topics">
             <span class="prediction__topic" 
@@ -22,15 +22,10 @@
               {{topic.title}}
             </span>
           </span>
+         <!-- <span class="prediction__topics__expand-topics">+</span>-->
         </span>
       </div>
 
-      <!--<div class="prediction__reasons" ng-if="predictionCtrl.prediction.isExpanded">
-        <div style="margin:0 20px;">
-          <p><b>70% likely: Jamie Oliver, Lawyer C&C Associates</b></p>
-          <div>There is no way this could posibly not work out is de</div>
-        </div>
-      </div>-->
 
       <div class="likelihood">
         <div class="likelihood__community-estimate">
@@ -43,6 +38,7 @@
             </div>
           </div>
         </div>
+        <!--<fp-likelihood-user-estimate prediction="predictionCtrl.prediction"></fp-likelihood-user-estimate>-->
         <div class="likelihood__user-estimate">
           <div class="likelihood__user-estimate-option" 
             ng-click="predictionCtrl.toggleLikelihoodEstimate(estimate.percent)" 
@@ -52,6 +48,38 @@
           </div>
         </div>
       </div>
+
+
+
+      <div class="prediction__reasons" ng-if="predictionCtrl.prediction.isExpanded">
+        <div style="margin:0 20px;">
+          <p><b>70% likely: Jamie Oliver, Lawyer C&C Associates</b></p>
+          <div style="line-height:1.3em;font-weight:normal">Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur</div>
+          <p><b>80% likely: Jamie Oliver, Lawyer C&C Associates</b></p>
+          <div style="line-height:1.3em;font-weight:normal"> a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.</div>
+          <br/>
+          <label><b>Darragh McCarthy, Web developer</b>
+            <input type="text" placeholder="What's your reason" />
+          </label>
+          <br/>
+          <br/>
+          <br/>
+          <a href="#">View all reasons</a>
+          <br/>
+          <br/>
+        </div>
+
+        <div class="likelihood__user-estimate">
+          <div class="likelihood__user-estimate-option" 
+            ng-click="predictionCtrl.toggleLikelihoodEstimate(estimate.percent)" 
+            ng-repeat="estimate in predictionCtrl.prediction.communityEstimates track by $index" 
+            ng-class="{'likelihood__user-estimate-option--active': estimate.percent == predictionCtrl.prediction.userEstimate.likelihoodEstimatePercent}">
+              {{::estimate.percent}}<span class="show-on-active">%<br/>likely</span>
+          </div>
+        </div>
+      </div>
+
+
 
     </div>
 

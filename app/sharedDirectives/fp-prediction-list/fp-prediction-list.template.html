@@ -1,0 +1,46 @@
+
+
+<!-- update class names -->
+
+<div class="fp-prediction-list">
+  <h1 class="fp-prediction-list__title" ng-if="list.currentTopic">{{list.currentTopic}}</h1>
+  <fp-add-new-prediction
+    ng-if="list.showAddPredictionForm"
+    autofocus="true" 
+    topic="list.currentTopic"
+    on-add-new-prediction-success="list.onAddNewPredictionSuccess(newPrediction)"
+    on-saving-new-prediction="list.onSavingNewPrediction(test)">
+  </fp-add-new-prediction>
+
+  <div>
+    <div class="fp-prediction-list__isloading-notice" ng-hide="list.predictions.length">Loading...</div>
+    <div class="fp-prediction-list__loaded" ng-show="list.predictions.length">
+      <div class="fp-prediction-list__newly-added-predictions">
+        <div class="fp-prediction-list__newly-added-prediction-is-saving" ng-show="list.isSavingNewPrediction">Saving prediction...</div>
+        <div class="fp-prediction-list__newly-added-prediction" ng-repeat="prediction in list.newlyAddedPredictions">
+          <span>Added to {{list.currentTopic}} on {{prediction.createdAt}}</span>
+          <fp-prediction
+            prediction="prediction"
+            show-topic-editing-by-default="true"
+            topic-to-hide="list.currentTopic" 
+            onexpand="list.expandPrediction(prediction)">
+          </fp-prediction>          
+        </div>
+      </div>
+
+      <fp-prediction 
+        ng-repeat="prediction in list.predictions track by prediction.id"
+        prediction="prediction"
+        topic-to-hide="list.currentTopic" 
+        onexpand="list.expandPrediction(prediction)">
+      </fp-prediction>
+
+      <button class="button--primary">Next</button>
+    </div> 
+  </div>
+   
+</div>
+
+
+
+

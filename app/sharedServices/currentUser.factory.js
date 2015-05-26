@@ -29,9 +29,12 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 		'userId': null
 	};
 
+
 	if (_user) {
 		currentUserObject.userId = _user.id;
-		currentUserObject.copyOfBasicFacebookUserData = _user.get('copyOfBasicFacebookUserData'); 
+		currentUserObject.copyOfBasicFacebookUserData = _user.get('copyOfBasicFacebookUserData');
+
+		console.log(_user.get('copyOfBasicFacebookUserData')); 
 		getUserThumbnailUrl().then(function(url){ 
 			currentUserObject.userThumbnailUrl = url;
 		});
@@ -73,8 +76,6 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 				getBasicFacebookUserData().then(function(data){
 					_user.set('copyOfBasicFacebookUserData', data);
 					_user.save().then(function(){
-						console.log('successfully saved FB data to Parse');
-						console.log('copyOfBasicFacebookUserData:',_user.get('copyOfBasicFacebookUserData'));
 					});
 				});
 			}
@@ -201,6 +202,10 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 					});
 			});
 		})
+	}
+
+	function castParseUserAsPlainObject(parseUser) {
+
 	}
 
 

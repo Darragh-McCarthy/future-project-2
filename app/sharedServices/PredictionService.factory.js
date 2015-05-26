@@ -4,14 +4,12 @@
 angular.module('myApp')
 	.factory('PredictionService', PredictionService);
 
-PredictionService.$inject=['$q','TopicService','LikelihoodEstimateService'];
-function PredictionService( $q,  TopicService,  LikelihoodEstimateService ) {
+PredictionService.$inject=['$q','TopicService','LikelihoodEstimateService','UserService'];
+function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  UserService ) {
 
   var ParsePredictionModel = Parse.Object.extend('Prediction');
-
   var recentPredictionsCache = {};
   var predictionsPerPage = 10;
-
   var newPredictionDataConstraints = {
     predictionTitleCharacters: {
       min: {
@@ -32,6 +30,7 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService ) {
     'createNewPredictionWithTopicTitle':createNewPredictionWithTopicTitle,
     'getPredictionsByTopicTitle': getPredictionsByTopicTitle,
     'addLikelihoodEstimate': addLikelihoodEstimate,
+    'getPredictionById': getPredictionById,
     'removeLikelihoodEstimate': removeLikelihoodEstimate,
     'getPredictionsByAuthorId': getPredictionsByAuthorId,
     'validateNewPrediction': validateNewPrediction,
@@ -42,7 +41,15 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService ) {
 
 
 
-
+  function getPredictionById (predictionId) {
+    return new Parse.Query(ParsePredictionModel)
+      .include('topics')
+      .include('author')
+      .get(predictionId)
+      .then(function(parsePrediction){
+      return castParsePredictionsAsPlainObjects([parsePrediction])[0];
+    })
+  }
 
   function getRecentPredictionsNow(pageNumber) {
     return getRecentPredictions(pageNumber, true).then(function(parsePredictions){
@@ -275,9 +282,11 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService ) {
     if ( ! parseTopics ) {
       parseTopics = parsePrediction.get('topics');
     }
+    var parseAuthor = parsePrediction.get('author');
+    var author = UserService.castParseUserAsPlainObject(parseAuthor);
     var prediction = {
       'id':                       parsePrediction.id,
-      'author':                   parsePrediction.get('author'),
+      'author':                   author,
       'createdAt':                parsePrediction.createdAt,
       'title':                    parsePrediction.get('title'),
       'topics':                   TopicService.castParseTopicsAsPlainObjects(parseTopics),

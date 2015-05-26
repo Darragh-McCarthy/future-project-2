@@ -11,6 +11,7 @@ var runSequence = require('run-sequence');
 var browserSync = require('browser-sync');
 var pagespeed = require('psi');
 var reload = browserSync.reload;
+var debug = require('gulp-debug');
 
 
 
@@ -88,10 +89,9 @@ gulp.task('styles', function () {
   return gulp.src([
     '!app/bower_components/**/*',
     'app/styles/main.scss'
-    //'app/**/*.scss'//,
-    //'app/styles/**/*.css',
     //'app/styles/components/components.scss'
   ])
+    .pipe(debug())
     .pipe($.sourcemaps.init())
     .pipe($.changed('.tmp/styles', {extension: '.css'}))
     .pipe($.sass({
