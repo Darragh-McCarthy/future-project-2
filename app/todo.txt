@@ -56,8 +56,13 @@ later
 	Shares
 	Vote of timescale
 	Custom vote
+	back to top button
 
 
+	careful what access rights users have with other user objects: email access
+	add add-new-prediction form to user profile
 
+	delete/report predictions
+	can delete prediction if not author?
 
 

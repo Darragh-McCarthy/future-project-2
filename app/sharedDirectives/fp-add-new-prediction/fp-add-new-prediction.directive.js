@@ -20,14 +20,15 @@ angular.module('myApp')
 	.controller('FpAddNewPrediction', FpAddNewPrediction);
 
 
-FpAddNewPrediction.$inject=['$scope','$state','PredictionService','focusElementById'];
-function FpAddNewPrediction( $scope,  $state,  PredictionService,  focusElementById ) {
+FpAddNewPrediction.$inject=['$scope','$state','PredictionService','focusElementById','currentUser'];
+function FpAddNewPrediction( $scope,  $state,  PredictionService,  focusElementById,  currentUser ) {
 	var _this = this;
 	_this.isAddingSecondPrediction = undefined;
 	_this.addNewPrediction = addNewPrediction;
 	_this.newPredictionDataConstraints = PredictionService.newPredictionDataConstraints;
 	_this.areTitleLengthErrorsVisible = false;
 	_this.removeDefaultTopic = removeDefaultTopic;
+	_this.currentUser = currentUser;
 	_this.newPrediction = {
 		title: '',
 		topic: _this.topic

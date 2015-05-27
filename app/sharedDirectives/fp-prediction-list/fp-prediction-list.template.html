@@ -18,13 +18,14 @@
       <div class="fp-prediction-list__newly-added-predictions">
         <div class="fp-prediction-list__newly-added-prediction-is-saving" ng-show="list.isSavingNewPrediction">Saving prediction...</div>
         <div class="fp-prediction-list__newly-added-prediction" ng-repeat="prediction in list.newlyAddedPredictions">
-          <span>Added to {{list.currentTopic}} on {{prediction.createdAt}}</span>
+          <span>Added <span ng-if="list.currentTopic">to {{list.currentTopic}} </span>on {{prediction.createdAt}}</span>
           <fp-prediction
             prediction="prediction"
             show-topic-editing-by-default="true"
             topic-to-hide="list.currentTopic" 
-            onexpand="list.expandPrediction(prediction)">
-          </fp-prediction>          
+            onexpand="list.expandPrediction(prediction)"
+            on-delete-prediction-success="list.removePredictionFromList(predictionId)">
+          </fp-prediction>
         </div>
       </div>
 
@@ -32,7 +33,8 @@
         ng-repeat="prediction in list.predictions track by prediction.id"
         prediction="prediction"
         topic-to-hide="list.currentTopic" 
-        onexpand="list.expandPrediction(prediction)">
+        onexpand="list.expandPrediction(prediction)"
+        on-delete-prediction-success="list.removePredictionFromList(predictionId)">
       </fp-prediction>
 
       <button class="button--primary">Next</button>

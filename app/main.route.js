@@ -36,14 +36,6 @@ function configureRoutes( $stateProvider,  $urlRouterProvider ) {
         }
       }
     })
-    .state('app.header', {
-      url: '/',
-      views: {
-        'header@': {
-          templateUrl: 'header/header.html'
-        }
-      }
-    })
     .state('app.topic', {
       url: 'topic/:topic/:page',
       views: {
@@ -68,22 +60,7 @@ function configureRoutes( $stateProvider,  $urlRouterProvider ) {
         'content@': {
           templateUrl: 'make-prediction/make-prediction.html',
           controller: 'MakePrediction as makePrediction',
-          resolve: {
-            previousState: [
-              "$state",
-              function ($state) {
-                var currentStateData = null;
-                if ($state.current) {
-                  var currentStateData = {
-                    name:   $state.current.name,
-                    params: $state.params,
-                    url:    $state.href($state.current.name, $state.params)
-                  };
-                }
-                return currentStateData;
-              }
-            ]
-        },
+          resolve: { 'previousState': getPreviousState },
         },
         'header@': {}
 
@@ -146,6 +123,21 @@ function conditionalRedirectToLogin( $rootScope,  $location,  $state,  currentUs
 
     });
 }
+
+
+getPreviousState.$inject=["$state"]
+function getPreviousState($state) {
+  var currentStateData = null;
+  if ($state.current && $state.current.name) {
+    var currentStateData = {
+      name:   $state.current.name,
+      params: $state.params,
+      url:    $state.href($state.current.name, $state.params)
+    };
+  }
+  return currentStateData;
+}
+
 
 
 })();

@@ -34,8 +34,13 @@
           View Prediction Guidelines
         </a>
       </div>
-
-      <input type="text" id="make-prediction__prediction-title-input" ng-model="makePrediction.newPrediction.title" autofocus autocomplete="off" />
+      <!--<img class="make-prediction__user-thumbnail" 
+        ng-src="{{makePrediction.currentUser.userThumbnailUrl}}"
+        ui-sref="app.user-profile({userId:makePrediction.currentUser.userId})"
+        />-->
+      <div class="make-prediction__input">
+        <input type="text" id="make-prediction__prediction-title-input" ng-model="makePrediction.newPrediction.title" autofocus autocomplete="off" />
+      </div>
     </label>
 
     <button class="make-prediction__add-prediction-button" 

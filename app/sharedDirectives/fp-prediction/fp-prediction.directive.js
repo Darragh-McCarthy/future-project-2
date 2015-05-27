@@ -10,14 +10,12 @@ angular.module('myApp')
 			prediction: '=',
       topicToHide: '=',
       onexpand: '&onexpand',
+      onDeletePredictionSuccess: '&',
       showTopicEditingByDefault: '@',
-      showLikelihoodEstimateByDefault: '@'
+      showLikelihoodEstimateByDefault: '@',
 		},
 		bindToController: true,
-		controller: 'FpPrediction as predictionCtrl',
-		//link: function(scope, element, attrs) {
-		//	console.log(typeof attrs.prediction)
-		//}
+		controller: 'FpPrediction as predictionCtrl'
 	};
 });
 
@@ -25,8 +23,8 @@ angular.module('myApp')
 angular.module('myApp')
 	.controller('FpPrediction', FpPrediction);
 
-FpPrediction.$inject=['$q','$state','PredictionService'];
-function FpPrediction( $q,  $state,  PredictionService ) {
+FpPrediction.$inject=['$q','$state','PredictionService','currentUser'];
+function FpPrediction( $q,  $state,  PredictionService,  currentUser ) {
 
   var MAX_GRAPHBAR_HEIGHT = 100;
   var MIN_GRAPHBAR_HEIGHT = 5;
@@ -54,7 +52,14 @@ function FpPrediction( $q,  $state,  PredictionService ) {
   _this.removeTopicFromPrediction = removeTopicFromPrediction;
   _this.toggleEditing = toggleEditing;
   _this.navigateToTopic = navigateToTopic;
+  _this.showConfirmDeletion = showConfirmDeletion;
+  _this.hideConfirmDeletion = hideConfirmDeletion;
+  _this.deletePrediction = deletePrediction;
   updateSuggestedTopics();
+
+  if (_this.prediction.author.id === currentUser.userId) {
+    _this.currentUserIsAuthor = true;
+  }
 
   if (_this.showTopicEditingByDefault) {
     _this.isEditingTopics = true;
@@ -168,9 +173,11 @@ function FpPrediction( $q,  $state,  PredictionService ) {
     _this.topicIsSavingMessage = newTopicTitle;
   }
   function removeTopicFromPrediction(topicId){
+    console.log(topicId);
     PredictionService.removeTopicFromPrediction(_this.prediction.id, topicId).then(function(){
       var topicToRemove = null;
       for (var i = 0; i < _this.prediction.topics.length; i++) {
+        console.log(_this.prediction.topics[i].id);
         if (_this.prediction.topics[i].id === topicId) {
           topicToRemove = _this.prediction.topics[i];
         }
@@ -206,7 +213,17 @@ function FpPrediction( $q,  $state,  PredictionService ) {
       }
     });
   }
+  function showConfirmDeletion() { _this.isConfirmDeletionVisible = true; }
+  function hideConfirmDeletion() { _this.isConfirmDeletionVisible = false; }
 
+  function deletePrediction() {
+    _this.isDeletingPrediction = true;
+    PredictionService.deletePredictionById(_this.prediction.id).then(function(){
+      console.log('deleted prediction');
+      _this.isDeletingPrediction = false;
+      _this.onDeletePredictionSuccess({predictionId:_this.prediction.id});
+    });
+  }
 
 }
 

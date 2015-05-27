@@ -10,10 +10,32 @@ Dropdowns
 
 <div class="header">
   <div class="header__fill-fixed-position-space"></div>
+  <div class="header__logo-container">
+    <div class="header__logo"></div>
+  </div>    
   <div class="header__fixed-to-top">
-    <div class="header__profile-photo-container"  ui-sref="app.user-profile({userId:header.currentUser.userId})">
-      <img class="header__profile-photo" ng-src="{{header.currentUser.userThumbnailUrl}}">
-    </div>
-    <div class="header-logo" ui-sref="app"></div>
+    <ul class="header__navigation"><!--
+      --><li class="header__navigation-item">
+        <div class="header__profile-photo-container" ui-sref="app.user-profile({userId:header.currentUser.userId})">
+          <img class="header__profile-photo" ng-src="{{header.currentUser.userThumbnailUrl}}" />
+        </div>
+      </li><!--
+      --><li class="header__navigation-item">
+        <a class="header__navigation-item__link" ui-sref="app">Home</a>
+      </li><!--
+      --><li class="header__navigation-item">
+        <a class="header__navigation-item__link" ui-sref="app.topics">Topics</a>
+      </li><!--
+      --><li class="header__navigation-item">
+        <a class="header__navigation-item__link" ui-sref="app">Feedback</a>
+      </li><!--
+      --><li class="header__navigation-item">
+        <a class="header__navigation-item__link" ui-sref="app.make-prediction">Add prediction</a>
+      </li>
+    </ul>
+
   </div>
+
+  
+
 </div>

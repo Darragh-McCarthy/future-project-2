@@ -25,6 +25,7 @@ function FpPredictionList() {
 	_this.onAddNewPredictionSuccess = onAddNewPredictionSuccess;
 	_this.onSavingNewPrediction = onSavingNewPrediction;
 	_this.expandPrediction = expandPrediction;
+	_this.removePredictionFromList = removePredictionFromList;
 
 	function onAddNewPredictionSuccess(prediction) {
 		_this.newlyAddedPredictions.unshift(prediction);
@@ -37,6 +38,19 @@ function FpPredictionList() {
 		angular.forEach(_this.predictions, function(eachPrediction){
 			eachPrediction.isExpanded = false;
 		});
+	}
+	function removePredictionFromList(predictionId) {
+		console.log('removing prediction from list');
+		var indexToRemove = null;
+		for (var i = 0; i < _this.predictions.length; i++) {
+			if (_this.predictions[i].id === predictionId) {
+				indexToRemove = i;
+			}
+		}
+		if (indexToRemove > -1) {
+			_this.predictions.splice(indexToRemove, 1);
+			console.log('removed prediction from list');
+		}
 	}
 }
 

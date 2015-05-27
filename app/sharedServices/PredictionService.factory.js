@@ -36,9 +36,15 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
     'validateNewPrediction': validateNewPrediction,
     'newPredictionDataConstraints': newPredictionDataConstraints,
     'addTopicByTitleToPrediction': addTopicByTitleToPrediction,
-    'removeTopicFromPrediction':removeTopicFromPrediction
+    'removeTopicFromPrediction':removeTopicFromPrediction,
+    'deletePredictionById':deletePredictionById
   };
 
+  function deletePredictionById(predictionId) {
+    var prediction = new ParsePredictionModel;
+    prediction.id = predictionId;
+    return prediction.destroy();
+  }
 
 
   function getPredictionById (predictionId) {
@@ -155,9 +161,7 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
     var prediction = new ParsePredictionModel;
     prediction.id = predictionId;
     prediction.remove('topics', topic);
-    return prediction.save().then(function(parsePrediction) {
-      return castParsePredictionAsPlainObject(parsePrediction);
-    });
+    return prediction.save();
   }
   function getPredictionsByAuthorId(authorId) {
     var author = new Parse.User();
