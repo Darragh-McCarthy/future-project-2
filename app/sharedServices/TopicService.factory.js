@@ -9,6 +9,26 @@ function TopicService( $q,  Parse ) {
   var ParseTopicModel = Parse.Object.extend("Topic");
   var minTopicCharacterLength = 2;
   var maxTopicCharacterLength = 100;
+  var featuredTopicTitles = [
+    'Technology',
+    'Gaming',
+    'Design',
+    'Health',
+    'Medicine',
+    'Fashion',
+    'Politics',
+    'Sports',
+    'Science',
+    'Physics',
+    'Economics',
+    'Mathematics',
+    'Startups',
+    'Business',
+    'Education',
+    'Entertainment',
+    'Movies',
+    'Television'
+  ];
 
 	return {
 		'castParseTopicsAsPlainObjects':castParseTopicsAsPlainObjects,
@@ -16,8 +36,11 @@ function TopicService( $q,  Parse ) {
 		'getOrCreateNewTopicsByTitle': getOrCreateNewTopicsByTitle,
     'getTopicsById':getTopicsById,
     'getTopicByTitle':getTopicByTitle,
-    'getEmptyTopicReferenceById':getEmptyTopicReferenceById
+    'getEmptyTopicReferenceById':getEmptyTopicReferenceById,
+    'featuredTopicTitles': featuredTopicTitles
 	};
+
+
 
 	function getEmptyTopicReferenceById(topicId) {
 		var topic = new ParseTopicModel;

@@ -65,7 +65,8 @@ gulp.task('copy', function () {
     '!app/*.html',
     'app/*',
     'app/bower_components/**/*',
-    'app/styles/fonts/*'
+    'app/styles/fonts/*',
+    'app/images/**/*'
   ], {
     base: 'app/',
     dot: true
@@ -157,9 +158,7 @@ gulp.task('clean', del.bind(null, ['.tmp', 'dist/*', '!dist/.git'], {dot: true})
 gulp.task('serve', ['styles'], function () {
   browserSync({
     notify: false,
-    // Customize the BrowserSync console logging prefix
     logPrefix: 'WSK',
-    // Run as an https by uncommenting 'https: true'
     // Note: this uses an unsigned certificate which on first access
     //       will present a certificate warning in the browser.
     // https: true,

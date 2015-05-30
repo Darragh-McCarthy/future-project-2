@@ -9,7 +9,8 @@ angular.module('myApp')
  			topic: '=',
  			autofocus: '@',
  			onAddNewPredictionSuccess:'&',
- 			onSavingNewPrediction:'&'
+ 			onSavingNewPrediction:'&',
+ 			hideLabel:'@'
 		},
 		bindToController: true,
 		controller:'FpAddNewPrediction as makePrediction'
@@ -23,22 +24,19 @@ angular.module('myApp')
 FpAddNewPrediction.$inject=['$scope','$state','PredictionService','focusElementById','currentUser'];
 function FpAddNewPrediction( $scope,  $state,  PredictionService,  focusElementById,  currentUser ) {
 	var _this = this;
-	_this.isAddingSecondPrediction = undefined;
+	_this.isAddingSecondPrediction;
 	_this.addNewPrediction = addNewPrediction;
 	_this.newPredictionDataConstraints = PredictionService.newPredictionDataConstraints;
 	_this.areTitleLengthErrorsVisible = false;
 	_this.removeDefaultTopic = removeDefaultTopic;
 	_this.currentUser = currentUser;
-	_this.newPrediction = {
-		title: '',
-		topic: _this.topic
-	};
+	_this.newPredictionTitle = '';
 
 	if (_this.autofocus) {
 		focusElementById('make-prediction__prediction-title-input');
 	}
 
-	$scope.$watch('makePrediction.newPrediction.title', function(newVal, oldVal){
+	$scope.$watch('makePrediction.newPredictionTitle', function(newVal, oldVal){
 		_this.predictionValidationErrors = PredictionService.validateNewPrediction(newVal);
 	});
 
@@ -46,7 +44,7 @@ function FpAddNewPrediction( $scope,  $state,  PredictionService,  focusElementB
 		_this.areTitleLengthErrorsVisible = true;
 		if ( ! _this.predictionValidationErrors) {
 			_this.isSavingPredictions = true;
-			_this.newPrediction.title = '';
+			_this.newPredictionTitle = '';
 			_this.areTitleLengthErrorsVisible = false;
 			_this.isAddingSecondPrediction = true;
 			_this.onSavingNewPrediction({test:'test'});
@@ -63,6 +61,7 @@ function FpAddNewPrediction( $scope,  $state,  PredictionService,  focusElementB
 	}
 	
 	function removeDefaultTopic() {
+		_this.topic = null;
 		$state.go('app.make-prediction');
 	}
 

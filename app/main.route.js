@@ -19,20 +19,35 @@ angular.module('myApp')
 
 
 configureRoutes.$inject=['$stateProvider','$urlRouterProvider'];
-function configureRoutes( $stateProvider,  $urlRouterProvider ) {
-
-  
+function configureRoutes( $stateProvider,  $urlRouterProvider ) {  
   $stateProvider
     .state('app', {
-      url: '/',
+      url: '',
       views: {
         'header': { 
           templateUrl: 'header/header.html',
           controller: 'Header as header'
         },
         'content': {
+          templateUrl: '', 
+        }
+      }
+    })
+    .state('app.recent', {
+      url: 'recent/:page',
+      views: {
+        'content@': {
           templateUrl: 'prediction-list/prediction-list.html', 
           controller: 'PredictionList as predictionList'
+        }
+      }
+    })
+    .state('app.browse-topics', {
+      url: 'browse-topics',
+      views: {
+        'content@': {
+          templateUrl: 'browseTopics/browseTopics.template.html',
+          controller: 'BrowseTopics as browseTopics'
         }
       }
     })

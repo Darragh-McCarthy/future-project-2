@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for app/sharedDirectives/fp-prediction-list/fp-prediction-list.directive.js</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../../prettify.css">
+    <link rel="stylesheet" href="../../../base.css">
+    <style type='text/css'>
+        div.coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class="header low">
+    <h1>Code coverage report for <span class="entity">app/sharedDirectives/fp-prediction-list/fp-prediction-list.directive.js</span></h1>
+    <h2>
+        Statements: <span class="metric">21.57% <small>(11 / 51)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">0% <small>(0 / 12)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">7.14% <small>(1 / 14)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">21.57% <small>(11 / 51)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"><a href="../../../index.html">All files</a> &#187; <a href="index.html">app/sharedDirectives/fp-prediction-list/</a> &#187; fp-prediction-list.directive.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102</td><td class="line-coverage"><span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">(function(){
+'use strict';
+&nbsp;
+angular.module('myApp')
+	.directive('fpPredictionList', <span class="fstat-no" title="function not covered" >function(){</span>
+<span class="cstat-no" title="statement not covered" >		return {</span>
+			templateUrl: 'sharedDirectives/fp-prediction-list/fp-prediction-list.template.html',
+			bindToController:true,
+			controller:'FpPredictionList as list',
+			scope: {
+				predictions: '=',
+				currentTopic: '=',
+				onClickNextPage: '&amp;',
+				onClickPreviousPage: '&amp;',
+				showAddPredictionForm: '@',
+				paginationObject: '='
+			},
+		}
+	})
+	.controller('FpPredictionList', FpPredictionList);
+&nbsp;
+&nbsp;
+&nbsp;
+FpPredictionList.$inject=['$scope'];
+<span class="fstat-no" title="function not covered" >function FpPredictionList( $scope ) {</span>
+<span class="cstat-no" title="statement not covered" >	var _this = this;</span>
+<span class="cstat-no" title="statement not covered" >	_this.newlyAddedPredictions = [];</span>
+<span class="cstat-no" title="statement not covered" >	_this.onAddNewPredictionSuccess = onAddNewPredictionSuccess;</span>
+<span class="cstat-no" title="statement not covered" >	_this.onSavingNewPrediction = onSavingNewPrediction;</span>
+<span class="cstat-no" title="statement not covered" >	_this.expandPrediction = expandPrediction;</span>
+<span class="cstat-no" title="statement not covered" >	_this.removePredictionFromList = removePredictionFromList;</span>
+<span class="cstat-no" title="statement not covered" >	_this.onClickPreviousPage = onClickPreviousPage;</span>
+<span class="cstat-no" title="statement not covered" >	_this.onClickNextPage = onClickNextPage;</span>
+<span class="cstat-no" title="statement not covered" >	_this.onClickPaginationPage = onClickPaginationPage;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >	$scope.$watch('::list.paginationObject', <span class="fstat-no" title="function not covered" >function(newPaginationObject) {</span></span>
+<span class="cstat-no" title="statement not covered" >		if (newPaginationObject) {</span>
+<span class="cstat-no" title="statement not covered" >			_this.paginationPages = [];</span>
+<span class="cstat-no" title="statement not covered" >			for (var i = 0; i &lt;= newPaginationObject.currentPageIndex; i++) {</span>
+<span class="cstat-no" title="statement not covered" >				console.log(i);</span>
+<span class="cstat-no" title="statement not covered" >				_this.paginationPages.push({</span>
+					'index': i,
+					'title': (i + 1)
+				});
+			}
+<span class="cstat-no" title="statement not covered" >			if (newPaginationObject.getNextPageOfPredictions) {</span>
+<span class="cstat-no" title="statement not covered" >				_this.paginationPages.push({</span>
+					'index': _this.paginationPages.length,
+					'title': _this.paginationPages.length + 1
+				});	
+			}
+		}
+	});
+&nbsp;
+<span class="fstat-no" title="function not covered" >	function onAddNewPredictionSuccess(prediction) {</span>
+<span class="cstat-no" title="statement not covered" >		_this.newlyAddedPredictions.unshift(prediction);</span>
+<span class="cstat-no" title="statement not covered" >		_this.isSavingNewPrediction = false;</span>
+	}
+<span class="fstat-no" title="function not covered" >	function onSavingNewPrediction() {</span>
+<span class="cstat-no" title="statement not covered" >		_this.isSavingNewPrediction = true;</span>
+	}
+<span class="fstat-no" title="function not covered" >	function expandPrediction(expandedPrediction) {</span>
+<span class="cstat-no" title="statement not covered" >		angular.forEach(_this.predictions, <span class="fstat-no" title="function not covered" >function(eachPrediction){</span></span>
+<span class="cstat-no" title="statement not covered" >			eachPrediction.isExpanded = false;</span>
+		});
+	}
+<span class="fstat-no" title="function not covered" >	function removePredictionFromList(predictionId) {</span>
+<span class="cstat-no" title="statement not covered" >		console.log('removing prediction from list');</span>
+<span class="cstat-no" title="statement not covered" >		var indexToRemove = null;</span>
+<span class="cstat-no" title="statement not covered" >		for (var i = 0; i &lt; _this.predictions.length; i++) {</span>
+<span class="cstat-no" title="statement not covered" >			if (_this.predictions[i].id === predictionId) {</span>
+<span class="cstat-no" title="statement not covered" >				indexToRemove = i;</span>
+			}
+		}
+<span class="cstat-no" title="statement not covered" >		if (indexToRemove &gt; -1) {</span>
+<span class="cstat-no" title="statement not covered" >			_this.predictions.splice(indexToRemove, 1);</span>
+<span class="cstat-no" title="statement not covered" >			console.log('removed prediction from list');</span>
+		}
+	}
+<span class="fstat-no" title="function not covered" >	function onClickPreviousPage() {</span>
+<span class="cstat-no" title="statement not covered" >		console.log('previous paginationObject', _this.getPreviousPageOfPredictions);</span>
+<span class="cstat-no" title="statement not covered" >		if (_this.paginationObject.getPreviousPageOfPredictions) {</span>
+<span class="cstat-no" title="statement not covered" >			_this.paginationObject.getPreviousPageOfPredictions().then(<span class="fstat-no" title="function not covered" >function(newPaginationObject){</span></span>
+<span class="cstat-no" title="statement not covered" >				_this.paginationObject = newPaginationObject;</span>
+			});	
+		}
+	}
+<span class="fstat-no" title="function not covered" >	function onClickNextPage() {</span>
+<span class="cstat-no" title="statement not covered" >		console.log('next paginationObject');</span>
+<span class="cstat-no" title="statement not covered" >		if (_this.paginationObject.getNextPageOfPredictions) {</span>
+<span class="cstat-no" title="statement not covered" >			_this.paginationObject.getNextPageOfPredictions().then(<span class="fstat-no" title="function not covered" >function(newPaginationObject){</span></span>
+<span class="cstat-no" title="statement not covered" >				_this.paginationObject = newPaginationObject;</span>
+			});	
+		}	
+	}
+<span class="fstat-no" title="function not covered" >	function onClickPaginationPage(index) {</span>
+<span class="cstat-no" title="statement not covered" >		console.log(index);</span>
+	}
+}
+&nbsp;
+&nbsp;
+})();</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sat May 30 2015 21:54:27 GMT+0100 (IST)</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

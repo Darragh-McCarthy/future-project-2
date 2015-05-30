@@ -6,59 +6,42 @@ angular.module('myApp')
 	.controller('MakePrediction', MakePrediction);
 
 
-MakePrediction.$inject=['$state','$window','$scope','PredictionService','TopicService','$stateParams','focusElementById','previousState'];
-function MakePrediction( $state,  $window,  $scope,  PredictionService,  TopicService,  $stateParams,  focusElementById,  previousState ) {	
+MakePrediction.$inject=['$state','$stateParams','previousState','TopicService'];
+function MakePrediction( $state,  $stateParams,  previousState,  TopicService ) {	
 	var _this = this;
+	_this.goBackToPreviousPage = goBackToPreviousPage;	
 	_this.newlyAddedPredictions = [];
-	_this.newPrediction = {
-		title: '',
-		topic: $stateParams.topic
-	};
-	_this.addNewPrediction = addNewPrediction;
-	_this.newPredictionDataConstraints = PredictionService.newPredictionDataConstraints;
-	_this.areTitleLengthErrorsVisible = false;
-	_this.removeDefaultTopic = removeDefaultTopic;
-	_this.goBackToPreviousPage = goBackToPreviousPage;
+	_this.topicSuggestions = angular.copy(TopicService.featuredTopicTitles);
+	_this.addSuggestedTopic = addSuggestedTopic;
+	_this.topic = $stateParams.topic;
+	_this.onAddNewPredictionSuccess = onAddNewPredictionSuccess;
+    _this.onSavingNewPrediction = onSavingNewPrediction;
 
 	function goBackToPreviousPage() {
 		if (previousState) {
 			$state.go(previousState.name, previousState.params);
-		}
-		else {
+		} else {
 			$state.go('app');
 		}
 	}
-
-	focusElementById('make-prediction__title-input');
-
-	$scope.$watch('makePrediction.newPrediction.title', function(newVal, oldVal){
-		_this.predictionValidationErrors = PredictionService.validateNewPrediction(newVal);
-	});
-
-	function addNewPrediction(newPredictionTitle, newPredictionTopicTitle) {
-		_this.areTitleLengthErrorsVisible = true;
-		if ( ! _this.predictionValidationErrors) {
-			_this.isSavingPredictions = true;
-			_this.newPrediction.title = '';
-			_this.areTitleLengthErrorsVisible = false;
-			addPrediction().then(function(newlyAddedPrediction){
-				_this.newlyAddedPredictions.push(newlyAddedPrediction);
-				_this.isSavingPredictions = false;
-			});
-		}
-		function addPrediction() {
-			if (newPredictionTopicTitle) {
-				return PredictionService.createNewPredictionWithTopicTitle(newPredictionTitle, newPredictionTopicTitle);
-			} else {
-				return PredictionService.createNewPrediction(newPredictionTitle);
-			}
-		}
+	function addSuggestedTopic(index) {
+		var topic = _this.topicSuggestions[index];
+		_this.topic = topic;
+		_this.topicSuggestions.push(topic);
+		_this.topicSuggestions.splice(index, 1);
+		console.log(_this.topic);
 	}
-
 	function removeDefaultTopic() {
 		_this.newPrediction.topic = null;
 	}
-
+	function onSavingNewPrediction(){
+		console.log('saving prediction');
+		_this.isSavingPredictions = true;
+	}
+	function onAddNewPredictionSuccess(newPrediction) {
+		_this.newlyAddedPredictions.push(newPrediction);
+		_this.isSavingPredictions = false;
+	}
 }
 
 

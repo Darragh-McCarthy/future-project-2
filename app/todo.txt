@@ -65,4 +65,11 @@ later
 	delete/report predictions
 	can delete prediction if not author?
 
+	fp-prediction-list loading sign doesn't disappear if no predictions found
 
+	images
+
+
+
+
+make-prediction-page annoying if can't navigate to suggested topics pages

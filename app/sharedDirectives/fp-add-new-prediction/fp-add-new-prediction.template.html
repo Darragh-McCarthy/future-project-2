@@ -1,13 +1,13 @@
   <form class="make-prediction">  
     <label>
-      <div class="make-prediction__prediction-title-label">
-        <span>
+      <div class="make-prediction__prediction-title-label" ng-if=" ! makePrediction.hideLabel">
+        <span >
           <span ng-hide="::makePrediction.isAddingSecondPrediction">What is your</span>
           <span ng-show="::makePrediction.isAddingSecondPrediction"><b>Add another</b></span>        
         </span>
         <span class="make-prediction__topic"
-          ng-if="makePrediction.newPrediction.topic">
-          {{::makePrediction.newPrediction.topic}}
+          ng-if="makePrediction.topic">
+          {{makePrediction.topic}}
           <span class="make-prediction__delete-topic" ng-click="makePrediction.removeDefaultTopic()">×</span>
         </span>
         <span>
@@ -39,13 +39,25 @@
         ui-sref="app.user-profile({userId:makePrediction.currentUser.userId})"
         />-->
       <div class="make-prediction__input">
-        <input type="text" id="make-prediction__prediction-title-input" ng-model="makePrediction.newPrediction.title" autofocus autocomplete="off" />
+        <input type="text"
+          ng-if="makePrediction.hideLabel" 
+          id="make-prediction__prediction-title-input" 
+          ng-model="makePrediction.newPredictionTitle" 
+          autofocus 
+          autocomplete="off"
+          placeholder="Add your {{makePrediction.topic}} prediction" />
+        <input type="text" 
+          id="make-prediction__prediction-title-input" 
+          ng-if=" ! makePrediction.hideLabel"
+          ng-model="makePrediction.newPredictionTitle" 
+          autofocus 
+          autocomplete="off" />
       </div>
     </label>
 
     <button class="make-prediction__add-prediction-button" 
-      ng-show="makePrediction.newPrediction.title.length >= makePrediction.newPredictionDataConstraints.predictionTitleCharacters.min.value"  
-      ng-click="makePrediction.addNewPrediction(makePrediction.newPrediction.title, makePrediction.newPrediction.topic)">
+      ng-show="makePrediction.newPredictionTitle.length >= makePrediction.newPredictionDataConstraints.predictionTitleCharacters.min.value"  
+      ng-click="makePrediction.addNewPrediction(makePrediction.newPredictionTitle, makePrediction.topic)">
       Add prediction
     </button>
   </form>

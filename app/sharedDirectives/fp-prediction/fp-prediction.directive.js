@@ -55,6 +55,8 @@ function FpPrediction( $q,  $state,  PredictionService,  currentUser ) {
   _this.showConfirmDeletion = showConfirmDeletion;
   _this.hideConfirmDeletion = hideConfirmDeletion;
   _this.deletePrediction = deletePrediction;
+
+  
   updateSuggestedTopics();
 
   if (_this.prediction.author.id === currentUser.userId) {

@@ -34,7 +34,6 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 		currentUserObject.userId = _user.id;
 		currentUserObject.copyOfBasicFacebookUserData = _user.get('copyOfBasicFacebookUserData');
 
-		console.log(_user.get('copyOfBasicFacebookUserData')); 
 		getUserThumbnailUrl().then(function(url){ 
 			currentUserObject.userThumbnailUrl = url;
 		});

@@ -1,3 +1,4 @@
+
 (function(){
 'use strict';
 
@@ -7,143 +8,159 @@ angular.module('myApp')
 PredictionService.$inject=['$q','TopicService','LikelihoodEstimateService','UserService'];
 function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  UserService ) {
 
-  var ParsePredictionModel = Parse.Object.extend('Prediction');
-  var recentPredictionsCache = {};
-  var predictionsPerPage = 10;
-  var newPredictionDataConstraints = {
-    predictionTitleCharacters: {
-      min: {
-        value: 10, getErrorMessage: function() { return 'Your prediction is too short. It must be at least ' + this.value + ' characters long' }
-      },
-      max: {
-        value: 300, getErrorMessage: function() { return 'Your prediction is too long. It cannot be more than ' + this.value + ' characters long'}
-      },
-      notAllowed: {
-        value: ['?'], getErrorMessage: function() { return 'Predictions cannot be questions.' }
-      }
+    var ParsePredictionModel = Parse.Object.extend('Prediction');
+    var PARSE_RECENT_PREDICTIONS_QUERY_LIMIT = 100;
+    var recentPredictionsCache = [];
+    var isAllRecentPredictionsLoaded = false;
+    var predictionsPerPage = 20;
+
+    var newPredictionDataConstraints = {
+        predictionTitleCharacters: {
+            min: {
+                value: 10, getErrorMessage: function() { return 'Your prediction is too short. It must be at least ' + this.value + ' characters long' }
+            },
+            max: {
+                value: 300, getErrorMessage: function() { return 'Your prediction is too long. It cannot be more than ' + this.value + ' characters long'}
+            },
+            notAllowed: {
+                value: ['?'], getErrorMessage: function() { return 'Predictions cannot be questions.' }
+            }
+        }
+    };
+
+    return {
+        'getRecentPredictions': getRecentPredictions,
+        'createNewPrediction': createNewPrediction,
+        'createNewPredictionWithTopicTitle':createNewPredictionWithTopicTitle,
+        'getPredictionsByTopicTitle': getPredictionsByTopicTitle,
+        'addLikelihoodEstimate': addLikelihoodEstimate,
+        'getPredictionById': getPredictionById,
+        'removeLikelihoodEstimate': removeLikelihoodEstimate,
+        'getPredictionsByAuthorId': getPredictionsByAuthorId,
+        'validateNewPrediction': validateNewPrediction,
+        'newPredictionDataConstraints': newPredictionDataConstraints,
+        'addTopicByTitleToPrediction': addTopicByTitleToPrediction,
+        'removeTopicFromPrediction':removeTopicFromPrediction,
+        'deletePredictionById':deletePredictionById
+    };
+
+    function deletePredictionById(id) {
+        return new ParsePredictionModel({'id': id}).destroy();
     }
-  };
-
-  return {
-    'getRecentPredictions': getRecentPredictionsNow,
-    'createNewPrediction': createNewPrediction,
-    'createNewPredictionWithTopicTitle':createNewPredictionWithTopicTitle,
-    'getPredictionsByTopicTitle': getPredictionsByTopicTitle,
-    'addLikelihoodEstimate': addLikelihoodEstimate,
-    'getPredictionById': getPredictionById,
-    'removeLikelihoodEstimate': removeLikelihoodEstimate,
-    'getPredictionsByAuthorId': getPredictionsByAuthorId,
-    'validateNewPrediction': validateNewPrediction,
-    'newPredictionDataConstraints': newPredictionDataConstraints,
-    'addTopicByTitleToPrediction': addTopicByTitleToPrediction,
-    'removeTopicFromPrediction':removeTopicFromPrediction,
-    'deletePredictionById':deletePredictionById
-  };
-
-  function deletePredictionById(predictionId) {
-    var prediction = new ParsePredictionModel;
-    prediction.id = predictionId;
-    return prediction.destroy();
-  }
+    function getPredictionById (predictionId) {
+        return new Parse.Query(ParsePredictionModel)
+            .include('topics')
+            .include('author')
+            .get(predictionId)
+            .then(castParsePredictionAsPlainObject);
+    }
 
 
-  function getPredictionById (predictionId) {
-    return new Parse.Query(ParsePredictionModel)
-      .include('topics')
-      .include('author')
-      .get(predictionId)
-      .then(function(parsePrediction){
-      return castParsePredictionsAsPlainObjects([parsePrediction])[0];
-    })
-  }
 
-  function getRecentPredictionsNow(pageNumber) {
-    return getRecentPredictions(pageNumber, true).then(function(parsePredictions){
-      var predictions = castParsePredictionsAsPlainObjects(parsePredictions)
-      return getUserEstimateForPredictions(predictions).then(function(){
-        return predictions;
-      });
-    });
-  }
-  function getUserEstimateForPredictions(predictions) {
-    return $q(function(resolve, reject){
-      var promises = [];
-      for (var i = 0; i < predictions.length; i++) {
-        var promise = (function(predictions, i){
-          LikelihoodEstimateService.getUserEstimateForPrediction(predictions[i].id).then(function(userEstimate){
-            predictions[i].userEstimate = userEstimate;
-//            console.log(userEstimate);
-          });
-        })(predictions, i);
-        promises.push(promise);
-      }
-      resolve($q.all(promises));
-    });
-  }
-  function getRecentPredictions(indexOfRequestedPage, preloadAdjacentPages) {
-    indexOfRequestedPage = parseInt(indexOfRequestedPage, 10);
+    function getRecentPredictions(pageIndex, stopRecursion) {
+        var indexOfFirstPrediction = pageIndex * predictionsPerPage;
+        var nextPageIndex = pageIndex + 1;
+        var previousPageIndex = pageIndex - 1;
 
-    return $q(function(resolve, reject){
-      if (recentPredictionsCache[ indexOfRequestedPage ]) {
-        resolve(recentPredictionsCache[ indexOfRequestedPage ]);
-        console.log('found in cache');
+        return $q.when(updateRecentPredictionsCache())
+            .then(function(){
+                var predictionsCopy = angular.copy(
+                    recentPredictionsCache.slice(indexOfFirstPrediction, indexOfFirstPrediction + predictionsPerPage)
+                );
+                var promises;
+                if ( ! stopRecursion) {
+                    promises = [
+                        getRecentPredictions(nextPageIndex, 'stopRecursion').then(function(paginationObject){
+                            if (paginationObject.predictions.length) {
+                                return function() {
+                                    return getRecentPredictions(nextPageIndex);
+                                }
+                            }
+                        }),
+                        getRecentPredictions(previousPageIndex, 'stopRecursion').then(function(paginationObject){
+                            if (paginationObject.predictions.length) {
+                                return function() {
+                                    return getRecentPredictions(previousPageIndex);
+                                }
+                            }
+                        })
+                    ];
+                }
+                return $q.all(promises).then(function(response){
+                    var paginationObject = {
+                        'currentPageIndex': pageIndex,
+                        'predictions': predictionsCopy,
+                        'predictionsPerPage': predictionsPerPage,
+                        'nextPageIndex': -1,
+                        'previousPageIndex': -1
+                    }
+                    if (response[0]) {
+                        paginationObject.nextPageIndex = nextPageIndex;
+                    }
+                    if (previousPageIndex > -1) {
+                        paginationObject.previousPageIndex = previousPageIndex;
+                    }
+                    return paginationObject;
+                });
+            })
+            .catch(console.log.bind(console));
 
-        if (preloadAdjacentPages) {
-          getRecentPredictions(indexOfRequestedPage + 1);
-          getRecentPredictions(indexOfRequestedPage - 1);
+        function updateRecentPredictionsCache() {
+            if ( ! recentPredictionsCache[indexOfFirstPrediction] ) {
+                return $q.when(queryParseForRecentPredictions(indexOfFirstPrediction))
+                .then(castParsePredictionsAsPlainObjects)
+                .then(function(predictions) {
+                    getUserEstimatesForPredictions(predictions);
+                    recentPredictionsCache = recentPredictionsCache.concat(predictions);
+                });
+            }
         }
-      }
-      else if (_.size(recentPredictionsCache) === 0 || ! recentPredictionsCache[ indexOfRequestedPage - 1 ] || recentPredictionsCache[ indexOfRequestedPage - 1 ].length === predictionsPerPage) {
+    }
 
-        var numPredictionsToSkip = indexOfRequestedPage * predictionsPerPage;
-        queryParseForRecentPredictions(numPredictionsToSkip).then(function(response){
-          if ( ! response || response.error) {
-            resolve([]);
-          }
-          else if (response.length / predictionsPerPage < 1) {
-            recentPredictionsCache[ indexOfRequestedPage ] = response;
-            resolve(response);
-          }
-          else {
-            var numFullPagesWorthOfPredictions = Math.floor(response.length / predictionsPerPage);
-            for (var i = 0; i < numFullPagesWorthOfPredictions; i++) {
-              var indexOfEmptyPage = indexOfRequestedPage + i;
-              recentPredictionsCache[indexOfEmptyPage] = response.splice(0, predictionsPerPage);
+    function queryParseForRecentPredictions(numPredictionsToSkip) {
+        if (isAllRecentPredictionsLoaded) {
+            return [];
+        } else {
+            console.log('fetching predictions from parse');
+            return new Parse.Query(ParsePredictionModel)
+                .include('topics')
+                .descending('createdAt')
+                .skip(numPredictionsToSkip)
+                .limit(PARSE_RECENT_PREDICTIONS_QUERY_LIMIT)
+                .find()
+                .then(function(predictions){
+                    if ( ! predictions || predictions.length < PARSE_RECENT_PREDICTIONS_QUERY_LIMIT) {
+                        isAllRecentPredictionsLoaded = true;
+                    }
+                    if ( ! predictions) {
+                        return [];
+                    }
+                    return predictions;
+                });
+        }
+        
+    }
+    function getUserEstimatesForPredictions(predictions) {
+        return $q(function(resolve, reject){
+            var promises = [];
+            for (var i = 0; i < predictions.length; i++) {
+                var promise = (function(predictions, i){
+                    LikelihoodEstimateService.getUserEstimateForPrediction(predictions[i].id).then(function(userEstimate){
+                        predictions[i].userEstimate = userEstimate;
+                    });
+                })(predictions, i);
+                promises.push(promise);
             }
-            if (response.length % predictionsPerPage) {
-              recentPredictionsCache[indexOfRequestedPage + numFullPagesWorthOfPredictions] = response;
-            }
-            resolve(recentPredictionsCache[ indexOfRequestedPage ]);
-            console.log('fetched from server');
-
-            if (preloadAdjacentPages) {
-              getRecentPredictions(indexOfRequestedPage + 1);
-              getRecentPredictions(indexOfRequestedPage - 1);
-            }
-            
-          }
+            resolve($q.all(promises));
         });
+    }
 
-        for (var i = 0; i < recentPredictionsCache.length; i++) {
-          console.log(recentPredictionsCache[i]);
-        }
 
-      }
-      else {
-        resolve([]);
-      }
-    });
-  
-  }
 
-  function queryParseForRecentPredictions(numPredictionsToSkip) {
-    var query = new Parse.Query(ParsePredictionModel);
-    query.include('topics');
-    query.descending('createdAt');
-    query.skip(numPredictionsToSkip);
-    query.limit(10);
-    return query.find();
-  }
+
+
+
+
   function addTopicByTitleToPrediction(predictionId, newTopicTitle) {
     return TopicService.getOrCreateNewTopicsByTitle([newTopicTitle]).then(function(topics){
       if (topics) {
@@ -163,14 +180,17 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
     prediction.remove('topics', topic);
     return prediction.save();
   }
-  function getPredictionsByAuthorId(authorId) {
-    var author = new Parse.User();
-    author.id = authorId;
-    return getPredictionsByAuthor(author).then(function(parsePredictions){
-      console.log(parsePredictions);
-      return castParsePredictionsAsPlainObjects(parsePredictions);
-    })
-  }
+    function getPredictionsByAuthorId(authorId) {
+        var author = new Parse.User();
+        author.id = authorId;
+        return getPredictionsByAuthor(author)
+            .then(castParsePredictionsAsPlainObjects)
+            .then(function(predictions){
+                return getUserEstimatesForPredictions(predictions).then(function(){
+                    return predictions;
+                });
+            });
+    }
   function getPredictionsByAuthor(author) {
     var query = new Parse.Query(ParsePredictionModel);
     query.include('topics');
@@ -181,9 +201,7 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
   function getPredictionsByTopicTitle(topicTitle) {
     return TopicService.getTopicByTitle(topicTitle)
       .then(getPredictionsByTopic)
-      .then(function(parsePredictions){
-        return castParsePredictionsAsPlainObjects(parsePredictions);
-      });
+      .then(castParsePredictionsAsPlainObjects);
   }
   function getPredictionsByTopic(topic) {
     return new Parse.Query(ParsePredictionModel)

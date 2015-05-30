@@ -1,20 +1,48 @@
-<a class="header__back-button" ng-click="makePrediction.goBackToPreviousPage()">Back to previous page</a>
+<a class="header__back-button" 
+	ng-click="makePrediction.goBackToPreviousPage()">
+	Back to previous page
+</a>
 
 
 <div class="make-prediction-page">	
-	
-	<div class="make-prediction__page__newly-added-predictions">
-			<div class="make-prediction-page__newly-added-predictions__centered">
-				<div class="make-prediction-page__prediction-added-successfully-notice" ng-show="makePrediction.newlyAddedPredictions.length">Prediction added successfully</div>
-				<div class="make-prediction-page__newly-added-predictions__is-saving-notice" ng-show="makePrediction.isSavingPredictions">Saving prediction...</div>
-				<ul class="make-prediction-page__newly-added-predictions__list" ng-show="makePrediction.newlyAddedPredictions.length">
-					<fp-prediction show-topic-editing-by-default="::true" prediction="prediction" ng-repeat="prediction in makePrediction.newlyAddedPredictions"></prediction>
-				</ul>
+	<div class="make-prediction-page__newly-added-predictions">
+		<div class="make-prediction-page__newly-added-predictions__centered">
+			<!--<div class="make-prediction-page__prediction-added-successfully-notice" 
+				ng-show="makePrediction.newlyAddedPredictions.length">
+				Prediction added successfully
+			</div>-->
+			<div class="make-prediction-page__newly-added-predictions__is-saving-notice" 
+				ng-show="makePrediction.isSavingPredictions">
+				Saving prediction...
 			</div>
+			<ul class="make-prediction-page__newly-added-predictions__list" 
+				ng-show="makePrediction.newlyAddedPredictions.length">
+
+				<fp-prediction 
+					show-topic-editing-by-default="true" 
+					prediction="prediction" 
+					ng-repeat="prediction in makePrediction.newlyAddedPredictions">
+				</fp-prediction>
+			</ul>
+		</div>
 	</div>
 
 	<div class="make-prediction-page__add-new-prediction-container">
-		<fp-add-new-prediction autofocus="true"></fp-add-new-prediction>	
+		<fp-add-new-prediction 
+			topic="makePrediction.topic" 
+			autofocus="true"
+			on-add-new-prediction-success="makePrediction.onAddNewPredictionSuccess(newPrediction)"
+    		on-saving-new-prediction="makePrediction.onSavingNewPrediction()">
+		</fp-add-new-prediction>	
+	</div>
+
+	<div class="make-prediction-page__topic-suggestions">
+		<div class="make-prediction-page__topic-suggestions__title">What predictions can you make under the following topics?</div>
+		<ul class="make-prediction-page__topic-suggestions__topics-list">
+			<li class="make-prediction-page__topic-suggestions__topic" ng-repeat="topic in makePrediction.topicSuggestions track by $index">
+				<span ng-click="makePrediction.addSuggestedTopic($index)">{{topic}}</span>
+			</li>
+		</ul>
 	</div>
 
 </div>

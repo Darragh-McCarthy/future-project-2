@@ -65,15 +65,27 @@ main {
 
 
 .make-prediction-page {
-  margin-bottom:300px;
   margin-top:10px;
   padding-left:2%;
   padding-right:2%;
   max-width:650px;
-  margin:0 auto;
-  padding-top:50px;
+  margin-left: auto;
+  margin-right:auto;
+  margin-top:50px;
+  margin-bottom:300px;
 }
-
+.make-prediction-page__topic-suggestions {
+  margin-top:50px;
+}
+.make-prediction-page__topic-suggestions__title {
+  font-size:18px;
+}
+.make-prediction-page__topic-suggestions__topic {
+  cursor: pointer;
+}
+.make-prediction-page__topic-suggestions__topics-list {
+  
+}
 
 
 
@@ -207,6 +219,7 @@ main {
   display:block;
   background:#eee;
   color:#222;
+  cursor:pointer;
   &,
   &:hover,
   &:visited {
@@ -264,7 +277,7 @@ fp-prediction + fp-prediction,
   width: 100%;
   display: block;
   background:#fff;
-  border-radius:5px;
+  border-radius:8px;
   box-shadow:0 3px 5px #ddd;
   border:1px solid #ccc;
   position: relative;
@@ -277,29 +290,22 @@ fp-prediction + fp-prediction,
   color:#777;
 }
 .prediction__header {
-  padding:15px 20px 0;
- display: block;
-
-  &:first-letter {
-    //text-transform: uppercase;
-  }
+  padding:0px 2px 0;
+  display: block;
 }
 .prediction__created-at {
   font-size: 13px;
-  //position:absolute;
-  //top:0px;
-  //right:10px;
-
 }
 .prediction__toggle-edit-topics {
   background:none;
-  color:#777;
+  color:#999;
   border:none;
   font-size:15px;
-  font-weight: normal;
+  font-weight: bold;
   position:absolute;
   right:0;
   top:0;
+
 
 }
 
@@ -337,7 +343,7 @@ fp-prediction + fp-prediction,
 
 .prediction__topic,
 .prediction__topics__expand-topics {
-  padding:.6em .5em;
+  padding:.6em 1em;
   border-radius:5px;
   cursor:pointer;
   line-height: 1em;
@@ -374,14 +380,21 @@ fp-prediction + fp-prediction,
 }
 
 .prediction__title {
-  &,
-  &:hover,
-  &:visited {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  display: block;
+  padding:0 20px;
     font-size: 18px;
     font-weight: bold;
     line-height: 1.4em;
+  &,
+  &:hover,
+  &:visited {
     color:#333;  
     text-decoration: none;  
+  }
+  &:hover {
+    color:#555;
   }
 
 }
@@ -398,8 +411,8 @@ fp-prediction + fp-prediction,
 
 
 .likelihood {
-  margin-top:10px;
-  border-top:1px solid #ddd;
+  margin-top:5px;
+  border-top:1px solid #eee;
 }
 .likelihood__community-estimate {}
 .likelihood__community-estimate__graph {
@@ -430,6 +443,7 @@ fp-prediction + fp-prediction,
   font-weight: normal;
   color:#222;
   background: #eee;
+  text-align: center;
 }
 
 
@@ -465,8 +479,8 @@ fp-prediction + fp-prediction,
   background:rgb(250,250,250);
 
   & + & { border-left:1px solid rgb(245,245,245); }
-  &:first-child { border-radius: 0 0 0 5px; }
-  &:last-child { border-radius: 0 0 5px 0; }
+  &:first-child { border-radius: 0 0 0 8px; }
+  &:last-child { border-radius: 0 0 8px 0; }
   &:hover {
     color:#fff;
     font-weight: bold;
@@ -487,9 +501,12 @@ fp-prediction + fp-prediction,
   &,
   &:hover:nth-child(n),
   .likelihood__user-estimate-option + & {
-    background:#aaa;
-    border-left-color:#aaa;
+    background:rgb(180,180,180);
+    border-left-color:rgb(180,180,180);
     color:#fff;
+    box-shadow:0 2px 3px #999 inset;
+
+
     &:active {
       background:#777;
       border-left-color:#777;  
@@ -544,27 +561,13 @@ fp-prediction + fp-prediction,
   background:#eee;
   border-radius:5px 5px 0 0 ;
 }
-
-.edit-prediction__delete-prediction-button {
-  /*background:#eee;;
-  border:1px solid #bbb;
-  border-radius:5px;
-  box-shadow: 0 2px 3px #ccc;
-  padding:.2em 1.5em;
-  font-size: 14px;*/
-}
-.edit-prediction__report-prediction-button {
-  background:none;
-  border:none;
-}
 .edit-prediction__add-topics {
-  padding:0px 20px 30px;
+  padding:20px 20px 30px;
 }
 #edit-prediction__topic-title-input {
   padding:.3em;
   max-width: 20em;
 }
-
 .edit-prediction__add-topics-label {
   font-size: 18px;
   display: block;
@@ -769,7 +772,9 @@ fp-prediction + fp-prediction,
     color:#999;
   }
 }
-
+.make-prediction-page__newly-added-predictions {
+  margin-bottom:50px;
+}
 
 
 
@@ -879,7 +884,21 @@ fp-prediction + fp-prediction,
   font-size:22px;
   margin:20px 0;
 }
-
+.fp-prediction-list__pagination {
+  margin-top:50px; 
+}
+.fp-prediction-list__pagination__pages {
+}
+.fp-prediction-list__pagination__page {
+  & + & {
+    margin-left:.5em;
+  }
+  display: inline-block;
+  background:rgb(40, 120,240);
+  padding:.5em 1em;
+  color:#fff;
+  border-radius:5px;
+}
 
 
 
@@ -968,10 +987,43 @@ fp-prediction + fp-prediction,
 
 
 
+.browse-topics-page {
+  max-width: 650px;
+  width: 100%;
+  margin:0 auto 300px;;
+}
+.browse-topics-page__topics-list {
+  margin-top:30px;
+}
+.browse-topics-page__topic {
+  padding:0;
+  & + & {
+    margin-top:20px;
+  }
+}
 
+.browse-topics-page__topic-title {
+  &,
+  &:visited {
+    color:#222;
+  }
+  font-size:16px;
+  font-weight: bold;
+  text-decoration: none;
+}
 
-
-
+.add-topic-form {
+  margin-top:50px;
+}
+.add-topic-form__title {
+  font-size:20px;
+}
+.add-topic-form__label {
+  margin-top:20px;
+  font-weight: bold;
+  display: block;
+  font-size:20px;
+}
 
 
 

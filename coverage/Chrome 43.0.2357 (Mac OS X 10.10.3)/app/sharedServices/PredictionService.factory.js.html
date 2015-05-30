@@ -1,0 +1,1155 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for app/sharedServices/PredictionService.factory.js</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../prettify.css">
+    <link rel="stylesheet" href="../../base.css">
+    <style type='text/css'>
+        div.coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class="header low">
+    <h1>Code coverage report for <span class="entity">app/sharedServices/PredictionService.factory.js</span></h1>
+    <h2>
+        Statements: <span class="metric">14.2% <small>(25 / 176)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">0% <small>(0 / 52)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">1.85% <small>(1 / 54)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">14.37% <small>(25 / 174)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"><a href="../../index.html">All files</a> &#187; <a href="index.html">app/sharedServices/</a> &#187; PredictionService.factory.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">&nbsp;
+(function(){
+'use strict';
+&nbsp;
+angular.module('myApp')
+	.factory('PredictionService', PredictionService);
+&nbsp;
+PredictionService.$inject=['$q','TopicService','LikelihoodEstimateService','UserService'];
+<span class="fstat-no" title="function not covered" >function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  UserService ) {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    var ParsePredictionModel = Parse.Object.extend('Prediction');</span>
+<span class="cstat-no" title="statement not covered" >    var PARSE_RECENT_PREDICTIONS_QUERY_LIMIT = 100;</span>
+<span class="cstat-no" title="statement not covered" >    var recentPredictionsCache = [];</span>
+<span class="cstat-no" title="statement not covered" >    var isAllRecentPredictionsLoaded = false;</span>
+<span class="cstat-no" title="statement not covered" >    var predictionsPerPage = 20;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    var newPredictionDataConstraints = {</span>
+        predictionTitleCharacters: {
+            min: {
+                value: 10, getErrorMessage: <span class="fstat-no" title="function not covered" >function() {</span> <span class="cstat-no" title="statement not covered" >return 'Your prediction is too short. It must be at least ' + this.value + ' characters long' }</span>
+            },
+            max: {
+                value: 300, getErrorMessage: <span class="fstat-no" title="function not covered" >function() {</span> <span class="cstat-no" title="statement not covered" >return 'Your prediction is too long. It cannot be more than ' + this.value + ' characters long'}</span>
+            },
+            notAllowed: {
+                value: ['?'], getErrorMessage: <span class="fstat-no" title="function not covered" >function() {</span> <span class="cstat-no" title="statement not covered" >return 'Predictions cannot be questions.' }</span>
+            }
+        }
+    };
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    return {</span>
+        'getRecentPredictions': getRecentPredictions,
+        'createNewPrediction': createNewPrediction,
+        'createNewPredictionWithTopicTitle':createNewPredictionWithTopicTitle,
+        'getPredictionsByTopicTitle': getPredictionsByTopicTitle,
+        'addLikelihoodEstimate': addLikelihoodEstimate,
+        'getPredictionById': getPredictionById,
+        'removeLikelihoodEstimate': removeLikelihoodEstimate,
+        'getPredictionsByAuthorId': getPredictionsByAuthorId,
+        'validateNewPrediction': validateNewPrediction,
+        'newPredictionDataConstraints': newPredictionDataConstraints,
+        'addTopicByTitleToPrediction': addTopicByTitleToPrediction,
+        'removeTopicFromPrediction':removeTopicFromPrediction,
+        'deletePredictionById':deletePredictionById
+    };
+&nbsp;
+<span class="fstat-no" title="function not covered" >    function deletePredictionById(id) {</span>
+<span class="cstat-no" title="statement not covered" >        return new ParsePredictionModel({'id': id}).destroy();</span>
+    }
+<span class="fstat-no" title="function not covered" >    function getPredictionById (predictionId) {</span>
+<span class="cstat-no" title="statement not covered" >        return new Parse.Query(ParsePredictionModel)</span>
+            .include('topics')
+            .include('author')
+            .get(predictionId)
+            .then(castParsePredictionAsPlainObject);
+    }
+&nbsp;
+&nbsp;
+&nbsp;
+<span class="fstat-no" title="function not covered" >    function getRecentPredictions(pageIndex, stopRecursion) {</span>
+<span class="cstat-no" title="statement not covered" >        var indexOfFirstPrediction = pageIndex * predictionsPerPage;</span>
+<span class="cstat-no" title="statement not covered" >        var nextPageIndex = pageIndex + 1;</span>
+<span class="cstat-no" title="statement not covered" >        var previousPageIndex = pageIndex - 1;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        return $q.when(updateRecentPredictionsCache())</span>
+            .then(<span class="fstat-no" title="function not covered" >function(){</span>
+<span class="cstat-no" title="statement not covered" >                var predictionsCopy = angular.copy(</span>
+                    recentPredictionsCache.slice(indexOfFirstPrediction, indexOfFirstPrediction + predictionsPerPage)
+                );
+<span class="cstat-no" title="statement not covered" >                var promises;</span>
+<span class="cstat-no" title="statement not covered" >                if ( ! stopRecursion) {</span>
+<span class="cstat-no" title="statement not covered" >                    promises = [</span>
+                        getRecentPredictions(nextPageIndex, 'stopRecursion').then(<span class="fstat-no" title="function not covered" >function(paginationObject){</span>
+<span class="cstat-no" title="statement not covered" >                            if (paginationObject.predictions.length) {</span>
+<span class="cstat-no" title="statement not covered" >                                return <span class="fstat-no" title="function not covered" >function() {</span></span>
+<span class="cstat-no" title="statement not covered" >                                    return getRecentPredictions(nextPageIndex);</span>
+                                }
+                            }
+                        }),
+                        getRecentPredictions(previousPageIndex, 'stopRecursion').then(<span class="fstat-no" title="function not covered" >function(paginationObject){</span>
+<span class="cstat-no" title="statement not covered" >                            if (paginationObject.predictions.length) {</span>
+<span class="cstat-no" title="statement not covered" >                                return <span class="fstat-no" title="function not covered" >function() {</span></span>
+<span class="cstat-no" title="statement not covered" >                                    return getRecentPredictions(previousPageIndex);</span>
+                                }
+                            }
+                        })
+                    ];
+                }
+<span class="cstat-no" title="statement not covered" >                return $q.all(promises).then(<span class="fstat-no" title="function not covered" >function(response){</span></span>
+<span class="cstat-no" title="statement not covered" >                    var paginationObject = {</span>
+                        'currentPageIndex': pageIndex,
+                        'predictions': predictionsCopy,
+                        'predictionsPerPage': predictionsPerPage,
+                        //'getNextPageOfPredictions': response[0],
+                        //'getPreviousPageOfPredictions': response[1],
+                        'hasNextPage': !! response[0],
+                        'hasPreviousPage': !! response[1]
+                    }
+<span class="cstat-no" title="statement not covered" >                    return paginationObject;</span>
+                });
+            })
+            .catch(console.log.bind(console));
+&nbsp;
+<span class="fstat-no" title="function not covered" >        function updateRecentPredictionsCache() {</span>
+<span class="cstat-no" title="statement not covered" >            if ( ! recentPredictionsCache[indexOfFirstPrediction] ) {</span>
+<span class="cstat-no" title="statement not covered" >                return $q.when(queryParseForRecentPredictions(indexOfFirstPrediction))</span>
+                .then(castParsePredictionsAsPlainObjects)
+                .then(<span class="fstat-no" title="function not covered" >function(predictions) {</span>
+<span class="cstat-no" title="statement not covered" >                    getUserEstimatesForPredictions(predictions);</span>
+<span class="cstat-no" title="statement not covered" >                    recentPredictionsCache = recentPredictionsCache.concat(predictions);</span>
+                });
+            }
+        }
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    function queryParseForRecentPredictions(numPredictionsToSkip) {</span>
+<span class="cstat-no" title="statement not covered" >        if (isAllRecentPredictionsLoaded) {</span>
+<span class="cstat-no" title="statement not covered" >            return [];</span>
+        } else {
+<span class="cstat-no" title="statement not covered" >            console.log('fetching predictions from parse');</span>
+<span class="cstat-no" title="statement not covered" >            return new Parse.Query(ParsePredictionModel)</span>
+                .include('topics')
+                .descending('createdAt')
+                .skip(numPredictionsToSkip)
+                .limit(PARSE_RECENT_PREDICTIONS_QUERY_LIMIT)
+                .find()
+                .then(<span class="fstat-no" title="function not covered" >function(predictions){</span>
+<span class="cstat-no" title="statement not covered" >                    if ( ! predictions || predictions.length &lt; PARSE_RECENT_PREDICTIONS_QUERY_LIMIT) {</span>
+<span class="cstat-no" title="statement not covered" >                        isAllRecentPredictionsLoaded = true;</span>
+                    }
+<span class="cstat-no" title="statement not covered" >                    if ( ! predictions) {</span>
+<span class="cstat-no" title="statement not covered" >                        return [];</span>
+                    }
+<span class="cstat-no" title="statement not covered" >                    return predictions;</span>
+                });
+        }
+        
+    }
+<span class="fstat-no" title="function not covered" >    function getUserEstimatesForPredictions(predictions) {</span>
+<span class="cstat-no" title="statement not covered" >        return $q(<span class="fstat-no" title="function not covered" >function(resolve, reject){</span></span>
+<span class="cstat-no" title="statement not covered" >            var promises = [];</span>
+<span class="cstat-no" title="statement not covered" >            for (var i = 0; i &lt; predictions.length; i++) {</span>
+<span class="cstat-no" title="statement not covered" >                var promise = (<span class="fstat-no" title="function not covered" >function(predictions, i){</span></span>
+<span class="cstat-no" title="statement not covered" >                    LikelihoodEstimateService.getUserEstimateForPrediction(predictions[i].id).then(<span class="fstat-no" title="function not covered" >function(userEstimate){</span></span>
+<span class="cstat-no" title="statement not covered" >                        predictions[i].userEstimate = userEstimate;</span>
+                    });
+                })(predictions, i);
+<span class="cstat-no" title="statement not covered" >                promises.push(promise);</span>
+            }
+<span class="cstat-no" title="statement not covered" >            resolve($q.all(promises));</span>
+        });
+    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+<span class="fstat-no" title="function not covered" >  function addTopicByTitleToPrediction(predictionId, newTopicTitle) {</span>
+<span class="cstat-no" title="statement not covered" >    return TopicService.getOrCreateNewTopicsByTitle([newTopicTitle]).then(<span class="fstat-no" title="function not covered" >function(topics){</span></span>
+<span class="cstat-no" title="statement not covered" >      if (topics) {</span>
+<span class="cstat-no" title="statement not covered" >        var prediction = new ParsePredictionModel;</span>
+<span class="cstat-no" title="statement not covered" >        prediction.id = predictionId;</span>
+<span class="cstat-no" title="statement not covered" >        prediction.addUnique('topics', topics[0]);</span>
+<span class="cstat-no" title="statement not covered" >        return prediction.save().then(<span class="fstat-no" title="function not covered" >function(){</span></span>
+<span class="cstat-no" title="statement not covered" >          return TopicService.castParseTopicsAsPlainObjects(topics)[0];</span>
+        });
+      }
+    });
+  }
+<span class="fstat-no" title="function not covered" >  function removeTopicFromPrediction(predictionId, topicId) {</span>
+<span class="cstat-no" title="statement not covered" >    var topic = TopicService.getEmptyTopicReferenceById(topicId)</span>
+<span class="cstat-no" title="statement not covered" >    var prediction = new ParsePredictionModel;</span>
+<span class="cstat-no" title="statement not covered" >    prediction.id = predictionId;</span>
+<span class="cstat-no" title="statement not covered" >    prediction.remove('topics', topic);</span>
+<span class="cstat-no" title="statement not covered" >    return prediction.save();</span>
+  }
+<span class="fstat-no" title="function not covered" >    function getPredictionsByAuthorId(authorId) {</span>
+<span class="cstat-no" title="statement not covered" >        var author = new Parse.User();</span>
+<span class="cstat-no" title="statement not covered" >        author.id = authorId;</span>
+<span class="cstat-no" title="statement not covered" >        return getPredictionsByAuthor(author)</span>
+            .then(castParsePredictionsAsPlainObjects)
+            .then(<span class="fstat-no" title="function not covered" >function(predictions){</span>
+<span class="cstat-no" title="statement not covered" >                return getUserEstimatesForPredictions(predictions).then(<span class="fstat-no" title="function not covered" >function(){</span></span>
+<span class="cstat-no" title="statement not covered" >                    return predictions;</span>
+                });
+            });
+    }
+<span class="fstat-no" title="function not covered" >  function getPredictionsByAuthor(author) {</span>
+<span class="cstat-no" title="statement not covered" >    var query = new Parse.Query(ParsePredictionModel);</span>
+<span class="cstat-no" title="statement not covered" >    query.include('topics');</span>
+<span class="cstat-no" title="statement not covered" >    query.equalTo('author', author);</span>
+<span class="cstat-no" title="statement not covered" >    query.descending('createdAt');</span>
+<span class="cstat-no" title="statement not covered" >    return query.find();</span>
+  }
+<span class="fstat-no" title="function not covered" >  function getPredictionsByTopicTitle(topicTitle) {</span>
+<span class="cstat-no" title="statement not covered" >    return TopicService.getTopicByTitle(topicTitle)</span>
+      .then(getPredictionsByTopic)
+      .then(castParsePredictionsAsPlainObjects);
+  }
+<span class="fstat-no" title="function not covered" >  function getPredictionsByTopic(topic) {</span>
+<span class="cstat-no" title="statement not covered" >    return new Parse.Query(ParsePredictionModel)</span>
+      .include('topics')
+      .equalTo('topics', topic)
+      .descending('createdAt')
+      .find();
+  }
+&nbsp;
+&nbsp;
+<span class="fstat-no" title="function not covered" >  function createNewPredictionWithTopicTitle(predictionTitle, topicTitle) {</span>
+<span class="cstat-no" title="statement not covered" >    return $q(<span class="fstat-no" title="function not covered" >function(resolve, reject) {</span></span>
+<span class="cstat-no" title="statement not covered" >      TopicService.getOrCreateNewTopicsByTitle([topicTitle]).then(<span class="fstat-no" title="function not covered" >function(topics){</span></span>
+<span class="cstat-no" title="statement not covered" >        if ( ! topics ) {</span>
+<span class="cstat-no" title="statement not covered" >          reject();</span>
+<span class="cstat-no" title="statement not covered" >          return;</span>
+        }
+        else {
+<span class="cstat-no" title="statement not covered" >          var predictionValidation = validateNewPrediction(predictionTitle);</span>
+<span class="cstat-no" title="statement not covered" >          var currentUser = Parse.User.current();</span>
+<span class="cstat-no" title="statement not covered" >          if (currentUser &amp;&amp; _.size(predictionValidation) === 0) {</span>
+<span class="cstat-no" title="statement not covered" >            new ParsePredictionModel().save({</span>
+                'title': predictionTitle,
+                'author': currentUser,
+                'topics': topics
+              })
+              .then(<span class="fstat-no" title="function not covered" >function(newParsePrediction) {</span>
+<span class="cstat-no" title="statement not covered" >                resolve(castParsePredictionAsPlainObject(newParsePrediction, topics));</span>
+              });
+          }
+          else {
+<span class="cstat-no" title="statement not covered" >            reject();</span>
+<span class="cstat-no" title="statement not covered" >            return;</span>
+          }
+        }
+      });
+    });
+  }
+<span class="fstat-no" title="function not covered" >  function createNewPrediction(predictionTitle) {</span>
+<span class="cstat-no" title="statement not covered" >    return $q(<span class="fstat-no" title="function not covered" >function(resolve, reject) {</span></span>
+<span class="cstat-no" title="statement not covered" >      var predictionValidation = validateNewPrediction(predictionTitle);</span>
+<span class="cstat-no" title="statement not covered" >      var currentUser = Parse.User.current();</span>
+<span class="cstat-no" title="statement not covered" >      if (currentUser &amp;&amp; _.size(predictionValidation) === 0) {</span>
+<span class="cstat-no" title="statement not covered" >        new ParsePredictionModel().save({</span>
+            'title': predictionTitle,
+            'author': currentUser,
+            'topics': []
+          })
+          .then(<span class="fstat-no" title="function not covered" >function(newParsePrediction) {</span>
+<span class="cstat-no" title="statement not covered" >            resolve(castParsePredictionAsPlainObject(newParsePrediction));</span>
+          });
+      }
+      else {
+<span class="cstat-no" title="statement not covered" >        reject();</span>
+<span class="cstat-no" title="statement not covered" >        return;</span>
+      }
+    });
+  }
+<span class="fstat-no" title="function not covered" >  function addLikelihoodEstimate(predictionId, percent) {</span>
+<span class="cstat-no" title="statement not covered" >    return $q(<span class="fstat-no" title="function not covered" >function(resolve, reject) {</span></span>
+<span class="cstat-no" title="statement not covered" >      var currentUser = Parse.User.current();</span>
+<span class="cstat-no" title="statement not covered" >      var predictionLikelihoodEstimateOptions = [0,10,20,30,40,50,60,70,80,90,100];</span>
+<span class="cstat-no" title="statement not covered" >      if ( currentUser &amp;&amp; predictionLikelihoodEstimateOptions.indexOf(percent) &gt; -1 ) {</span>
+<span class="cstat-no" title="statement not covered" >        var prediction = new ParsePredictionModel;</span>
+<span class="cstat-no" title="statement not covered" >        prediction.id = predictionId;</span>
+<span class="cstat-no" title="statement not covered" >        LikelihoodEstimateService.addNew(currentUser, prediction, percent).then(<span class="fstat-no" title="function not covered" >function(newLikelihoodEstimate){</span></span>
+<span class="cstat-no" title="statement not covered" >          prediction.increment('percentEstimateCount' + percent);</span>
+<span class="cstat-no" title="statement not covered" >          prediction.save().then(<span class="fstat-no" title="function not covered" >function(){</span></span>
+<span class="cstat-no" title="statement not covered" >            resolve(newLikelihoodEstimate);</span>
+          });
+        });
+      }
+      else {
+<span class="cstat-no" title="statement not covered" >        reject();</span>
+<span class="cstat-no" title="statement not covered" >        return;</span>
+      }
+    });
+  }
+&nbsp;
+<span class="fstat-no" title="function not covered" >  function removeLikelihoodEstimate(predictionId, estimateId, percent) {</span>
+<span class="cstat-no" title="statement not covered" >    return LikelihoodEstimateService.deleteEstimate(estimateId).then(<span class="fstat-no" title="function not covered" >function(newLikelihoodEstimate){</span></span>
+<span class="cstat-no" title="statement not covered" >      var prediction = new ParsePredictionModel;</span>
+<span class="cstat-no" title="statement not covered" >      prediction.id = predictionId;</span>
+<span class="cstat-no" title="statement not covered" >      prediction.increment('percentEstimateCount' + percent, -1);</span>
+<span class="cstat-no" title="statement not covered" >      return prediction.save().then(<span class="fstat-no" title="function not covered" >function(){</span></span>
+<span class="cstat-no" title="statement not covered" >        return newLikelihoodEstimate;</span>
+      });
+    });
+  }
+&nbsp;
+&nbsp;
+<span class="fstat-no" title="function not covered" >  function castParsePredictionsAsPlainObjects(parsePredictions) {</span>
+<span class="cstat-no" title="statement not covered" >    var predictions = [];</span>
+<span class="cstat-no" title="statement not covered" >    angular.forEach(parsePredictions, <span class="fstat-no" title="function not covered" >function(parsePrediction){</span></span>
+<span class="cstat-no" title="statement not covered" >      predictions.push(castParsePredictionAsPlainObject(parsePrediction));</span>
+    });
+<span class="cstat-no" title="statement not covered" >    return predictions;</span>
+  }
+<span class="fstat-no" title="function not covered" >  function castParsePredictionAsPlainObject(parsePrediction, parseTopics) {</span>
+<span class="cstat-no" title="statement not covered" >    if ( ! parseTopics ) {</span>
+<span class="cstat-no" title="statement not covered" >      parseTopics = parsePrediction.get('topics');</span>
+    }
+<span class="cstat-no" title="statement not covered" >    var parseAuthor = parsePrediction.get('author');</span>
+<span class="cstat-no" title="statement not covered" >    var author = UserService.castParseUserAsPlainObject(parseAuthor);</span>
+<span class="cstat-no" title="statement not covered" >    var prediction = {</span>
+      'id':                       parsePrediction.id,
+      'author':                   author,
+      'createdAt':                parsePrediction.createdAt,
+      'title':                    parsePrediction.get('title'),
+      'topics':                   TopicService.castParseTopicsAsPlainObjects(parseTopics),
+      'communityEstimates':       [],
+      'communityEstimatesCount':  0
+    };
+<span class="cstat-no" title="statement not covered" >    angular.forEach([100,90,80,70,60,50,40,30,20,10,0], <span class="fstat-no" title="function not covered" >function(percent) {</span></span>
+<span class="cstat-no" title="statement not covered" >      var percentEstimateCount = parsePrediction.get('percentEstimateCount' + percent);</span>
+<span class="cstat-no" title="statement not covered" >      if ( ! percentEstimateCount ) {</span>
+<span class="cstat-no" title="statement not covered" >        percentEstimateCount = 0;</span>
+      }
+<span class="cstat-no" title="statement not covered" >      prediction.communityEstimates.push({'percent':percent, 'count':percentEstimateCount});</span>
+<span class="cstat-no" title="statement not covered" >      prediction.communityEstimatesCount += percentEstimateCount;</span>
+    });
+<span class="cstat-no" title="statement not covered" >    return prediction;</span>
+  }
+<span class="fstat-no" title="function not covered" >  function validateNewPrediction(predictionTitle) {</span>
+<span class="cstat-no" title="statement not covered" >    var errors = {};</span>
+<span class="cstat-no" title="statement not covered" >    var predictionTitleLengthErrors = validateNewPredictionTitleLength(predictionTitle);</span>
+<span class="cstat-no" title="statement not covered" >    var predictionTitleContentErrors = validateNewPredictionTitleContents(predictionTitle);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (predictionTitleLengthErrors.length) { <span class="cstat-no" title="statement not covered" >errors.predictionTitleLengthErrors = predictionTitleLengthErrors; </span>}</span>
+<span class="cstat-no" title="statement not covered" >    if (predictionTitleContentErrors.length) { <span class="cstat-no" title="statement not covered" >errors.predictionTitleContentErrors = predictionTitleContentErrors; </span>}</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (_.size(errors)) {</span>
+<span class="cstat-no" title="statement not covered" >      return errors;</span>
+    } else {
+<span class="cstat-no" title="statement not covered" >      return null;</span>
+    }
+  }
+<span class="fstat-no" title="function not covered" >  function validateNewPredictionTitleLength(predictionTitle) {</span>
+<span class="cstat-no" title="statement not covered" >    var errors = [];</span>
+<span class="cstat-no" title="statement not covered" >    if ( ! predictionTitle || predictionTitle.length &lt; newPredictionDataConstraints.predictionTitleCharacters.min.value) {</span>
+<span class="cstat-no" title="statement not covered" >      errors.push(newPredictionDataConstraints.predictionTitleCharacters.min.getErrorMessage());</span>
+    }
+    else <span class="cstat-no" title="statement not covered" >if (predictionTitle.length &gt; newPredictionDataConstraints.predictionTitleCharacters.max.value) {</span>
+<span class="cstat-no" title="statement not covered" >      errors.push(newPredictionDataConstraints.predictionTitleCharacters.max.getErrorMessage());</span>
+    }
+<span class="cstat-no" title="statement not covered" >    return errors;</span>
+  }
+<span class="fstat-no" title="function not covered" >  function validateNewPredictionTitleContents(predictionTitle) {</span>
+<span class="cstat-no" title="statement not covered" >    var errors = [];</span>
+<span class="cstat-no" title="statement not covered" >    if (predictionTitle) { </span>
+<span class="cstat-no" title="statement not covered" >      angular.forEach(newPredictionDataConstraints.predictionTitleCharacters.notAllowed.value, <span class="fstat-no" title="function not covered" >function(notAllowedString){</span></span>
+<span class="cstat-no" title="statement not covered" >        var index = predictionTitle.indexOf(notAllowedString);</span>
+<span class="cstat-no" title="statement not covered" >        if (index &gt; -1) {</span>
+<span class="cstat-no" title="statement not covered" >          errors.push(newPredictionDataConstraints.predictionTitleCharacters.notAllowed.getErrorMessage());</span>
+        }
+      }) 
+    }
+<span class="cstat-no" title="statement not covered" >    return errors;</span>
+  }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+}
+&nbsp;
+&nbsp;
+})();</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sat May 30 2015 21:54:27 GMT+0100 (IST)</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

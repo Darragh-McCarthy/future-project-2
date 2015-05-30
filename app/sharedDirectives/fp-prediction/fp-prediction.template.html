@@ -9,11 +9,10 @@
 
       <input type="button"
         class="prediction__toggle-edit-topics" 
-        ng-hide="predictionCtrl.showTopicEditingByDefault" 
+        ng-hide="predictionCtrl.isEditingTopics" 
         value="Edit" 
         ng-click="predictionCtrl.toggleEditing()" />
       <div class="prediction__header">
-        <a ui-sref="app.prediction({predictionId:predictionCtrl.prediction.id})" class="prediction__title" href="#">{{::predictionCtrl.prediction.title}}</a>
         <span class="prediction__topics" ng-class="{'hide-first-topic':predictionList.currentTopic}">
           <span class="prediction__topic-container" ng-repeat="topic in predictionCtrl.prediction.topics"><!--
          --><span class="prediction__topic" 
@@ -21,9 +20,10 @@
               ng-click="predictionCtrl.navigateToTopic(topic.title)">
               {{topic.title}}
             </span><!--
-       --></span>
+       --></span><span class="prediction__topic">...</span>
          <!-- <span class="prediction__topics__expand-topics">+</span>-->
         </span>
+        <a ui-sref="app.prediction({predictionId:predictionCtrl.prediction.id})" class="prediction__title" href="#">{{::predictionCtrl.prediction.title}}</a>
       </div>
 
 
@@ -51,7 +51,7 @@
 
 
 
-      <div class="prediction__reasons" ng-if="predictionCtrl.prediction.isExpanded">
+      <!--<div class="prediction__reasons" ng-if="predictionCtrl.prediction.isExpanded">
         <div style="margin:0 20px;">
           <p><b>70% likely: Jamie Oliver, Lawyer C&C Associates</b></p>
           <div style="line-height:1.3em;font-weight:normal">Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur</div>
@@ -78,6 +78,7 @@
           </div>
         </div>
       </div>
+      -->
 
 
 

@@ -1,0 +1,735 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for app/sharedServices/currentUser.factory.js</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../prettify.css">
+    <link rel="stylesheet" href="../../base.css">
+    <style type='text/css'>
+        div.coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class="header low">
+    <h1>Code coverage report for <span class="entity">app/sharedServices/currentUser.factory.js</span></h1>
+    <h2>
+        Statements: <span class="metric">16.49% <small>(16 / 97)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">0% <small>(0 / 24)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">2.44% <small>(1 / 41)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">16.84% <small>(16 / 95)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"><a href="../../index.html">All files</a> &#187; <a href="index.html">app/sharedServices/</a> &#187; currentUser.factory.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231</td><td class="line-coverage"><span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">(function(){
+'use strict';
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+angular
+	.module('myApp.sharedServices')
+	.factory('currentUser', currentUser);
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+currentUser.$inject=['$q','$window','$timeout','Parse'];
+<span class="fstat-no" title="function not covered" >function currentUser( $q,  $window,  $timeout,  Parse ) {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >	var facebookBigProfilePictureWidth = 200;</span>
+<span class="cstat-no" title="statement not covered" >	var facebookBigProfilePictureHeight = 200;</span>
+<span class="cstat-no" title="statement not covered" >	var _whenFacebookSdkLoaded = loadAndInitializeFacebookSdk();</span>
+<span class="cstat-no" title="statement not covered" >	var _whenLoggedIn = $q.defer();</span>
+<span class="cstat-no" title="statement not covered" >	var _user = Parse.User.current();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >	var currentUserObject = {</span>
+		'loginWithFacebook': loginWithFacebook,
+		'logout': logout,
+		'isLoggedIn': isLoggedIntoParse,
+		'copyOfBasicFacebookUserData': null,
+		'userThumbnailUrl': null,
+		'userId': null
+	};
+&nbsp;
+&nbsp;
+<span class="cstat-no" title="statement not covered" >	if (_user) {</span>
+<span class="cstat-no" title="statement not covered" >		currentUserObject.userId = _user.id;</span>
+<span class="cstat-no" title="statement not covered" >		currentUserObject.copyOfBasicFacebookUserData = _user.get('copyOfBasicFacebookUserData');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >		getUserThumbnailUrl().then(<span class="fstat-no" title="function not covered" >function(url){ </span></span>
+<span class="cstat-no" title="statement not covered" >			currentUserObject.userThumbnailUrl = url;</span>
+		});
+<span class="cstat-no" title="statement not covered" >		getUserBigPictureUrl().then(<span class="fstat-no" title="function not covered" >function(url){</span></span>
+<span class="cstat-no" title="statement not covered" >			currentUserObject.userBigPictureUrl = url;</span>
+		})
+	}
+<span class="cstat-no" title="statement not covered" >	return currentUserObject;</span>
+&nbsp;
+&nbsp;
+&nbsp;
+<span class="fstat-no" title="function not covered" >	function getBasicFacebookUserData() {</span>
+<span class="cstat-no" title="statement not covered" >		return $q(<span class="fstat-no" title="function not covered" >function(resolve, reject){</span></span>
+<span class="cstat-no" title="statement not covered" >			_whenFacebookSdkLoaded.then(<span class="fstat-no" title="function not covered" >function(){</span></span>
+<span class="cstat-no" title="statement not covered" >				$window.FB.api('/me', <span class="fstat-no" title="function not covered" >function(response) {</span></span>
+<span class="cstat-no" title="statement not covered" >					console.log(response);</span>
+<span class="cstat-no" title="statement not covered" >					if (response.error){</span>
+<span class="cstat-no" title="statement not covered" >						reject();</span>
+					} else {
+<span class="cstat-no" title="statement not covered" >						resolve(response);</span>
+					}
+			 	});
+			});
+		})		
+	}
+&nbsp;
+&nbsp;
+&nbsp;
+<span class="fstat-no" title="function not covered" >	function getFacebookIdFromParse() {</span>
+<span class="cstat-no" title="statement not covered" >		return Parse.User.current().attributes.authData.facebook.id;</span>
+	}
+&nbsp;
+<span class="fstat-no" title="function not covered" >	function loginWithFacebook() {</span>
+<span class="cstat-no" title="statement not covered" >		return logIntoParseWithFacebook().then(<span class="fstat-no" title="function not covered" >function() {</span></span>
+<span class="cstat-no" title="statement not covered" >			_user = Parse.User.current();</span>
+<span class="cstat-no" title="statement not covered" >			currentUserObject.userId = _user.id;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >			if ( ! _user.copyOfBasicFacebookUserData) {</span>
+<span class="cstat-no" title="statement not covered" >				getBasicFacebookUserData().then(<span class="fstat-no" title="function not covered" >function(data){</span></span>
+<span class="cstat-no" title="statement not covered" >					_user.set('copyOfBasicFacebookUserData', data);</span>
+<span class="cstat-no" title="statement not covered" >					_user.save().then(<span class="fstat-no" title="function not covered" >function(){</span></span>
+					});
+				});
+			}
+<span class="cstat-no" title="statement not covered" >			getUserThumbnailUrl().then(<span class="fstat-no" title="function not covered" >function(url) {</span></span>
+<span class="cstat-no" title="statement not covered" >				currentUserObject.userThumbnailUrl = url;</span>
+			});
+		});
+	}
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+<span class="fstat-no" title="function not covered" >	function getUserThumbnailUrl() {</span>
+<span class="cstat-no" title="statement not covered" >		return $q(<span class="fstat-no" title="function not covered" >function(resolve, reject) {</span></span>
+<span class="cstat-no" title="statement not covered" >			if (_user) {</span>
+<span class="cstat-no" title="statement not covered" >				var url = _user.get('userThumbnailUrl');</span>
+<span class="cstat-no" title="statement not covered" >				if (url) {</span>
+<span class="cstat-no" title="statement not covered" >					resolve(url);</span>
+				} else {
+<span class="cstat-no" title="statement not covered" >					getFacebookUserProfilePictureUrl(getFacebookIdFromParse()).then(<span class="fstat-no" title="function not covered" >function(url) {</span></span>
+<span class="cstat-no" title="statement not covered" >						_user.save({'userThumbnailUrl': url});</span>
+<span class="cstat-no" title="statement not covered" >						resolve(url);</span>
+					});
+				}
+			}
+		});
+	}
+<span class="fstat-no" title="function not covered" >	function getUserBigPictureUrl() {</span>
+<span class="cstat-no" title="statement not covered" >		return $q(<span class="fstat-no" title="function not covered" >function(resolve, reject) {</span></span>
+<span class="cstat-no" title="statement not covered" >			if (_user) {</span>
+<span class="cstat-no" title="statement not covered" >				var url = _user.get('userBigPictureUrl');</span>
+<span class="cstat-no" title="statement not covered" >				if (url) {</span>
+<span class="cstat-no" title="statement not covered" >					resolve(url);</span>
+				} else {
+<span class="cstat-no" title="statement not covered" >					getFacebookUserProfilePictureUrl(getFacebookIdFromParse(), facebookBigProfilePictureWidth, facebookBigProfilePictureHeight).then(<span class="fstat-no" title="function not covered" >function(url) {</span></span>
+<span class="cstat-no" title="statement not covered" >						_user.save({'userBigPictureUrl': url});</span>
+<span class="cstat-no" title="statement not covered" >						resolve(url);</span>
+					});
+				}
+			}
+		});
+	}
+<span class="fstat-no" title="function not covered" >	function getFacebookUserProfilePictureUrl(userId, width, height) {</span>
+<span class="cstat-no" title="statement not covered" >		var apiUrl = "/" + userId + "/picture";</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >		if (width &amp;&amp; height) {</span>
+<span class="cstat-no" title="statement not covered" >			apiUrl += '?width=' + width + '&amp;height=' + height;</span>
+		}
+&nbsp;
+<span class="cstat-no" title="statement not covered" >		return $q(<span class="fstat-no" title="function not covered" >function(resolve, reject) {</span></span>
+<span class="cstat-no" title="statement not covered" >			_whenFacebookSdkLoaded.then(<span class="fstat-no" title="function not covered" >function( fbSdk ){</span></span>
+<span class="cstat-no" title="statement not covered" >				fbSdk.api(apiUrl, <span class="fstat-no" title="function not covered" >function(response) {</span></span>
+<span class="cstat-no" title="statement not covered" >		    	if (response &amp;&amp; !response.error) {</span>
+<span class="cstat-no" title="statement not covered" >		    		resolve(response.data.url);</span>
+		    	} else {
+<span class="cstat-no" title="statement not covered" >		    		console.log(response.error);</span>
+		    	}
+		    });
+			});
+		});
+	}
+&nbsp;
+<span class="fstat-no" title="function not covered" >	function isLoggedIntoParse() {</span>
+<span class="cstat-no" title="statement not covered" >		return !! Parse.User.current();</span>
+	}
+&nbsp;
+<span class="fstat-no" title="function not covered" >	function logout() {</span>
+<span class="cstat-no" title="statement not covered" >		Parse.User.logOut();</span>
+<span class="cstat-no" title="statement not covered" >		FB.logout(<span class="fstat-no" title="function not covered" >function(response) {</span></span>
+<span class="cstat-no" title="statement not covered" >      console.log('logging out of Facebook',response);</span>
+    });
+	}
+&nbsp;
+<span class="fstat-no" title="function not covered" >	function logIntoParseWithFacebook() {</span>
+<span class="cstat-no" title="statement not covered" >		return $q(<span class="fstat-no" title="function not covered" >function(resolve, reject){</span></span>
+<span class="cstat-no" title="statement not covered" >			_whenFacebookSdkLoaded.then(<span class="fstat-no" title="function not covered" >function(){</span></span>
+<span class="cstat-no" title="statement not covered" >				Parse.FacebookUtils.logIn('public_profile,email,user_friends', {</span>
+      		success: <span class="fstat-no" title="function not covered" >function(user) {</span>
+<span class="cstat-no" title="statement not covered" > 	    		  resolve(user);</span>
+      		},
+      	 	error: <span class="fstat-no" title="function not covered" >function(user, error) {</span>
+<span class="cstat-no" title="statement not covered" >      			reject();</span>
+	    	  }
+	    	});
+			});
+		});
+	}
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+<span class="fstat-no" title="function not covered" >	function loadAndInitializeFacebookSdk() {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >		return $q(<span class="fstat-no" title="function not covered" >function(resolve, reject) {</span></span>
+<span class="cstat-no" title="statement not covered" >			$window.fbAsyncInit = <span class="fstat-no" title="function not covered" >function() {</span></span>
+<span class="cstat-no" title="statement not covered" >		    Parse.FacebookUtils.init({</span>
+		    	appId			 : '900144096737151',//localhost
+		      //appId      : '867899246628303',//futureproject.parseapp.com
+		      cookie     : true,  // enable cookies to allow Parse to access the session
+		      version    : 'v2.2',
+		      xfbml      : true,  // initialize Facebook social plugins on the page
+		      //status     : true,  // check Facebook Login status; disabled as it supposedly interferes with Parse
+		    });
+<span class="cstat-no" title="statement not covered" >		    resolve($window.FB);</span>
+		  };
+&nbsp;
+<span class="cstat-no" title="statement not covered" >		  (<span class="fstat-no" title="function not covered" >function(d, s, id){</span></span>
+<span class="cstat-no" title="statement not covered" >		    var js, fjs = d.getElementsByTagName(s)[0];</span>
+<span class="cstat-no" title="statement not covered" >		    if (d.getElementById(id)){<span class="cstat-no" title="statement not covered" >return;}</span></span>
+<span class="cstat-no" title="statement not covered" >		    js = d.createElement(s); <span class="cstat-no" title="statement not covered" ></span>js.id = id;</span>
+<span class="cstat-no" title="statement not covered" >		    js.src = '//connect.facebook.net/en_US/sdk.js';</span>
+<span class="cstat-no" title="statement not covered" >		    fjs.parentNode.insertBefore(js, fjs);</span>
+		  }($window.document, 'script', 'facebook-jssdk'));
+&nbsp;
+		});
+	}
+&nbsp;
+<span class="fstat-no" title="function not covered" >	function isLoggedInToFacebook(){</span>
+<span class="cstat-no" title="statement not covered" >		return $q(<span class="fstat-no" title="function not covered" >function(resolve, reject) {</span></span>
+<span class="cstat-no" title="statement not covered" >			_whenFacebookSdkLoaded.then(<span class="fstat-no" title="function not covered" >function(fbSdk) {</span></span>
+<span class="cstat-no" title="statement not covered" >					fbSdk.getLoginStatus(<span class="fstat-no" title="function not covered" >function(response) {</span></span>
+<span class="cstat-no" title="statement not covered" >						resolve(response.status === 'connected');</span>
+					});
+			});
+		})
+	}
+&nbsp;
+<span class="fstat-no" title="function not covered" >	function castParseUserAsPlainObject(parseUser) {</span>
+&nbsp;
+	}
+&nbsp;
+&nbsp;
+	
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+}
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+})();</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sat May 30 2015 21:54:27 GMT+0100 (IST)</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>
