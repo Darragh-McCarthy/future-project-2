@@ -21,6 +21,8 @@ angular.module('myApp')
 
 
 
+
+
 FpPredictionList.$inject=['$scope','$state'];
 function FpPredictionList( $scope,  $state ) {
 	var _this = this;
@@ -31,7 +33,6 @@ function FpPredictionList( $scope,  $state ) {
 	_this.removePredictionFromList = removePredictionFromList;
 	_this.onClickPreviousPage = onClickPreviousPage;
 	_this.onClickNextPage = onClickNextPage;
-	_this.onClickPaginationPage = onClickPaginationPage;
 	_this.navigateToPage = navigateToPage;
 
 
@@ -39,7 +40,6 @@ function FpPredictionList( $scope,  $state ) {
 		if (newPaginationObject) {
 			_this.paginationPages = [];
 			for (var i = 0; i <= newPaginationObject.currentPageIndex; i++) {
-				console.log(i);
 				_this.paginationPages.push({
 					'index': i,
 					'title': (i + 1)
@@ -80,7 +80,6 @@ function FpPredictionList( $scope,  $state ) {
 		}
 	}
 	function onClickPreviousPage() {
-		console.log('previous paginationObject', _this.getPreviousPageOfPredictions);
 		if (_this.paginationObject.getPreviousPageOfPredictions) {
 			_this.paginationObject.getPreviousPageOfPredictions().then(function(newPaginationObject){
 				_this.paginationObject = newPaginationObject;
@@ -88,19 +87,15 @@ function FpPredictionList( $scope,  $state ) {
 		}
 	}
 	function onClickNextPage() {
-		console.log('next paginationObject');
 		if (_this.paginationObject.getNextPageOfPredictions) {
 			_this.paginationObject.getNextPageOfPredictions().then(function(newPaginationObject){
 				_this.paginationObject = newPaginationObject;
-			});	
+			});
 		}	
 	}
-	function onClickPaginationPage(index) {
-		console.log(index);
-	}
 	function navigateToPage(index) {
-		$state.go($state.current.name, {
-			'page':index
+		$state.go($state.$current.name, {
+			page:index
 		});
 	}
 }

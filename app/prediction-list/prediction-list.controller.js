@@ -11,6 +11,7 @@ function PredictionList( $state,  $scope,  PredictionService,  $stateParams,  fo
 	_this.currentTopic = $stateParams.topic;
 	_this.currentPage = Number($stateParams.page) || 0;
 	
+	
 	(function() {
 		if (_this.currentTopic) {
 			return PredictionService.getPredictionsByTopicTitle(_this.currentTopic);	

@@ -22,15 +22,13 @@ configureRoutes.$inject=['$stateProvider','$urlRouterProvider'];
 function configureRoutes( $stateProvider,  $urlRouterProvider ) {  
   $stateProvider
     .state('app', {
-      url: '',
+      url: '/',
       views: {
         'header': { 
           templateUrl: 'header/header.html',
           controller: 'Header as header'
         },
-        'content': {
-          templateUrl: '', 
-        }
+        'content': {}
       }
     })
     .state('app.recent', {

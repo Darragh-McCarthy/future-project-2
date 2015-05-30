@@ -53,12 +53,12 @@
 
             <button class="button--primary" 
                 ng-show="list.paginationObject.previousPageIndex > -1" 
-                ng-click="list.navigateToPage({'page':list.paginationObject.previousPageIndex})">
+                ng-click="list.navigateToPage(list.paginationObject.previousPageIndex)">
                 Previous
             </button>
             <button class="button--primary" 
                 ng-show="list.paginationObject.nextPageIndex > -1"
-                ng-click="list.navigateToPage({'page':list.paginationObject.nextPageIndex})">
+                ng-click="list.navigateToPage(list.paginationObject.nextPageIndex)">
                 Next
             </button>
 

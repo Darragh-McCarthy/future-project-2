@@ -121,7 +121,6 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
         if (isAllRecentPredictionsLoaded) {
             return [];
         } else {
-            console.log('fetching predictions from parse');
             return new Parse.Query(ParsePredictionModel)
                 .include('topics')
                 .descending('createdAt')
