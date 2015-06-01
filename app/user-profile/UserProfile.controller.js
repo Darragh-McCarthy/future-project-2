@@ -15,13 +15,14 @@ function UserProfile( $state,  $stateParams,  currentUser,  PredictionService,  
 	_this.getFbData = getFbData;
 	_this.currentUser = currentUser;
 	_this.userToDisplay = undefined;
+	var pageIndex = $stateParams.page || 0;
 
 	UserService.getUserById($stateParams.userId).then(function(user){
 		_this.userToDisplay = user;
 	});
 
-	PredictionService.getPredictionsByAuthorId($stateParams.userId).then(function(predictions){
-		_this.predictions = predictions;
+	PredictionService.getPredictionsByAuthorId($stateParams.userId, pageIndex).then(function(paginationObject){
+		_this.paginationObject = paginationObject;
 	});
 
 	function logout() {

@@ -11,12 +11,13 @@
 				<button class="user-profile__logout-button" ng-click="userProfile.logout()">Logout</button>
 			</div>
 		</div>
-	</div>
-	
-  <fp-prediction-list 
-    predictions="userProfile.predictions"> 
+		<fp-prediction-list
+  	pagination-object="userProfile.paginationObject"> 
 
   </fp-prediction-list>
 
+	</div>
+	
+  
 </div>
 

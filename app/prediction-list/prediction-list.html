@@ -9,8 +9,13 @@
 		navigate-to-page="predictionList.navigateToPage(page)">
 	</fp-prediction-list>
 
-	<div class="prediction-list-page__topic-catalog">
-		<h2>Topics</h2>
+	<div class="prediction-list-page__featured-topics">
+		<ul>
+			<li class="prediction-list-page__featured-topic" 
+				ng-repeat="topic in predictionList.topicsCatalog">
+				<a class="prediction-list-page__featured-topics-link" ui-sref="app.topic({'topic':topic})">{{topic}}</a>
+			</li>
+		</ul>
 	</div>
 
 </div>

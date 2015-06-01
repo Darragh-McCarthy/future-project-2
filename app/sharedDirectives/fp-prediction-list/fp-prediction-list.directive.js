@@ -45,13 +45,15 @@ function FpPredictionList( $scope,  $state ) {
 					'title': (i + 1)
 				});
 			}
-			if (newPaginationObject.getNextPageOfPredictions) {
+			if (newPaginationObject.nextPageIndex > -1) {
 				_this.paginationPages.push({
 					'index': _this.paginationPages.length,
 					'title': _this.paginationPages.length + 1
 				});	
 			}
 		}
+		console.log(_this.paginationObject);
+		console.log(_this.paginationPages);
 	});
 
 	function onAddNewPredictionSuccess(prediction) {
@@ -62,21 +64,25 @@ function FpPredictionList( $scope,  $state ) {
 		_this.isSavingNewPrediction = true;
 	}
 	function expandPrediction(expandedPrediction) {
-		angular.forEach(_this.predictions, function(eachPrediction){
+		console.log('trying to expand');
+		angular.forEach(_this.paginationObject.predictions, function(eachPrediction){
 			eachPrediction.isExpanded = false;
+			console.log('expanding');
 		});
 	}
 	function removePredictionFromList(predictionId) {
-		console.log('removing prediction from list');
-		var indexToRemove = null;
-		for (var i = 0; i < _this.predictions.length; i++) {
-			if (_this.predictions[i].id === predictionId) {
-				indexToRemove = i;
+		removePredictionFromArrayByPredictionId(_this.paginationObject.predictions, predictionId);
+		removePredictionFromArrayByPredictionId(_this.newlyAddedPredictions, predictionId);
+		function removePredictionFromArrayByPredictionId(arrayToSearch, id) {
+			var indexToRemove = null;
+			for (var i = 0; i < arrayToSearch.length; i++) {
+				if (arrayToSearch[i].id === predictionId) {
+					indexToRemove = i;
+				}
 			}
-		}
-		if (indexToRemove > -1) {
-			_this.predictions.splice(indexToRemove, 1);
-			console.log('removed prediction from list');
+			if (indexToRemove > -1) {
+				arrayToSearch.splice(indexToRemove, 1);
+			}
 		}
 	}
 	function onClickPreviousPage() {

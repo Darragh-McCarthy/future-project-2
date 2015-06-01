@@ -27,7 +27,7 @@ FpPrediction.$inject=['$q','$state','PredictionService','currentUser'];
 function FpPrediction( $q,  $state,  PredictionService,  currentUser ) {
 
   var MAX_GRAPHBAR_HEIGHT = 100;
-  var MIN_GRAPHBAR_HEIGHT = 5;
+  var MIN_GRAPHBAR_HEIGHT = 3;
   var MAX_TOPICS_PER_PREDICTION = 8;
 
   var mainTopics = [
@@ -133,6 +133,7 @@ function FpPrediction( $q,  $state,  PredictionService,  currentUser ) {
     });
   }
   function allocateGraphBarHeights(communityEstimates) {
+    //console.log(communityEstimates);
     var largestCount = 0;
     angular.forEach(communityEstimates, function(estimate) {
       largestCount = Math.max(largestCount, estimate.count);
@@ -143,6 +144,7 @@ function FpPrediction( $q,  $state,  PredictionService,  currentUser ) {
         graphBarHeight = MAX_GRAPHBAR_HEIGHT / largestCount * estimate.count;
       }
       estimate.graphBarHeight = {'height':graphBarHeight + 'px'};
+      console.log(estimate.graphBarHeight);
     });
   }
   function formatPredictionCreatedAt(dateToFormat) {

@@ -5,13 +5,13 @@ angular.module('myApp')
 	.controller('PredictionList', PredictionList);
 
 
-PredictionList.$inject=['$state','$scope','PredictionService','$stateParams','focusElementById','TopicService'];
-function PredictionList( $state,  $scope,  PredictionService,  $stateParams,  focusElementById,  TopicService) {
+PredictionList.$inject=['PredictionService','$stateParams','TopicService'];
+function PredictionList( PredictionService,  $stateParams,  TopicService) {
 	var _this = this;
 	_this.currentTopic = $stateParams.topic;
 	_this.currentPage = Number($stateParams.page) || 0;
-	
-	
+	_this.topicsCatalog = TopicService.featuredTopicTitles;
+		
 	(function() {
 		if (_this.currentTopic) {
 			return PredictionService.getPredictionsByTopicTitle(_this.currentTopic);	
@@ -21,8 +21,6 @@ function PredictionList( $state,  $scope,  PredictionService,  $stateParams,  fo
 	})().then(function(paginationObject) {
 		_this.paginationObject = paginationObject;
 	});
-
-
 }
 
 

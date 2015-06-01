@@ -90,7 +90,7 @@ function configureRoutes( $stateProvider,  $urlRouterProvider ) {
       }
     })
     .state('app.user-profile', {
-      url: 'user-profile/:userId',
+      url: 'user-profile/:userId/:page',
       views: {
         'content@': {
           templateUrl:'user-profile/user-profile.template.html',

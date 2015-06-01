@@ -12,6 +12,7 @@ Prioritise
 	delete prediction
 	report prediction
 
+adding likelihood estimate before estimates have downloaded
 
 Ignorable Bugs
 	when selecting from the list of suggested topics, focus is taken from the new topic input field

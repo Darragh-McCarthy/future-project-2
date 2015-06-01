@@ -56,7 +56,7 @@
     </label>
 
     <button class="make-prediction__add-prediction-button" 
-      ng-show="makePrediction.newPredictionTitle.length >= makePrediction.newPredictionDataConstraints.predictionTitleCharacters.min.value"  
+      ng-show="makePrediction.newPredictionTitle.length >= makePrediction.newPredictionDataConstraints.predictionTitleCharacters.min.value && !makePrediction.predictionValidationErrors"  
       ng-click="makePrediction.addNewPrediction(makePrediction.newPredictionTitle, makePrediction.topic)">
       Add prediction
     </button>
