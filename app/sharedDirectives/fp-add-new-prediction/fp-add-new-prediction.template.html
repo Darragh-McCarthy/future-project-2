@@ -1,14 +1,14 @@
-  <form class="make-prediction">  
+  <form class="fp-add-new-prediction">  
     <label>
-      <div class="make-prediction__prediction-title-label" ng-if=" ! makePrediction.hideLabel">
+      <div class="fp-add-new-prediction__prediction-title-label" ng-if=" ! makePrediction.hideLabel">
         <span >
           <span ng-hide="::makePrediction.isAddingSecondPrediction">What is your</span>
           <span ng-show="::makePrediction.isAddingSecondPrediction"><b>Add another</b></span>        
         </span>
-        <span class="make-prediction__topic"
+        <span class="fp-add-new-prediction__topic"
           ng-if="makePrediction.topic">
           {{makePrediction.topic}}
-          <span class="make-prediction__delete-topic" ng-click="makePrediction.removeDefaultTopic()">×</span>
+          <span class="fp-add-new-prediction__delete-topic" ng-click="makePrediction.removeDefaultTopic()">×</span>
         </span>
         <span>
           <span ng-hide="::makePrediction.isAddingSecondPrediction">prediction?</span>
@@ -16,7 +16,7 @@
         </span>
       </div>
 
-      <ul class="make-prediction__title-error-messages">
+      <ul class="fp-add-new-prediction__title-error-messages">
         <li ng-repeat="errorMessage in makePrediction.predictionValidationErrors.predictionTitleLengthErrors" 
           ng-if="makePrediction.areTitleLengthErrorsVisible">
           {{errorMessage}}
@@ -26,36 +26,35 @@
         </li>
       </ul>
 
-      <div class="make-prediction__questions-not-allowed-explanation" 
+      <div class="fp-add-new-prediction__questions-not-allowed-explanation" 
         ng-if="makePrediction.predictionValidationErrors.predictionTitleContentErrors">
-        <a class="make-prediction__how-to-make-prediction-link" 
+        <a class="fp-add-new-prediction__how-to-make-prediction-link" 
           ui-sref="app.prediction-guidelines" 
           target="_blank">
           View Prediction Guidelines
         </a>
       </div>
-      <!--<img class="make-prediction__user-thumbnail" 
+      <!--<img class="fp-add-new-prediction__user-thumbnail" 
         ng-src="{{makePrediction.currentUser.userThumbnailUrl}}"
         ui-sref="app.user-profile({userId:makePrediction.currentUser.userId})"
         />-->
-      <div class="make-prediction__input">
-        <input type="text"
-          ng-if="makePrediction.hideLabel" 
-          id="make-prediction__prediction-title-input" 
-          ng-model="makePrediction.newPredictionTitle" 
-          autofocus 
-          autocomplete="off"
-          placeholder="Add your {{makePrediction.topic}} prediction" />
+      <div class="fp-add-new-prediction__input">
         <input type="text" 
-          id="make-prediction__prediction-title-input" 
+          id="fp-add-new-prediction__prediction-title-input" 
           ng-if=" ! makePrediction.hideLabel"
           ng-model="makePrediction.newPredictionTitle" 
-          autofocus 
           autocomplete="off" />
+        <input type="text"
+          ng-if="makePrediction.hideLabel" 
+          id="fp-add-new-prediction__prediction-title-input" 
+          ng-model="makePrediction.newPredictionTitle" 
+          autofocus
+          autocomplete="off"
+          placeholder="Add your {{makePrediction.topic}} prediction" />
       </div>
     </label>
 
-    <button class="make-prediction__add-prediction-button" 
+    <button class="fp-add-new-prediction__add-prediction-button" 
       ng-show="makePrediction.newPredictionTitle.length >= makePrediction.newPredictionDataConstraints.predictionTitleCharacters.min.value && !makePrediction.predictionValidationErrors"  
       ng-click="makePrediction.addNewPrediction(makePrediction.newPredictionTitle, makePrediction.topic)">
       Add prediction

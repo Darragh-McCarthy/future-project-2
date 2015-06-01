@@ -52,9 +52,8 @@ function FpPrediction( $q,  $state,  PredictionService,  currentUser ) {
   _this.removeTopicFromPrediction = removeTopicFromPrediction;
   _this.toggleEditing = toggleEditing;
   _this.navigateToTopic = navigateToTopic;
-  _this.showConfirmDeletion = showConfirmDeletion;
-  _this.hideConfirmDeletion = hideConfirmDeletion;
   _this.deletePrediction = deletePrediction;
+  _this.toggleShowDeletionConfirmation = toggleShowDeletionConfirmation;
 
   
   updateSuggestedTopics();
@@ -133,7 +132,6 @@ function FpPrediction( $q,  $state,  PredictionService,  currentUser ) {
     });
   }
   function allocateGraphBarHeights(communityEstimates) {
-    //console.log(communityEstimates);
     var largestCount = 0;
     angular.forEach(communityEstimates, function(estimate) {
       largestCount = Math.max(largestCount, estimate.count);
@@ -144,7 +142,6 @@ function FpPrediction( $q,  $state,  PredictionService,  currentUser ) {
         graphBarHeight = MAX_GRAPHBAR_HEIGHT / largestCount * estimate.count;
       }
       estimate.graphBarHeight = {'height':graphBarHeight + 'px'};
-      console.log(estimate.graphBarHeight);
     });
   }
   function formatPredictionCreatedAt(dateToFormat) {
@@ -177,11 +174,9 @@ function FpPrediction( $q,  $state,  PredictionService,  currentUser ) {
     _this.topicIsSavingMessage = newTopicTitle;
   }
   function removeTopicFromPrediction(topicId){
-    console.log(topicId);
     PredictionService.removeTopicFromPrediction(_this.prediction.id, topicId).then(function(){
       var topicToRemove = null;
       for (var i = 0; i < _this.prediction.topics.length; i++) {
-        console.log(_this.prediction.topics[i].id);
         if (_this.prediction.topics[i].id === topicId) {
           topicToRemove = _this.prediction.topics[i];
         }
@@ -205,7 +200,6 @@ function FpPrediction( $q,  $state,  PredictionService,  currentUser ) {
     _this.isLikelihoodSelectionVisible = ! _this.isEditingTopics;
   }
   function makeLikelihoodEstimateOptionsVisible() {
-    console.log('isLikelihoodSelectionVisible setting to true');
     _this.isLikelihoodSelectionVisible = true;
   }
   function updateSuggestedTopics() {
@@ -217,13 +211,12 @@ function FpPrediction( $q,  $state,  PredictionService,  currentUser ) {
       }
     });
   }
-  function showConfirmDeletion() { _this.isConfirmDeletionVisible = true; }
-  function hideConfirmDeletion() { _this.isConfirmDeletionVisible = false; }
-
+  function toggleShowDeletionConfirmation() {
+    _this.showDeletionConfirmation = ! _this.showDeletionConfirmation;
+  }
   function deletePrediction() {
     _this.isDeletingPrediction = true;
     PredictionService.deletePredictionById(_this.prediction.id).then(function(){
-      console.log('deleted prediction');
       _this.isDeletingPrediction = false;
       _this.onDeletePredictionSuccess({predictionId:_this.prediction.id});
     });

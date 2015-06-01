@@ -27,12 +27,8 @@ function MakePrediction( $state,  $stateParams,  previousState,  TopicService ) 
 	function addSuggestedTopic(index) {
 		var topic = _this.topicSuggestions[index];
 		_this.topic = topic;
-		_this.topicSuggestions.push(topic);
+		_this.topicSuggestions.unshift(topic);
 		_this.topicSuggestions.splice(index, 1);
-		console.log(_this.topic);
-	}
-	function removeDefaultTopic() {
-		_this.newPrediction.topic = null;
 	}
 	function onSavingNewPrediction(){
 		console.log('saving prediction');

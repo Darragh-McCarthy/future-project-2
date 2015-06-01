@@ -1,7 +1,7 @@
-<a class="header__back-button" 
+<!--<a class="header__back-button" 
 	ng-click="makePrediction.goBackToPreviousPage()">
 	Back to previous page
-</a>
+</a>-->
 
 
 <div class="make-prediction-page">	
@@ -37,7 +37,7 @@
 	</div>
 
 	<div class="make-prediction-page__topic-suggestions">
-		<div class="make-prediction-page__topic-suggestions__title">What predictions can you make under the following topics?</div>
+		<!--<div class="make-prediction-page__topic-suggestions__title">What predictions can you make under the following topics?</div>-->
 		<ul class="make-prediction-page__topic-suggestions__topics-list">
 			<li class="make-prediction-page__topic-suggestions__topic" ng-repeat="topic in makePrediction.topicSuggestions track by $index">
 				<span ng-click="makePrediction.addSuggestedTopic($index)">{{topic}}</span>

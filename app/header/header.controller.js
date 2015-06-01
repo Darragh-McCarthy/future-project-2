@@ -9,11 +9,11 @@ angular
 	.module('myApp')
 	.controller('Header', Header);
 
-Header.$inject=['$state','currentUser'];
-function Header( $state, currentUser ) {
-	var header = this;
-	header.currentUser = currentUser;	
-	header.topics = [
+Header.$inject=['currentUser'];
+function Header( currentUser ) {
+	var _this = this;
+	_this.currentUser = currentUser;	
+	_this.topics = [
 		{'title': 'Technology'},
 		{'title': 'Science'},
 		{'title': 'Space travel'},

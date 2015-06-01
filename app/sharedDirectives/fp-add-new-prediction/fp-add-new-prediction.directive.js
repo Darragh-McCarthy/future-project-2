@@ -33,12 +33,15 @@ function FpAddNewPrediction( $scope,  $state,  PredictionService,  focusElementB
 	_this.newPredictionTitle = '';
 
 	if (_this.autofocus) {
-		focusElementById('make-prediction__prediction-title-input');
+		focusElementById('fp-add-new-prediction__prediction-title-input');	
 	}
 
-	$scope.$watch('makePrediction.newPredictionTitle', function(newVal, oldVal){
+
+	$scope.$watch('makePrediction.newPredictionTitle', function(newVal, oldVal) {
 		_this.predictionValidationErrors = PredictionService.validateNewPrediction(newVal);
 	});
+
+	
 
 	function addNewPrediction(newPredictionTitle, newPredictionTopicTitle) {
 		_this.areTitleLengthErrorsVisible = true;

@@ -10,12 +10,18 @@
 	</fp-prediction-list>
 
 	<div class="prediction-list-page__featured-topics">
-		<ul>
+		<ul class="prediction-list-page__featured-topics__list">
 			<li class="prediction-list-page__featured-topic" 
 				ng-repeat="topic in predictionList.topicsCatalog">
-				<a class="prediction-list-page__featured-topics-link" ui-sref="app.topic({'topic':topic})">{{topic}}</a>
+				<a class="prediction-list-page__featured-topic__link" ui-sref="app.topic({'topic':topic})">{{topic}}</a>
 			</li>
 		</ul>
+		<form class="Add topic">
+			<label>
+				Add topic
+				<input type="text" />
+			</label>
+		</form>
 	</div>
 
 </div>

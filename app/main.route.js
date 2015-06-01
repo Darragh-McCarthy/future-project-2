@@ -1,19 +1,10 @@
 (function(){
 'use strict';
 
-
-
-
-
-
 angular.module('myApp')
   .config(configureRoutes)
   .run(logStateChangeErrors)
   .run(conditionalRedirectToLogin);
-
-
-
-
 
 
 
@@ -23,6 +14,7 @@ function configureRoutes( $stateProvider,  $urlRouterProvider ) {
   $stateProvider
     .state('app', {
       url: '/',
+      abstract: true,
       views: {
         'header': { 
           templateUrl: 'header/header.html',
@@ -74,9 +66,7 @@ function configureRoutes( $stateProvider,  $urlRouterProvider ) {
           templateUrl: 'make-prediction/make-prediction.html',
           controller: 'MakePrediction as makePrediction',
           resolve: { 'previousState': getPreviousState },
-        },
-        'header@': {}
-
+        }
       }
     })
     .state('app.login', {
@@ -109,7 +99,7 @@ function configureRoutes( $stateProvider,  $urlRouterProvider ) {
     })
   ;
 
-  $urlRouterProvider.otherwise('/');
+  $urlRouterProvider.otherwise('/recent/');
 }
 
 
@@ -118,25 +108,18 @@ function configureRoutes( $stateProvider,  $urlRouterProvider ) {
 
 logStateChangeErrors.$inject=['$rootScope'];
 function logStateChangeErrors( $rootScope ) {
-    $rootScope.$on("$stateChangeError", 
-      console.log.bind(console)
-    );
+    $rootScope.$on("$stateChangeError", console.log.bind(console));
 }
-
 
 conditionalRedirectToLogin.$inject=['$rootScope','$location','$state','currentUser'];
 function conditionalRedirectToLogin( $rootScope,  $location,  $state,  currentUser) {
-
-    $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
-
-      if ( ! currentUser.isLoggedIn() && toState.name !== "app.login" ) {
-        e.preventDefault();
-        $state.go('app.login');
-      }
-
-    });
+  $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
+    if ( ! currentUser.isLoggedIn() && toState.name !== "app.login" ) {
+      e.preventDefault();
+      $state.go('app.login');
+    }
+  });
 }
-
 
 getPreviousState.$inject=["$state"]
 function getPreviousState($state) {

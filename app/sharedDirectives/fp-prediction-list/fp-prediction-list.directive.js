@@ -52,8 +52,6 @@ function FpPredictionList( $scope,  $state ) {
 				});	
 			}
 		}
-		console.log(_this.paginationObject);
-		console.log(_this.paginationPages);
 	});
 
 	function onAddNewPredictionSuccess(prediction) {
@@ -64,17 +62,15 @@ function FpPredictionList( $scope,  $state ) {
 		_this.isSavingNewPrediction = true;
 	}
 	function expandPrediction(expandedPrediction) {
-		console.log('trying to expand');
-		angular.forEach(_this.paginationObject.predictions, function(eachPrediction){
+		_this.paginationObject.predictions.forEach(function(eachPrediction){
 			eachPrediction.isExpanded = false;
-			console.log('expanding');
 		});
 	}
 	function removePredictionFromList(predictionId) {
 		removePredictionFromArrayByPredictionId(_this.paginationObject.predictions, predictionId);
 		removePredictionFromArrayByPredictionId(_this.newlyAddedPredictions, predictionId);
 		function removePredictionFromArrayByPredictionId(arrayToSearch, id) {
-			var indexToRemove = null;
+			var indexToRemove = -1;
 			for (var i = 0; i < arrayToSearch.length; i++) {
 				if (arrayToSearch[i].id === predictionId) {
 					indexToRemove = i;

@@ -47,28 +47,25 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
         'deletePredictionById':deletePredictionById
     };
 
-function deletePredictionById(id) {
-
-    return new ParsePredictionModel({'id': id}).destroy().then(function(){
-        for (var i = 0; i < recentPredictionsCache.predictions.length; i++) {
-            if (recentPredictionsCache.predictions[i].id === id) {
-                recentPredictionsCache.predictions.splice(i, 1);
-                console.log('successfully removed prediction from recentPredictionsCache');
+    function deletePredictionById(id) {
+        return new ParsePredictionModel({'id': id}).destroy().then(function(){
+            if (recentPredictionsCache.predictions) {
+                for (var i = 0; i < recentPredictionsCache.predictions.length; i++) {
+                    if (recentPredictionsCache.predictions[i].id === id) {
+                        recentPredictionsCache.predictions.splice(i, 1);
+                    }
+                }  
             }
-        } 
-
-    });
-}
-function getPredictionById (predictionId) {
-    return new Parse.Query(ParsePredictionModel)
-        .include('topics')
-        .include('author')
-        .get(predictionId)
-        .then(castParsePredictionAsPlainObject);
-}
-
-
-
+        });
+    }
+    
+    function getPredictionById (predictionId) {
+        return new Parse.Query(ParsePredictionModel)
+            .include('topics')
+            .include('author')
+            .get(predictionId)
+            .then(castParsePredictionAsPlainObject);
+    }
 
     function getRecentPredictions(pageIndex) {
         return getPredictions(pageIndex, null, recentPredictionsCache, queryParseForRecentPredictions);
@@ -441,7 +438,7 @@ function getPredictionById (predictionId) {
         if (userProfilesPredictionsCache[prediction.author.id]) {
             userProfilesPredictionsCache[prediction.author.id].predictions.unshift(prediction);
         }
-        if (recentPredictionsCache.predictions.length) {
+        if (recentPredictionsCache.predictions) {
             recentPredictionsCache.predictions.unshift(prediction);
         }
     }

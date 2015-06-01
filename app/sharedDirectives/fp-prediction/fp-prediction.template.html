@@ -1,159 +1,186 @@
 
 
 
-<div class="prediction" ng-class="{'prediction--expanded': predictionCtrl.prediction.isExpanded}">
-  <div class="prediction__container">
+<div class="prediction" 
+    ng-class="{'prediction--expanded': predictionCtrl.prediction.isExpanded}">
+    <div class="prediction__container">
 
 
-    <div ng-if=" ! predictionCtrl.isEditingTopics">
+        <div ng-if=" ! predictionCtrl.isEditingTopics">
 
-      <!--<input type="button"
-        class="prediction__toggle-edit-topics" 
-        ng-hide="predictionCtrl.isEditingTopics" 
-        value="Edit" 
-        ng-click="predictionCtrl.toggleEditing()" />-->
-      <div class="prediction__header">
-        <span class="prediction__topics" ng-class="{'hide-first-topic':predictionList.currentTopic}">
-          <span class="prediction__topic-container" ng-repeat="topic in predictionCtrl.prediction.topics"><!--
-         --><span class="prediction__topic" 
-              ng-if="topic.title != predictionCtrl.topicToHide"
-              ng-click="predictionCtrl.navigateToTopic(topic.title)">
-              {{topic.title}}
-            </span><!--
-       --></span><span class="prediction__topic">...</span>
-        </span>
-        <a ui-sref="app.prediction({predictionId:predictionCtrl.prediction.id})" class="prediction__title" href="#">{{::predictionCtrl.prediction.title}}</a>
-      </div>
-
-      <!--
-      <div class="prediction__reasons" ng-if="predictionCtrl.prediction.isExpanded">
-        <div style="margin:0 0px;">
-          <b style="margin-top:10px;display:block;">70% likely: Jamie Oliver, Lawyer C&C Associates</b>
-          <div style="line-height:1.3em;font-weight:normal">Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur</div>
-          <b style="margin-top:10px;display:block;">80% likely: Jamie Oliver, Lawyer C&C Associates</b>
-          <div style="line-height:1.3em;font-weight:normal;"> a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.</div>
-          <label style="margin:10px 0;display:block;"><b>What's your reason?</b>
-            <input type="text" />
-          </label>
-        </div>
-        <div>The likelihood of this happening as votes by our community</div>
-      </div>-->
-      
-
-      <div class="likelihood">
-        <div class="likelihood__community-estimate">
-          <div ng-if="predictionCtrl.prediction.isExpanded">
-            <div class="likelihood__community-estimate__graph">
-              <div class="likelihood__community-estimate__graph-bar" ng-repeat="estimate in predictionCtrl.prediction.communityEstimates">
-                <div ng-style="estimate.graphBarHeight"></div>
-              </div>
-              <div class="likelihood__community-estimate__count">{{predictionCtrl.prediction.communityEstimatesCount}} votes</div>
+            <input type="button"
+                class="prediction__toggle-edit-topics" 
+                ng-hide="predictionCtrl.isEditingTopics" 
+                value="Edit" 
+                ng-click="predictionCtrl.toggleEditing()" />
+            <div class="prediction__header">
+                <span class="prediction__topics" ng-class="{'hide-first-topic':predictionList.currentTopic}">
+                    <span class="prediction__topic" 
+                        ng-if="topic.title != predictionCtrl.topicToHide"
+                        ng-click="predictionCtrl.navigateToTopic(topic.title)"
+                        ng-repeat="topic in predictionCtrl.prediction.topics">
+                        {{topic.title}}
+                    </span><span class="prediction__topic" 
+                        ng-click="predictionCtrl.toggleEditing()">
+                        <span ng-if="predictionCtrl.prediction.topics.length === 0">
+                            <b>Add topics</b>
+                        </span>
+                        ...
+                    </span>
+                </span>
+                <a ui-sref="app.prediction({predictionId:predictionCtrl.prediction.id})" 
+                    class="prediction__title">
+                    {{::predictionCtrl.prediction.title}}
+                </a>
             </div>
-          </div>
-        </div>
-        <!--<fp-likelihood-user-estimate prediction="predictionCtrl.prediction"></fp-likelihood-user-estimate>-->
-        <div class="likelihood__user-estimate">
-          <div class="likelihood__user-estimate-option" 
-            ng-click="predictionCtrl.toggleLikelihoodEstimate(estimate.percent)" 
-            ng-repeat="estimate in predictionCtrl.prediction.communityEstimates track by $index" 
-            ng-class="{'likelihood__user-estimate-option--active': estimate.percent == predictionCtrl.prediction.userEstimate.likelihoodEstimatePercent}"><span class="test"><!--
-            --><span class="percent">{{::estimate.percent}}</span><span class="show-on-active">%<br/>likely</span><!--
-              --></span><!--
-          --></div>
-        </div>
-      </div>
 
-
-
-      
-
-
-
-    </div>
-
-
-
-    <div ng-if="predictionCtrl.isEditingTopics">
-
-      <div class="edit-prediction">
-        <div class="edit-prediction__delete-report-buttons">
-          <div class="edit-prediction__delete-prediction">
-            <button class="edit-prediction__delete-prediction-button" 
-              ng-show="predictionCtrl.currentUserIsAuthor && ! predictionCtrl.isConfirmDeletionVisible"
-              ng-click="predictionCtrl.showConfirmDeletion()">Delete</button>
-            <div class="edit-prediction_delete-prediction-confirmation" ng-show="predictionCtrl.isConfirmDeletionVisible">
-              Are you sure you want to delete this prediction?
-              <button ng-click="predictionCtrl.hideConfirmDeletion()">Cancel</button>
-              <button ng-click="predictionCtrl.deletePrediction()">Delete</button>
+            <!--
+            <div class="prediction__reasons" ng-if="predictionCtrl.prediction.isExpanded">
+            <div style="margin:0 0px;">
+              <b style="margin-top:10px;display:block;">70% likely: Jamie Oliver, Lawyer C&C Associates</b>
+              <div style="line-height:1.3em;font-weight:normal">Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur</div>
+              <b style="margin-top:10px;display:block;">80% likely: Jamie Oliver, Lawyer C&C Associates</b>
+              <div style="line-height:1.3em;font-weight:normal;"> a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.</div>
+              <label style="margin:10px 0;display:block;"><b>What's your reason?</b>
+                <input type="text" />
+              </label>
             </div>
-          </div>
-  
-          <button class="edit-prediction__report-prediction-button" ng-show="{{!predictionCtrl.currentUserIsAuthor}}">Report</button>        
+            <div>The likelihood of this happening as votes by our community</div>
+            </div>-->
+
+
+            <div class="likelihood">
+                <div class="likelihood__community-estimate">
+                    <div ng-if="predictionCtrl.prediction.isExpanded">
+                        <div class="likelihood__community-estimate__graph">
+                            <div class="likelihood__community-estimate__graph-bar" 
+                                ng-repeat="estimate in predictionCtrl.prediction.communityEstimates">
+                                <div ng-style="estimate.graphBarHeight"></div>
+                            </div>
+                            <div class="likelihood__community-estimate__count">
+                                {{predictionCtrl.prediction.communityEstimatesCount}} votes
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--<fp-likelihood-user-estimate prediction="predictionCtrl.prediction"></fp-likelihood-user-estimate>-->
+                <div class="likelihood__user-estimate">
+                    <div class="likelihood__user-estimate-option" 
+                        ng-click="predictionCtrl.toggleLikelihoodEstimate(estimate.percent)" 
+                        ng-repeat="estimate in predictionCtrl.prediction.communityEstimates track by $index" 
+                        ng-class="{'likelihood__user-estimate-option--active': estimate.percent == predictionCtrl.prediction.userEstimate.likelihoodEstimatePercent}"><span class="test"><!--
+                        --><span class="percent">{{::estimate.percent}}</span><span class="show-on-active">%<br/>likely</span><!--
+                        --></span><!--
+                 --></div>
+                </div>
+            </div>
         </div>
 
-        <input type="button" 
-          class="prediction__toggle-edit-topics" 
-          ng-hide="predictionCtrl.showTopicEditingByDefault" 
-          ng-click="predictionCtrl.toggleEditing()"
-          value="Back" />
-        <div class="prediction__header">
-        
-          
-          <a class="prediction__title" href="#">{{::predictionCtrl.prediction.title}}</a>
 
 
-          <span class="prediction__topics editing-prediction-topics">
-            <span ng-repeat="topic in predictionCtrl.prediction.topics">
-              <span class="prediction__topic">
-                {{topic.title}} 
-                <span class="edit-prediction__delete-topic" ng-click="predictionCtrl.removeTopicFromPrediction(topic.id)">×</span>
-              </span>
-            </span>
-            <span class="prediction__topic__preview-while-saving" ng-if="predictionCtrl.topicIsSavingMessage">
-              <b>Adding</b> {{predictionCtrl.topicIsSavingMessage}}
-            </span>
-          </span>
+
+        <div class="edit-prediction" 
+            ng-if="predictionCtrl.isEditingTopics">
+            <input type="button" 
+                class="prediction__toggle-edit-topics" 
+                ng-hide="predictionCtrl.showTopicEditingByDefault" 
+                ng-click="predictionCtrl.toggleEditing()"
+                value="Back" 
+            />
+            <!--
+            <div class="edit-prediction__delete-report-buttons">
+                
+
+                <button class="edit-prediction__report-prediction-button" 
+                    ng-show="{{!predictionCtrl.currentUserIsAuthor}}">
+                    Report
+                </button>        
+            </div>-->
+
+            
+
+            
+
+            <form class="edit-prediction__add-topics-form" 
+                ng-if="predictionCtrl.prediction.topics.length < predictionCtrl.maxTopicsPerPrediction">
+
+                <div class="edit-prediction__prediction-title">
+                    {{::predictionCtrl.prediction.title}}
+                </div>
+                <div class="edit-prediction__topics">
+                    <span class="edit-prediction__topic" 
+                        ng-repeat="topic in predictionCtrl.prediction.topics">
+                        {{topic.title}} 
+                        <span class="edit-prediction__delete-topic" 
+                            ng-click="predictionCtrl.removeTopicFromPrediction(topic.id)">
+                            ×
+                        </span>
+                    </span>
+                    <span class="prediction__topic__preview-while-saving" 
+                        ng-if="predictionCtrl.topicIsSavingMessage">
+                        <b>Adding</b> 
+                        {{predictionCtrl.topicIsSavingMessage}}
+                    </span>
+                </div>
+
+                <span class="prediction__topics-not-set-notice" 
+                    ng-hide="predictionCtrl.prediction.topics.length">
+                    This prediction appears in 
+                    <b>0 topics</b>. 
+                    Add some relevant topics
+                </span>
+                <label class="edit-prediction__add-topics-label">
+                    Add Topic
+                    <input type="text" 
+                    id="edit-prediction__topic-title-input" 
+                    ng-model="predictionCtrl.newTopicTitle" />
+                </label>
+                <button class="edit-prediction__add-topic-button" 
+                    ng-show="predictionCtrl.newTopicTitle.length >= 2" 
+                    ng-click="predictionCtrl.addTopicFromInputToPrediction()">
+                    Add topic
+                </button>
+                <div class="edit-prediction__suggested-topics" 
+                    ng-if="predictionCtrl.prediction.topics.length === 0">
+                    <span class="edit-prediction__suggested-topics-title">
+                        Suggestions:
+                    </span>
+                    <ul class="edit-prediction__suggested-topics-list">
+                        <li class="edit-prediction__suggested-topics-topic" 
+                        ng-repeat="suggestedTopicTitle in predictionCtrl.suggestedTopicTitles" 
+                        ng-click="predictionCtrl.addTopicFromSuggestedTopics($index)">
+                        {{suggestedTopicTitle}}
+                        </li>
+                    </ul>
+                </div>
+            </form>
+
+
+            <div class="edit-prediction__next-step-container" 
+                ng-if="predictionCtrl.prediction.topics.length">
+                <input type="button" 
+                    class="edit-prediction__next-step-container__next-button" 
+                    value="Done"  
+                    ng-show="!predictionCtrl.showDeletionConfirmation"
+                    ng-click="predictionCtrl.toggleEditing()"
+                />
+
+                <button class="edit-prediction__delete-prediction-button" 
+                    ng-show="predictionCtrl.currentUserIsAuthor && ! predictionCtrl.showDeletionConfirmation"
+                    ng-click="predictionCtrl.toggleShowDeletionConfirmation()">
+                    Delete prediction
+                </button>
+                    
+                <div class="edit-prediction_delete-prediction-confirmation" 
+                    ng-show="predictionCtrl.showDeletionConfirmation">
+                    Are you sure you want to delete this prediction?
+                    <button ng-click="predictionCtrl.toggleShowDeletionConfirmation()">Cancel</button>
+                    <button ng-click="predictionCtrl.deletePrediction()">Delete</button>
+                </div>
+            </div>
+
         </div>
-
-      
-
-
-        <form class="edit-prediction__add-topics" ng-if="predictionCtrl.prediction.topics.length < predictionCtrl.maxTopicsPerPrediction">
-        <span class="prediction__topics-not-set-notice" ng-hide="predictionCtrl.prediction.topics.length">
-          This prediction appears in <b>0 topics</b>. Add at least one relevant topic
-        </span>
-          <label class="edit-prediction__add-topics-label">
-            Add Topic
-            <input type="text" id="edit-prediction__topic-title-input" ng-model="predictionCtrl.newTopicTitle" />
-          </label>
-          <button class="edit-prediction__add-topic-button" 
-            ng-show="predictionCtrl.newTopicTitle.length >= 2" 
-            ng-click="predictionCtrl.addTopicFromInputToPrediction()">
-            Add topic
-          </button>
-          <div class="edit-prediction__suggested-topics" ng-if="predictionCtrl.prediction.topics.length === 0">
-            <span class="edit-prediction__suggested-topics-title">Suggestions:</span>
-            <ul class="edit-prediction__suggested-topics-list">
-              <li class="edit-prediction__suggested-topics-topic" 
-                ng-repeat="suggestedTopicTitle in predictionCtrl.suggestedTopicTitles" 
-                ng-click="predictionCtrl.addTopicFromSuggestedTopics($index)">
-                {{suggestedTopicTitle}}
-              </li>
-            </ul>
-          </div>
-        </form>
-
-        <div class="next-container" ng-if="predictionCtrl.prediction.topics.length">
-          <input type="button" class="prediction-next-step" value="Done"  ng-click="predictionCtrl.toggleEditing()" />
-        </div>
-      </div>
-
-
     </div>
-    
-
-
-  </div>
 </div>
 
 
