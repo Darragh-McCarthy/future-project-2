@@ -1,23 +1,28 @@
 
 
-<div class="user-profile">
-
+<div class="user-profile-page">
 	
-	<div class="user-profile__centered-box">
-		<div class="user-profile__user-overview">
-			<img class="user-profile__user-photo-big" ng-src="{{userProfile.currentUser.userBigPictureUrl}}"/>
-			<div class="user-profile__user-text">
-				<div class="user-profile__fullname">{{userProfile.currentUser.copyOfBasicFacebookUserData.name}}</div>
-				<button class="user-profile__logout-button" ng-click="userProfile.logout()">Logout</button>
+	<div class="user-profile-page__centered-box">
+		<div class="user-profile-page__user-overview">
+			<img class="user-profile-page__user-photo-big" ng-src="{{userProfile.userToDisplay.userBigPictureUrl}}"/>
+			<div class="user-profile-page__user-text">
+				<div class="user-profile-page__fullname">{{userProfile.userToDisplay.copyOfBasicFacebookUserData.name}}</div>
+				<button class="user-profile-page__logout-button" 
+					ng-click="userProfile.logout()"
+					ng-if="userProfile.currentUser.userId === userProfile.userToDisplay.id">
+					Logout
+				</button>
 			</div>
 		</div>
-		<fp-prediction-list
-  	pagination-object="userProfile.paginationObject"> 
-
-  </fp-prediction-list>
-
+		<div class="user-profile-page__fp-add-new-prediction-container">
+			<div>Predictions made by {{userProfile.userToDisplay.copyOfBasicFacebookUserData.name}}</div>
+			<fp-prediction-list 
+				pagination-object="userProfile.paginationObject"
+				show-add-prediction-form="">
+			</fp-prediction-list>
+		</div>
+		
 	</div>
-	
   
 </div>
 

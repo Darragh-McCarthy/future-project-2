@@ -6,29 +6,40 @@ angular.module('myApp')
 	.controller('MakePrediction', MakePrediction);
 
 
-MakePrediction.$inject=['$state','$stateParams','previousState','TopicService'];
-function MakePrediction( $state,  $stateParams,  previousState,  TopicService ) {	
+MakePrediction.$inject=['$scope','$window','$state','$stateParams','previousState','TopicService'];
+function MakePrediction( $scope,  $window,  $state,  $stateParams,  previousState,  TopicService ) {	
+	scroll(0, 0);
+
 	var _this = this;
 	_this.goBackToPreviousPage = goBackToPreviousPage;	
 	_this.newlyAddedPredictions = [];
 	_this.topicSuggestions = angular.copy(TopicService.featuredTopicTitles);
+	_this.topicSuggestionsPreviouslySelected = [];
 	_this.addSuggestedTopic = addSuggestedTopic;
 	_this.topic = $stateParams.topic;
 	_this.onAddNewPredictionSuccess = onAddNewPredictionSuccess;
     _this.onSavingNewPrediction = onSavingNewPrediction;
 
+    if (_this.topic) {
+    	_this.topicSuggestionsPreviouslySelected.push(_this.topic);
+    }
+
+    $scope.$watch('makePrediction.topic', function(newVal, oldVal){
+    	if (oldVal) {
+    		_this.topicSuggestionsPreviouslySelected.unshift(oldVal);
+    	}
+    });
+
 	function goBackToPreviousPage() {
 		if (previousState) {
 			$state.go(previousState.name, previousState.params);
 		} else {
-			$state.go('app');
+			$window.location.href = '/';
 		}
 	}
-	function addSuggestedTopic(index) {
-		var topic = _this.topicSuggestions[index];
-		_this.topic = topic;
-		_this.topicSuggestions.unshift(topic);
-		_this.topicSuggestions.splice(index, 1);
+	function addSuggestedTopic(list, index) {
+		_this.topic = list[index];
+		list.splice(index, 1);
 	}
 	function onSavingNewPrediction(){
 		console.log('saving prediction');

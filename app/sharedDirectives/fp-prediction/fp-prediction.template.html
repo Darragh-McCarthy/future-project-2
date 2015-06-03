@@ -3,30 +3,30 @@
 
 <div class="prediction" 
     ng-class="{'prediction--expanded': predictionCtrl.prediction.isExpanded}">
+
     <div class="prediction__container">
 
-
-        <div ng-if=" ! predictionCtrl.isEditingTopics">
-
+        <div ng-if="!predictionCtrl.isEditingTopics">
             <input type="button"
                 class="prediction__toggle-edit-topics" 
                 ng-hide="predictionCtrl.isEditingTopics" 
                 value="Edit" 
                 ng-click="predictionCtrl.toggleEditing()" />
             <div class="prediction__header">
-                <span class="prediction__topics" ng-class="{'hide-first-topic':predictionList.currentTopic}">
-                    <span class="prediction__topic" 
+                <span class="prediction__topics"><!--
+                    --><span class="prediction__topic" 
                         ng-if="topic.title != predictionCtrl.topicToHide"
                         ng-click="predictionCtrl.navigateToTopic(topic.title)"
                         ng-repeat="topic in predictionCtrl.prediction.topics">
                         {{topic.title}}
-                    </span><span class="prediction__topic" 
-                        ng-click="predictionCtrl.toggleEditing()">
-                        <span ng-if="predictionCtrl.prediction.topics.length === 0">
-                            <b>Add topics</b>
-                        </span>
+                    </span><!--
+                 --><span class="prediction__topic" 
+                        ng-mouseover="predictionCtrl.toggleAddTopicInline()">
                         ...
-                    </span>
+                    </span><!--
+            --></span><!--
+            --><span ng-if="predictionCtrl.showDateAdded">
+                    {{predictionCtrl.prediction.createdAt}}
                 </span>
                 <a ui-sref="app.prediction({predictionId:predictionCtrl.prediction.id})" 
                     class="prediction__title">
@@ -81,21 +81,12 @@
 
         <div class="edit-prediction" 
             ng-if="predictionCtrl.isEditingTopics">
-            <input type="button" 
+            <!--<input type="button" 
                 class="prediction__toggle-edit-topics" 
                 ng-hide="predictionCtrl.showTopicEditingByDefault" 
                 ng-click="predictionCtrl.toggleEditing()"
                 value="Back" 
-            />
-            <!--
-            <div class="edit-prediction__delete-report-buttons">
-                
-
-                <button class="edit-prediction__report-prediction-button" 
-                    ng-show="{{!predictionCtrl.currentUserIsAuthor}}">
-                    Report
-                </button>        
-            </div>-->
+            />-->
 
             
 
@@ -156,14 +147,18 @@
             </form>
 
 
-            <div class="edit-prediction__next-step-container" 
-                ng-if="predictionCtrl.prediction.topics.length">
+            <div class="edit-prediction__next-step-container">
                 <input type="button" 
                     class="edit-prediction__next-step-container__next-button" 
                     value="Done"  
-                    ng-show="!predictionCtrl.showDeletionConfirmation"
+                    ng-show="!predictionCtrl.showDeletionConfirmation && predictionCtrl.prediction.topics.length"
                     ng-click="predictionCtrl.toggleEditing()"
-                />
+                />                
+
+                <button class="edit-prediction__report-prediction-button" 
+                    ng-show="{{!predictionCtrl.currentUserIsAuthor}}">
+                    Report
+                </button>        
 
                 <button class="edit-prediction__delete-prediction-button" 
                     ng-show="predictionCtrl.currentUserIsAuthor && ! predictionCtrl.showDeletionConfirmation"

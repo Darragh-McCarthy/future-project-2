@@ -11,16 +11,17 @@ angular.module('myApp')
 
 configureRoutes.$inject=['$stateProvider','$urlRouterProvider'];
 function configureRoutes( $stateProvider,  $urlRouterProvider ) {  
-  $stateProvider
+    $stateProvider
     .state('app', {
       url: '/',
       abstract: true,
       views: {
+        'content': {},
+        'logo': { template:'<div class="header__logo-container"><div class="header__logo"></div></div>' },
         'header': { 
           templateUrl: 'header/header.html',
-          controller: 'Header as header'
-        },
-        'content': {}
+          controller: 'Header as header',
+        }
       }
     })
     .state('app.recent', {
@@ -62,6 +63,7 @@ function configureRoutes( $stateProvider,  $urlRouterProvider ) {
     .state('app.make-prediction', {
       url: 'make-prediction?topic=',
       views: {
+        'logo@': {},
         'content@': {
           templateUrl: 'make-prediction/make-prediction.html',
           controller: 'MakePrediction as makePrediction',
@@ -73,6 +75,7 @@ function configureRoutes( $stateProvider,  $urlRouterProvider ) {
       url: 'login',
       views: {
         'header@': {},
+        'logo@': {},
         'content@': {
           templateUrl: 'login/login.html',
           controller: 'Login as login'
@@ -87,7 +90,6 @@ function configureRoutes( $stateProvider,  $urlRouterProvider ) {
           controller: 'UserProfile as userProfile'
         },
       },
-
     })
     .state('app.prediction-guidelines', {
       url: 'prediction-guidelines',
@@ -96,10 +98,12 @@ function configureRoutes( $stateProvider,  $urlRouterProvider ) {
           templateUrl: 'pages/prediction-guidelines.template.html'
         }
       }
-    })
-  ;
+    });
 
-  $urlRouterProvider.otherwise('/recent/');
+    $urlRouterProvider.otherwise( function($injector, $location) {
+      var $state = $injector.get("$state");
+      $state.go("app.recent");
+    });
 }
 
 
@@ -114,10 +118,12 @@ function logStateChangeErrors( $rootScope ) {
 conditionalRedirectToLogin.$inject=['$rootScope','$location','$state','currentUser'];
 function conditionalRedirectToLogin( $rootScope,  $location,  $state,  currentUser) {
   $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
-    if ( ! currentUser.isLoggedIn() && toState.name !== "app.login" ) {
-      e.preventDefault();
-      $state.go('app.login');
-    }
+    currentUser.isLoggedIn().then(function(isLoggedIn){
+      if ( ! isLoggedIn && toState.name !== "app.login" ) {
+        $state.go('app.login');
+        e.preventDefault();
+      }
+    });
   });
 }
 

@@ -1,21 +1,21 @@
 
+make likelihood selection more responsive
+
+
 git commit on every additional feature
 
 
 Prioritise
-
-	pagination
 	assign access rights to different Parse models
 	notifications
 	Reasons for prediction
 	Fb permissions for public deployment
-	delete prediction
 	report prediction
 
 adding likelihood estimate before estimates have downloaded
 
 Ignorable Bugs
-	when selecting from the list of suggested topics, focus is taken from the new topic input field
+	
 	When viewing predictions in a topic, edit topics indicated 0 topics
 	reloading make-prediction breaks back header link
 
@@ -60,17 +60,30 @@ later
 	back to top button
 
 
-	careful what access rights users have with other user objects: email access
+	access rights user object: email access
+	
 	add add-new-prediction form to user profile
-
-	delete/report predictions
-	can delete prediction if not author?
-
-	fp-prediction-list loading sign doesn't disappear if no predictions found
 
 	images
 
+	add topic
+
+
+	make-prediction-page:
+		click topic twice to navigate to that page
+
+	fp-prediction-list 
+		loading sign doesn't disappear if no predictions found
+
+	fp-prediction:
+		when selecting suggested topic, focus taken from topic input field
+		delete prediction shouldn't actually delete, but set a deleted property to true
+		report
 
 
 
-make-prediction-page annoying if can't navigate to suggested topics pages
+
+
+
+
+

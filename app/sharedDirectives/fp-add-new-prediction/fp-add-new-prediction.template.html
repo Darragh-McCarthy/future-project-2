@@ -1,30 +1,37 @@
-  <form class="fp-add-new-prediction">  
+<form class="fp-add-new-prediction">  
     <label>
-      <div class="fp-add-new-prediction__prediction-title-label" ng-if=" ! makePrediction.hideLabel">
-        <span >
-          <span ng-hide="::makePrediction.isAddingSecondPrediction">What is your</span>
-          <span ng-show="::makePrediction.isAddingSecondPrediction"><b>Add another</b></span>        
-        </span>
-        <span class="fp-add-new-prediction__topic"
-          ng-if="makePrediction.topic">
-          {{makePrediction.topic}}
-          <span class="fp-add-new-prediction__delete-topic" ng-click="makePrediction.removeDefaultTopic()">×</span>
-        </span>
-        <span>
-          <span ng-hide="::makePrediction.isAddingSecondPrediction">prediction?</span>
-          <span ng-show="::makePrediction.isAddingSecondPrediction"><b>prediction</b></span>        
-        </span>
-      </div>
+        <div class="fp-add-new-prediction__prediction-title-label" ng-if=" ! makePrediction.hideLabel">
+            <span>
+                <span ng-hide="::makePrediction.isAddingSecondPrediction">
+                    What is your
+                </span>
+                <span ng-show="::makePrediction.isAddingSecondPrediction">
+                    <b>Add another</b>
+                </span>        
+            </span>
+            <span class="fp-add-new-prediction__topic"
+                ng-if="makePrediction.topic">
+                    {{makePrediction.topic}}
+                <span class="fp-add-new-prediction__delete-topic" 
+                    ng-click="makePrediction.removeDefaultTopic()">
+                    ×
+                </span>
+            </span>
+            <span>
+                <span ng-hide="::makePrediction.isAddingSecondPrediction">prediction?</span>
+                <span ng-show="::makePrediction.isAddingSecondPrediction"><b>prediction</b></span>        
+            </span>
+        </div>
 
-      <ul class="fp-add-new-prediction__title-error-messages">
-        <li ng-repeat="errorMessage in makePrediction.predictionValidationErrors.predictionTitleLengthErrors" 
-          ng-if="makePrediction.areTitleLengthErrorsVisible">
-          {{errorMessage}}
-        </li>
-        <li ng-repeat="errorMessage in makePrediction.predictionValidationErrors.predictionTitleContentErrors">
-          {{errorMessage}}
-        </li>
-      </ul>
+        <ul class="fp-add-new-prediction__title-error-messages">
+            <li ng-repeat="errorMessage in makePrediction.predictionValidationErrors.predictionTitleLengthErrors" 
+                ng-if="makePrediction.areTitleLengthErrorsVisible">
+                {{errorMessage}}
+            </li>
+            <li ng-repeat="errorMessage in makePrediction.predictionValidationErrors.predictionTitleContentErrors">
+                {{errorMessage}}
+            </li>
+        </ul>
 
       <div class="fp-add-new-prediction__questions-not-allowed-explanation" 
         ng-if="makePrediction.predictionValidationErrors.predictionTitleContentErrors">
@@ -34,10 +41,7 @@
           View Prediction Guidelines
         </a>
       </div>
-      <!--<img class="fp-add-new-prediction__user-thumbnail" 
-        ng-src="{{makePrediction.currentUser.userThumbnailUrl}}"
-        ui-sref="app.user-profile({userId:makePrediction.currentUser.userId})"
-        />-->
+
       <div class="fp-add-new-prediction__input">
         <input type="text" 
           id="fp-add-new-prediction__prediction-title-input" 
@@ -48,7 +52,6 @@
           ng-if="makePrediction.hideLabel" 
           id="fp-add-new-prediction__prediction-title-input" 
           ng-model="makePrediction.newPredictionTitle" 
-          autofocus
           autocomplete="off"
           placeholder="Add your {{makePrediction.topic}} prediction" />
       </div>

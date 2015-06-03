@@ -36,11 +36,23 @@
 		</fp-add-new-prediction>	
 	</div>
 
-	<div class="make-prediction-page__topic-suggestions">
-		<!--<div class="make-prediction-page__topic-suggestions__title">What predictions can you make under the following topics?</div>-->
+	<div class="make-prediction-page__topic-suggestions" ng-if="makePrediction.topicSuggestionsPreviouslySelected.length">
+		<div class="make-prediction-page__topic-suggestions__title">You previously selected:</div>
 		<ul class="make-prediction-page__topic-suggestions__topics-list">
-			<li class="make-prediction-page__topic-suggestions__topic" ng-repeat="topic in makePrediction.topicSuggestions track by $index">
-				<span ng-click="makePrediction.addSuggestedTopic($index)">{{topic}}</span>
+			<li class="make-prediction-page__topic-suggestions__topic" 
+				ng-click="makePrediction.addSuggestedTopic(makePrediction.topicSuggestionsPreviouslySelected, $index)"
+				ng-repeat="topic in makePrediction.topicSuggestionsPreviouslySelected track by $index">
+				{{topic}}
+			</li>
+		</ul>
+	</div>
+	<div class="make-prediction-page__topic-suggestions">
+		<div class="make-prediction-page__topic-suggestions__title">Can you make predictions for the following topics?</div>
+		<ul class="make-prediction-page__topic-suggestions__topics-list">
+			<li class="make-prediction-page__topic-suggestions__topic" 
+				ng-repeat="topic in makePrediction.topicSuggestions track by $index"
+				ng-click="makePrediction.addSuggestedTopic(makePrediction.topicSuggestions, $index)">
+				{{topic}}
 			</li>
 		</ul>
 	</div>

@@ -9,6 +9,7 @@ PredictionService.$inject=['$q','TopicService','LikelihoodEstimateService','User
 function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  UserService ) {
 
     var ParsePredictionModel = Parse.Object.extend('Prediction');
+    var ParseCommunityLikelihoodEstimatesCounterModel = Parse.Object.extend('CommunityLikelihoodEstimatesCounter');
 
     var NUM_PREDICTIONS_PER_PARSE_QUERY = 100;
     var PREDICTIONS_PER_PAGE = 20;
@@ -36,9 +37,7 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
         'createNewPrediction': createNewPrediction,
         'createNewPredictionWithTopicTitle':createNewPredictionWithTopicTitle,
         'getPredictionsByTopicTitle': getPredictionsByTopicTitle,
-        'addLikelihoodEstimate': addLikelihoodEstimate,
         'getPredictionById': getPredictionById,
-        'removeLikelihoodEstimate': removeLikelihoodEstimate,
         'getPredictionsByAuthorId': getPredictionsByAuthorId,
         'validateNewPrediction': validateNewPrediction,
         'newPredictionDataConstraints': newPredictionDataConstraints,
@@ -60,11 +59,23 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
     }
     
     function getPredictionById (predictionId) {
+        var userThumbnailUrl;
+        var userBigPictureUrl;
         return new Parse.Query(ParsePredictionModel)
             .include('topics')
             .include('author')
             .get(predictionId)
-            .then(castParsePredictionAsPlainObject);
+            .then(function(prediction){
+                userThumbnailUrl = prediction.get('author').get('userThumbnailUrl');
+                userBigPictureUrl = prediction.get('author').get('userBigPictureUrl');
+                return prediction;
+            })
+            .then(castParsePredictionAsPlainObject)
+            .then(function(prediction){
+                prediction.author.userThumbnailUrl = userThumbnailUrl;
+                prediction.author.userBigPictureUrl = userBigPictureUrl;
+                return prediction;
+            })
     }
 
     function getRecentPredictions(pageIndex) {
@@ -138,7 +149,6 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
             .limit(NUM_PREDICTIONS_PER_PARSE_QUERY)
             .find()
             .then(function(predictions){
-                console.log('fetched recent predictions from Parse');
                 var response = {
                     predictions: predictions || [],
                 }
@@ -217,7 +227,6 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
         .limit(NUM_PREDICTIONS_PER_PARSE_QUERY)
         .find()
         .then(function(predictions){
-            console.log('fetched predictions by author id from Parse');
             var response = {
                 predictions: predictions || []
             }
@@ -268,89 +277,55 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
   }
 
 
-  function createNewPredictionWithTopicTitle(predictionTitle, topicTitle) {
-    return $q(function(resolve, reject) {
-      TopicService.getOrCreateNewTopicsByTitle([topicTitle]).then(function(topics){
-        if ( ! topics ) {
-          reject();
-          return;
-        }
-        else {
-          var predictionValidation = validateNewPrediction(predictionTitle);
-          var currentUser = Parse.User.current();
-          if (currentUser && _.size(predictionValidation) === 0) {
-            new ParsePredictionModel().save({
-                'title': predictionTitle,
-                'author': currentUser,
-                'topics': topics
-              })
-              .then(function(newParsePrediction) {
-                var prediction = castParsePredictionAsPlainObject(newParsePrediction, topics);
-                addPredictionToCache(prediction);
-                resolve(prediction);
-              });
-          }
-          else {
-            reject();
-            return;
-          }
-        }
-      });
-    });
-  }
-  function createNewPrediction(predictionTitle) {
-    return $q(function(resolve, reject) {
-      var predictionValidation = validateNewPrediction(predictionTitle);
-      var currentUser = Parse.User.current();
-      if (currentUser && _.size(predictionValidation) === 0) {
-        new ParsePredictionModel().save({
-            'title': predictionTitle,
-            'author': currentUser,
-            'topics': []
-          })
-          .then(function(newParsePrediction) {
-            var prediction = castParsePredictionAsPlainObject(newParsePrediction);
-            addPredictionToCache(prediction);
-            resolve(prediction);
-          });
-      }
-      else {
-        reject();
-        return;
-      }
-    });
-  }
-  function addLikelihoodEstimate(predictionId, percent) {
-    return $q(function(resolve, reject) {
-      var currentUser = Parse.User.current();
-      var predictionLikelihoodEstimateOptions = [0,10,20,30,40,50,60,70,80,90,100];
-      if ( currentUser && predictionLikelihoodEstimateOptions.indexOf(percent) > -1 ) {
-        var prediction = new ParsePredictionModel;
-        prediction.id = predictionId;
-        LikelihoodEstimateService.addNew(currentUser, prediction, percent).then(function(newLikelihoodEstimate){
-          prediction.increment('percentEstimateCount' + percent);
-          prediction.save().then(function(){
-            resolve(newLikelihoodEstimate);
-          });
-        });
-      }
-      else {
-        reject();
-        return;
-      }
-    });
-  }
+    function createNewPredictionWithTopicTitle(predictionTitle, topicTitle) {
+        return $q(function(resolve, reject) {
+            TopicService.getOrCreateNewTopicsByTitle([topicTitle]).then(function(topics){
+                var currentUser = Parse.User.current();
+                var predictionValidation = validateNewPrediction(predictionTitle);
 
-  function removeLikelihoodEstimate(predictionId, estimateId, percent) {
-    return LikelihoodEstimateService.deleteEstimate(estimateId).then(function(newLikelihoodEstimate){
-      var prediction = new ParsePredictionModel;
-      prediction.id = predictionId;
-      prediction.increment('percentEstimateCount' + percent, -1);
-      return prediction.save().then(function(){
-        return newLikelihoodEstimate;
-      });
-    });
-  }
+                if ( ! topics || ! currentUser || _.size(predictionValidation) > 0 ) {
+                  return reject();
+                }
+
+                var newParsePredictionModel = new ParsePredictionModel;
+                newParsePredictionModel.setACL(new Parse.ACL(currentUser));
+                newParsePredictionModel.save({
+                    'title': predictionTitle,
+                    'author': currentUser,
+                    'topics': topics,
+                    //'communityLikelihoodEstimatesCounter': new ParseCommunityLikelihoodEstimatesCounterModel
+                })
+                .then(function(newParsePrediction) {
+                    var prediction = castParsePredictionAsPlainObject(newParsePrediction, topics);
+                    addPredictionToCache(prediction);
+                    resolve(prediction);
+                });
+            });
+        });
+    }
+    function createNewPrediction(predictionTitle) {
+        return $q(function(resolve, reject) {
+            var predictionValidation = validateNewPrediction(predictionTitle);
+            var currentUser = Parse.User.current();
+            if ( ! currentUser || _.size(predictionValidation) > 0) {
+                console.log('rejected');
+                return reject();
+            }
+            new ParsePredictionModel().save({
+                    'title': predictionTitle,
+                    'author': currentUser,
+                    'topics': []
+                })
+                .then(function(newParsePrediction) {
+                    var prediction = castParsePredictionAsPlainObject(newParsePrediction);
+                    addPredictionToCache(prediction);
+                    console.log('prediction resolved');
+                    resolve(prediction);
+                });
+        });
+    }
+
+
 
 
   function castParsePredictionsAsPlainObjects(parsePredictions) {
@@ -363,11 +338,11 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
   function castParsePredictionAsPlainObject(parsePrediction, parseTopics) {
     if ( ! parsePrediction ) return [];
 
-    if ( ! parseTopics ) {
-      parseTopics = parsePrediction.get('topics');
-    }
+    parseTopics = parseTopics || parsePrediction.get('topics');
+
     var parseAuthor = parsePrediction.get('author');
     var author = UserService.castParseUserAsPlainObject(parseAuthor);
+
     var prediction = {
       'id':                       parsePrediction.id,
       'author':                   author,

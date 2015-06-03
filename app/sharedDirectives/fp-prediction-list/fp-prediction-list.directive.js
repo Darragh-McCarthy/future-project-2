@@ -23,18 +23,27 @@ angular.module('myApp')
 
 
 
-FpPredictionList.$inject=['$scope','$state'];
-function FpPredictionList( $scope,  $state ) {
+FpPredictionList.$inject=['$scope','$state','$window'];
+function FpPredictionList( $scope,  $state,  $window ) {
+	$window.scroll(0,0);
+
+	var IS_LARGE_SCREEN_HEIGHT = 500;
+	
 	var _this = this;
 	_this.newlyAddedPredictions = [];
 	_this.onAddNewPredictionSuccess = onAddNewPredictionSuccess;
 	_this.onSavingNewPrediction = onSavingNewPrediction;
 	_this.expandPrediction = expandPrediction;
 	_this.removePredictionFromList = removePredictionFromList;
-	_this.onClickPreviousPage = onClickPreviousPage;
-	_this.onClickNextPage = onClickNextPage;
 	_this.navigateToPage = navigateToPage;
-
+	_this.isLargeScreenSize = (function(){
+		//var x = window.innerWidth  || document.documentElement.clientWidth  || document.body.clientWidth;
+		var y = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+		var isLargeScreenSize = !! (y > IS_LARGE_SCREEN_HEIGHT)
+		console.log('isLargeScreenSize', isLargeScreenSize)
+		console.log('Screen y:', y);
+		return isLargeScreenSize;
+	})();
 
 	$scope.$watch('::list.paginationObject', function(newPaginationObject) {
 		if (newPaginationObject) {
@@ -81,24 +90,8 @@ function FpPredictionList( $scope,  $state ) {
 			}
 		}
 	}
-	function onClickPreviousPage() {
-		if (_this.paginationObject.getPreviousPageOfPredictions) {
-			_this.paginationObject.getPreviousPageOfPredictions().then(function(newPaginationObject){
-				_this.paginationObject = newPaginationObject;
-			});	
-		}
-	}
-	function onClickNextPage() {
-		if (_this.paginationObject.getNextPageOfPredictions) {
-			_this.paginationObject.getNextPageOfPredictions().then(function(newPaginationObject){
-				_this.paginationObject = newPaginationObject;
-			});
-		}	
-	}
 	function navigateToPage(index) {
-		$state.go($state.$current.name, {
-			page:index
-		});
+		$state.go($state.$current.name, { page:index }, { reload:true });
 	}
 }
 

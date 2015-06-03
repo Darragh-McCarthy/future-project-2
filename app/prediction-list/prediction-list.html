@@ -13,15 +13,20 @@
 		<ul class="prediction-list-page__featured-topics__list">
 			<li class="prediction-list-page__featured-topic" 
 				ng-repeat="topic in predictionList.topicsCatalog">
-				<a class="prediction-list-page__featured-topic__link" ui-sref="app.topic({'topic':topic})">{{topic}}</a>
+				<a class="prediction-list-page__featured-topic__link" 
+					ui-sref="app.topic({'topic':topic})">
+					{{topic}}
+				</a>
 			</li>
 		</ul>
-		<form class="Add topic">
-			<label>
-				Add topic
+		<!--
+		<form class="prediction-list-page__add-topic">
+			<div>What predictions are you interested in?</div>
+			<label class="prediction-list-page__add-topic-label">
+				Add topics
 				<input type="text" />
 			</label>
-		</form>
+		</form>-->
 	</div>
 
 </div>

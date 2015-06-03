@@ -6,13 +6,14 @@ angular.module('myApp')
 
 UserProfile.$inject=['$state','$stateParams','currentUser','PredictionService','UserService'];
 function UserProfile( $state,  $stateParams,  currentUser,  PredictionService,  UserService ) {
+	scroll(0, 0);
+
 	var _this = this;
 	_this.predictions = [];
 	_this.userPhotoUrl = '';
 	_this.userId = $stateParams.userId;
 	_this.logout = logout;
 	_this.expandPrediction = expandPrediction;
-	_this.getFbData = getFbData;
 	_this.currentUser = currentUser;
 	_this.userToDisplay = undefined;
 	var pageIndex = $stateParams.page || 0;
@@ -34,9 +35,6 @@ function UserProfile( $state,  $stateParams,  currentUser,  PredictionService,  
 			eachPrediction.isExpanded = false;
 		});
 		expandedPrediction.isExpanded = true;
-	}
-	function getFbData() {
-		currentUser.getFbData();
 	}
 
 }

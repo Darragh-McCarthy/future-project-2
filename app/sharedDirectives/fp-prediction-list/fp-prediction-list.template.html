@@ -8,7 +8,7 @@
 
     <fp-add-new-prediction
         ng-if="list.showAddPredictionForm"
-        autofocus="true" 
+        autofocus="list.isLargeScreenSize"
         topic="list.currentTopic"
         on-add-new-prediction-success="list.onAddNewPredictionSuccess(newPrediction)"
         on-saving-new-prediction="list.onSavingNewPrediction()">
@@ -19,36 +19,38 @@
             ng-hide="list.paginationObject">
             Loading predictions...
         </div>
-        <div class="fp-prediction-list__no-predictions-found"
-            ng-show="list.paginationObject.predictions.length === 0">
-            No predictions found for {{list.currentTopic}}
+
+        <div class="fp-prediction-list__newly-added-predictions">
+            <div class="fp-prediction-list__newly-added-prediction-is-saving" 
+                ng-show="list.isSavingNewPrediction">
+                Saving prediction...
+            </div>
+            <div class="fp-prediction-list__newly-added-prediction" 
+                ng-repeat="prediction in list.newlyAddedPredictions">
+                <span class="fp-prediction-list__newly-added-prediction__successfully-added-notice">
+                    Successfully added 
+                    <span ng-if="list.currentTopic">
+                        to {{list.currentTopic}}
+                    </span>
+                    on {{prediction.createdAt}}
+                </span>
+                <fp-prediction
+                prediction="prediction"
+                show-topic-editing-by-default="true"
+                topic-to-hide="list.currentTopic" 
+                onexpand="list.expandPrediction(prediction)"
+                on-delete-prediction-success="list.removePredictionFromList(predictionId)">
+                </fp-prediction>
+            </div>
         </div>
 
+
+        <div class="fp-prediction-list__no-predictions-found"
+            ng-show="list.currentTopic && list.paginationObject.predictions.length === 0 && list.newlyAddedPredictions.length === 0">
+            No predictions found for {{list.currentTopic}}
+        </div>
         <div class="fp-prediction-list__loaded" 
             ng-show="list.paginationObject.predictions.length">
-
-            <div class="fp-prediction-list__newly-added-predictions">
-                <div class="fp-prediction-list__newly-added-prediction-is-saving" 
-                    ng-show="list.isSavingNewPrediction">
-                    Saving prediction...
-                </div>
-                <div class="fp-prediction-list__newly-added-prediction" ng-repeat="prediction in list.newlyAddedPredictions">
-                    <span>
-                        Added 
-                        <span ng-if="list.currentTopic">
-                            to {{list.currentTopic}}
-                        </span>
-                        on {{prediction.createdAt}}
-                    </span>
-                    <fp-prediction
-                    prediction="prediction"
-                    show-topic-editing-by-default="true"
-                    topic-to-hide="list.currentTopic" 
-                    onexpand="list.expandPrediction(prediction)"
-                    on-delete-prediction-success="list.removePredictionFromList(predictionId)">
-                    </fp-prediction>
-                </div>
-            </div>
 
             <fp-prediction 
                 ng-repeat="prediction in list.paginationObject.predictions track by prediction.id"
@@ -58,8 +60,21 @@
                 on-delete-prediction-success="list.removePredictionFromList(predictionId)">
             </fp-prediction>
 
+            <div class="fp-prediction-list__end-of-list-notice" 
+                ng-if="list.paginationPages.length < 2 || list.paginationObject.currentPageIndex === list.paginationPages.length -1">
+                No more {{list.currentTopic}} predictions.
 
-            <div class="fp-prediction-list__pagination" ng-if="list.paginationPages.length > 1">
+                    <fp-add-new-prediction
+                        ng-if="list.showAddPredictionForm && list.paginationObject.predictions.length > 10"
+                        autofocus="list.isLargeScreenSize"
+                        topic="list.currentTopic"
+                        on-add-new-prediction-success="list.onAddNewPredictionSuccess(newPrediction)"
+                        on-saving-new-prediction="list.onSavingNewPrediction()">
+                    </fp-add-new-prediction>
+            </div>
+
+            <div class="fp-prediction-list__pagination" 
+                ng-if="list.paginationPages.length > 1">
                 <button class="button--primary" 
                     ng-show="list.paginationObject.previousPageIndex > -1" 
                     ng-click="list.navigateToPage(list.paginationObject.previousPageIndex)">
@@ -70,17 +85,6 @@
                     ng-click="list.navigateToPage(list.paginationObject.nextPageIndex)">
                     Next
                 </button>
-                <!--
-                <div>
-                    Pages:
-                    <ul class="fp-prediction-list__pagination__pages">
-                        <li class="fp-prediction-list__pagination__page" 
-                            ng-repeat="page in list.paginationPages" 
-                            ng-click="list.navigateToPage({'page': page.index })">
-                            {{page.title}}
-                        </li>
-                    </ul>
-                </div>-->
             </div>
         </div> 
     </div>

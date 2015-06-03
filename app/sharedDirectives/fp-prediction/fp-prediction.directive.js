@@ -12,6 +12,7 @@ angular.module('myApp')
       onexpand: '&onexpand',
       onDeletePredictionSuccess: '&',
       showTopicEditingByDefault: '@',
+      showDateAdded: '@',
       showLikelihoodEstimateByDefault: '@',
 		},
 		bindToController: true,
@@ -23,8 +24,8 @@ angular.module('myApp')
 angular.module('myApp')
 	.controller('FpPrediction', FpPrediction);
 
-FpPrediction.$inject=['$q','$state','PredictionService','currentUser'];
-function FpPrediction( $q,  $state,  PredictionService,  currentUser ) {
+FpPrediction.$inject=['$q','$state','PredictionService','LikelihoodEstimateService','currentUser'];
+function FpPrediction( $q,  $state,  PredictionService,  LikelihoodEstimateService,  currentUser ) {
 
   var MAX_GRAPHBAR_HEIGHT = 100;
   var MIN_GRAPHBAR_HEIGHT = 3;
@@ -38,6 +39,8 @@ function FpPrediction( $q,  $state,  PredictionService,  currentUser ) {
     'Business',
     'Other popular topics go here'
   ];
+
+
 
 	var _this = this;
   _this.maxTopicsPerPrediction = MAX_TOPICS_PER_PREDICTION;
@@ -54,7 +57,6 @@ function FpPrediction( $q,  $state,  PredictionService,  currentUser ) {
   _this.navigateToTopic = navigateToTopic;
   _this.deletePrediction = deletePrediction;
   _this.toggleShowDeletionConfirmation = toggleShowDeletionConfirmation;
-
   
   updateSuggestedTopics();
 
@@ -107,7 +109,7 @@ function FpPrediction( $q,  $state,  PredictionService,  currentUser ) {
         _this.onexpand();
         _this.prediction.isExpanded = true;
       }
-      PredictionService.addLikelihoodEstimate(_this.prediction.id, percent).then(function(newLikelihoodEstimate){
+      LikelihoodEstimateService.addLikelihoodEstimate(_this.prediction.id, percent).then(function(newLikelihoodEstimate){
         _this.prediction.userEstimate = newLikelihoodEstimate;
         for (var i = 0; i < _this.prediction.communityEstimates.length; i++) {
           if (_this.prediction.communityEstimates[i].percent == percent) {
@@ -118,6 +120,10 @@ function FpPrediction( $q,  $state,  PredictionService,  currentUser ) {
       });
     });
   }
+
+
+
+
   function removeLikelihoodEstimate() {
     return $q(function(resolve, reject){ 
       for (var i = 0; i < _this.prediction.communityEstimates.length; i++) {
@@ -125,7 +131,8 @@ function FpPrediction( $q,  $state,  PredictionService,  currentUser ) {
           _this.prediction.communityEstimates[i].count--;
         }
       }
-      PredictionService.removeLikelihoodEstimate(_this.prediction.id, _this.prediction.userEstimate.id, _this.prediction.userEstimate.likelihoodEstimatePercent).then(function(){
+      
+      LikelihoodEstimateService.removeLikelihoodEstimate(_this.prediction.id, _this.prediction.userEstimate.id, _this.prediction.userEstimate.likelihoodEstimatePercent).then(function(){
         resolve();
       });
       _this.prediction.userEstimate = null;

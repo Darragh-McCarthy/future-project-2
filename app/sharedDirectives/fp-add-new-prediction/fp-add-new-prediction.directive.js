@@ -7,7 +7,7 @@ angular.module('myApp')
 		templateUrl:'sharedDirectives/fp-add-new-prediction/fp-add-new-prediction.template.html',
 		scope: {
  			topic: '=',
- 			autofocus: '@',
+ 			autofocus: '=',
  			onAddNewPredictionSuccess:'&',
  			onSavingNewPrediction:'&',
  			hideLabel:'@'
@@ -32,16 +32,16 @@ function FpAddNewPrediction( $scope,  $state,  PredictionService,  focusElementB
 	_this.currentUser = currentUser;
 	_this.newPredictionTitle = '';
 
+	console.log('FpAddNewPrediction autofocus', _this.autofocus);
+
 	if (_this.autofocus) {
-		focusElementById('fp-add-new-prediction__prediction-title-input');	
+		console.log('setting autofocus');
+		focusElementById('fp-add-new-prediction__prediction-title-input');
 	}
 
-
-	$scope.$watch('makePrediction.newPredictionTitle', function(newVal, oldVal) {
+	$scope.$watch('makePrediction.newPredictionTitle', function(newVal) {
 		_this.predictionValidationErrors = PredictionService.validateNewPrediction(newVal);
 	});
-
-	
 
 	function addNewPrediction(newPredictionTitle, newPredictionTopicTitle) {
 		_this.areTitleLengthErrorsVisible = true;
