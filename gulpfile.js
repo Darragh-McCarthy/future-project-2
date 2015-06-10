@@ -34,9 +34,9 @@ gulp.task('jshint', function () {
   return gulp.src([
     'app/**/*.module.js',
     'app/**/*.controller.js',
+    'app/**/*.factory.js',
     'app/**/*.service.js',
-    'app/**/*.config.js',
-    'app/views/**/*.js'
+    'app/**/*.config.js'
     ])
     .pipe(reload({stream: true, once: true}))
     .pipe($.jshint())

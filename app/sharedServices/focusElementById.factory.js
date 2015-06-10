@@ -7,15 +7,23 @@ angular.module('myApp')
 
 focusElementById.$inject=['$timeout'];
 function focusElementById( $timeout ) {
-    return function(id) {
-      // timeout makes sure that it is invoked after any other event has been triggered.
-      // e.g. click events that need to run before the focus or
-      // inputs elements that are in a disabled state but are enabled when those events
-      // are triggered.
+    return function(id, minScreenSize) {
+      var MIN_AUTOFOCUS_SCREEN_WIDTH = 600;
+
+      //prevent keyboard popups on small screens
+      minScreenSize = minScreenSize || MIN_AUTOFOCUS_SCREEN_WIDTH;
+      if (minScreenSize && window.innerWidth <= minScreenSize) {
+        return;
+      }
       $timeout(function() {
         var element = document.getElementById(id);
-        if(element)
+        if(element) {
           element.focus();
+        }
+        else {
+          console.log('focus element failed: ' + id + 'does not exist');
+        }
+
       });
     };
   }

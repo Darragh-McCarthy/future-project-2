@@ -3,12 +3,12 @@
 
 
 angular.module('myApp.sharedServices')
-	.factory('Parse', Parse);
+	.factory('Parse', ParseService);
 
 
-Parse.$inject=['$window'];
-function Parse( $window ) {
-  $window.Parse.initialize('0nGBcRg8yPjDYH8KzitgIYauoF4ZT6CV369pWPZu', 'P0FjDZHyVrS4ZlxRfrr3FPxsWrtXwLD7v6RFqzIK');
+ParseService.$inject=['$window'];
+function ParseService( $window ) {
+  $window.Parse.initialize('tkoete7doYZNLOPCt3rL251l69WBSNlbwk4PAJ3L', 'ig9sn2CYO4JUeFAJSG8TTZa4NmRwrG4Iq2VRmhhD');
 	return $window.Parse;
 }
 

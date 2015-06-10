@@ -1,7 +1,6 @@
 
 
 <div class="prediction-list-page">
-
 	<fp-prediction-list 
 		current-topic="predictionList.currentTopic"
 		show-add-prediction-form="true"
@@ -14,8 +13,8 @@
 			<li class="prediction-list-page__featured-topic" 
 				ng-repeat="topic in predictionList.topicsCatalog">
 				<a class="prediction-list-page__featured-topic__link" 
-					ui-sref="app.topic({'topic':topic})">
-					{{topic}}
+					ui-sref="app.topic({'topic':topic.title})">
+					{{topic.title}}
 				</a>
 			</li>
 		</ul>

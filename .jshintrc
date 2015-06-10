@@ -19,6 +19,7 @@
     "inject",
     "angular",
     "Parse",
-    "_"
+    "_",
+    "toastr"
   ]
 }

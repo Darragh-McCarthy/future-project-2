@@ -3,12 +3,9 @@
 <!-- update class names -->
 
 <div class="fp-prediction-list">
-
-    <h1 class="fp-prediction-list__title" ng-if="list.currentTopic">{{list.currentTopic}}</h1>
-
     <fp-add-new-prediction
         ng-if="list.showAddPredictionForm"
-        autofocus="list.isLargeScreenSize"
+        autofocus="true"
         topic="list.currentTopic"
         on-add-new-prediction-success="list.onAddNewPredictionSuccess(newPrediction)"
         on-saving-new-prediction="list.onSavingNewPrediction()">
@@ -17,7 +14,7 @@
     <div>
         <div class="fp-prediction-list__isloading-notice" 
             ng-hide="list.paginationObject">
-            Loading predictions...
+            Loading {{list.currentTopic}} predictions...
         </div>
 
         <div class="fp-prediction-list__newly-added-predictions">
@@ -27,13 +24,13 @@
             </div>
             <div class="fp-prediction-list__newly-added-prediction" 
                 ng-repeat="prediction in list.newlyAddedPredictions">
-                <span class="fp-prediction-list__newly-added-prediction__successfully-added-notice">
+                <!--<div class="fp-prediction-list__newly-added-prediction__successfully-added-notice">
                     Successfully added 
                     <span ng-if="list.currentTopic">
                         to {{list.currentTopic}}
                     </span>
                     on {{prediction.createdAt}}
-                </span>
+                </div>-->
                 <fp-prediction
                 prediction="prediction"
                 show-topic-editing-by-default="true"
@@ -62,11 +59,11 @@
 
             <div class="fp-prediction-list__end-of-list-notice" 
                 ng-if="list.paginationPages.length < 2 || list.paginationObject.currentPageIndex === list.paginationPages.length -1">
-                No more {{list.currentTopic}} predictions.
+                No more {{list.currentTopic}} predictions. What's yours?
 
                     <fp-add-new-prediction
                         ng-if="list.showAddPredictionForm && list.paginationObject.predictions.length > 10"
-                        autofocus="list.isLargeScreenSize"
+                        autofocus="true"
                         topic="list.currentTopic"
                         on-add-new-prediction-success="list.onAddNewPredictionSuccess(newPrediction)"
                         on-saving-new-prediction="list.onSavingNewPrediction()">

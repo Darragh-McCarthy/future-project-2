@@ -8,12 +8,12 @@ angular.module('myApp')
 		templateUrl: 'sharedDirectives/fp-prediction/fp-prediction.template.html',
 		scope: {
 			prediction: '=',
-      topicToHide: '=',
-      onexpand: '&onexpand',
-      onDeletePredictionSuccess: '&',
-      showTopicEditingByDefault: '@',
-      showDateAdded: '@',
-      showLikelihoodEstimateByDefault: '@',
+            topicToHide: '=',
+            onexpand: '&onexpand',
+            onDeletePredictionSuccess: '&',
+            showTopicEditingByDefault: '@',
+            showDateAdded: '@',
+            showLikelihoodEstimateByDefault: '@',
 		},
 		bindToController: true,
 		controller: 'FpPrediction as predictionCtrl'
@@ -24,25 +24,27 @@ angular.module('myApp')
 angular.module('myApp')
 	.controller('FpPrediction', FpPrediction);
 
-FpPrediction.$inject=['$q','$state','PredictionService','LikelihoodEstimateService','currentUser'];
-function FpPrediction( $q,  $state,  PredictionService,  LikelihoodEstimateService,  currentUser ) {
+FpPrediction.$inject=['$q','$state','PredictionService','LikelihoodEstimateService','currentUser','focusElementById','TopicService'];
+function FpPrediction( $q,  $state,  PredictionService,  LikelihoodEstimateService,  currentUser,  focusElementById,  TopicService ) {
 
-  var MAX_GRAPHBAR_HEIGHT = 100;
-  var MIN_GRAPHBAR_HEIGHT = 3;
-  var MAX_TOPICS_PER_PREDICTION = 8;
+    var MAX_GRAPHBAR_HEIGHT = 100;
+    var MIN_GRAPHBAR_HEIGHT = 3;
+    var MAX_TOPICS_PER_PREDICTION = 8;
 
-  var mainTopics = [
-    'Entertainment',
-    'Science',
-    'Technology',
-    'Health',
-    'Business',
-    'Other popular topics go here'
-  ];
+    var mainTopics = TopicService.featuredTopicTitles.map(function(topic){
+        return topic.title;
+    });
 
 
 
 	var _this = this;
+  //overriding directive init property
+  _this.showDateAdded = true;
+
+
+
+
+
   _this.maxTopicsPerPrediction = MAX_TOPICS_PER_PREDICTION;
   _this.addTopicFromSuggestedTopics = addTopicFromSuggestedTopics;
   _this.toggleLikelihoodEstimate = toggleLikelihoodEstimate;
@@ -57,7 +59,13 @@ function FpPrediction( $q,  $state,  PredictionService,  LikelihoodEstimateServi
   _this.navigateToTopic = navigateToTopic;
   _this.deletePrediction = deletePrediction;
   _this.toggleShowDeletionConfirmation = toggleShowDeletionConfirmation;
-  
+  _this.addReason = addReason;
+
+  function addReason() {
+    _this.reason = _this.reasonInputText;
+    _this.reasonInputText = '';
+  }
+
   updateSuggestedTopics();
 
   if (_this.prediction.author.id === currentUser.userId) {
@@ -67,77 +75,60 @@ function FpPrediction( $q,  $state,  PredictionService,  LikelihoodEstimateServi
   if (_this.showTopicEditingByDefault) {
     _this.isEditingTopics = true;
     _this.isLikelihoodSelectionVisible = _this.showLikelihoodEstimateByDefault;    
-  }
-  else {
+  } else {
     _this.isLikelihoodSelectionVisible = true;
   }
 
   allocateGraphBarHeights(_this.prediction.communityEstimates);
 
 
-  (function placeTopicToHideFirstInTopicsList() {
-    if (_this.topicToHide) {
-      for (var i = 0; i < _this.prediction.topics.length; i++) {
-        if (_this.prediction.topics[i].title === _this.topicToHide) {
-          var index = _this.prediction.topics.indexOf(_this.prediction.topics[i]);
-          var removedTopic = _this.prediction.topics.splice(index, 1)[0];
-          _this.prediction.topics.unshift(removedTopic);
+    (function placeTopicToHideFirstInTopicsList() {
+        if (_this.topicToHide) {
+            for (var i = 0; i < _this.prediction.topics.length; i++) {
+                if (_this.prediction.topics[i].title === _this.topicToHide) {
+                    var index = _this.prediction.topics.indexOf(_this.prediction.topics[i]);
+                    var removedTopic = _this.prediction.topics.splice(index, 1)[0];
+                    _this.prediction.topics.unshift(removedTopic);
+                }
+            }
         }
-      }
-    }
-  })();
+    })();
 
-  function toggleLikelihoodEstimate(percent){
-    var promises = [];
-    var estimateToRemove = _this.prediction.userEstimate;
-    if (estimateToRemove) {
-      promises.push(removeLikelihoodEstimate());
-      _this.prediction.communityEstimatesCount--;
-    }
-    if ( ! estimateToRemove || estimateToRemove.likelihoodEstimatePercent !== percent) {
-     promises.push(addLikelihoodEstimate(percent));
-      _this.prediction.communityEstimatesCount++;
-    }
-    $q.all(promises).then(function(){
-      allocateGraphBarHeights(_this.prediction.communityEstimates);
-    });
-  }
-  function addLikelihoodEstimate(percent) {
-    return $q(function(resolve, reject) {
-      percent = parseInt(percent, 10);
-      if ( ! _this.prediction.isExpanded) {
-        _this.onexpand();
-        _this.prediction.isExpanded = true;
-      }
-      LikelihoodEstimateService.addLikelihoodEstimate(_this.prediction.id, percent).then(function(newLikelihoodEstimate){
-        _this.prediction.userEstimate = newLikelihoodEstimate;
-        for (var i = 0; i < _this.prediction.communityEstimates.length; i++) {
-          if (_this.prediction.communityEstimates[i].percent == percent) {
-            _this.prediction.communityEstimates[i].count++;
-          }
+    function toggleLikelihoodEstimate(percent){
+        percent = parseInt(percent, 10);
+        expandPrediction();
+        _this.prediction.userEstimate = {
+            'likelihoodEstimatePercent':percent 
         }
-        resolve();
-      });
-    });
-  }
 
-
-
-
-  function removeLikelihoodEstimate() {
-    return $q(function(resolve, reject){ 
-      for (var i = 0; i < _this.prediction.communityEstimates.length; i++) {
-        if (_this.prediction.communityEstimates[i].percent == _this.prediction.userEstimate.likelihoodEstimatePercent) {
-          _this.prediction.communityEstimates[i].count--;
+        /*
+        var updatingEstimate = null;
+        if (percent === _this.prediction.likelihoodEstimates.userEstimate.percent) {
+            updatingEstimate = LikelihoodEstimateService.deleteEstimate(_this.prediction.id);
+        } else {
+            updatingEstimate = LikelihoodEstimateService.setUserEstimate(_this.prediction.id, percent)
         }
-      }
-      
-      LikelihoodEstimateService.removeLikelihoodEstimate(_this.prediction.id, _this.prediction.userEstimate.id, _this.prediction.userEstimate.likelihoodEstimatePercent).then(function(){
-        resolve();
-      });
-      _this.prediction.userEstimate = null;
-    });
-  }
+        _this.prediction.likelihoodEstimates = updatingEstimate.anticipatedUpdatedLikelihoodEstimates;
+        allocateGraphBarHeights(_this.prediction.communityEstimates);
+
+        updatingEstimate.promise.then(function(updatedLikelihoodEstimates){
+            _this.prediction.likelihoodEstimates = updatedLikelihoodEstimates;
+            allocateGraphBarHeights(_this.prediction.communityEstimates);
+        });
+        */
+    }
+
+    function expandPrediction() {
+        if ( ! _this.prediction.isExpanded) {
+            _this.onexpand();
+            _this.prediction.isExpanded = true;
+        }
+        focusElementById('prediction-'+_this.prediction.id+'__add-reason-text-input');
+    }
+
+
+
+
   function allocateGraphBarHeights(communityEstimates) {
     var largestCount = 0;
     angular.forEach(communityEstimates, function(estimate) {

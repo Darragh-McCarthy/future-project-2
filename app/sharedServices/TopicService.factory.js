@@ -6,28 +6,28 @@ angular.module('myApp')
 
 TopicService.$inject=['$q','Parse'];
 function TopicService( $q,  Parse ) {
-  var ParseTopicModel = Parse.Object.extend("Topic");
+  var ParseTopicModel = Parse.Object.extend('Topic');
   var minTopicCharacterLength = 2;
   var maxTopicCharacterLength = 100;
   var featuredTopicTitles = [
-    'Technology',
-    'Gaming',
-    'Design',
-    'Health',
-    'Medicine',
-    'Fashion',
-    'Politics',
-    'Sports',
-    'Science',
-    'Culture',
-    'Physics',
-    'Economics',
-    'Startups',
-    'Business',
-    'Education',
-    'Entertainment',
-    'Movies',
-    'Television'
+    {'title':'Technology'},
+    {'title':'Gaming'},
+    {'title':'Design'},
+    {'title':'Health'},
+    {'title':'Medicine'},
+    {'title':'Fashion'},
+    {'title':'Politics'},
+    {'title':'Sports'},
+    {'title':'Science'},
+    {'title':'Culture'},
+    {'title':'Physics'},
+    {'title':'Economics'},
+    {'title':'Startups'},
+    {'title':'Business'},
+    {'title':'Education'},
+    {'title':'Entertainment'},
+    {'title':'Movies'},
+    {'title':'Television'}
   ];
 
 	return {
@@ -43,7 +43,7 @@ function TopicService( $q,  Parse ) {
 
 
 	function getEmptyTopicReferenceById(topicId) {
-		var topic = new ParseTopicModel;
+		var topic = new ParseTopicModel();
 		topic.id = topicId;
 		return topic;
 	}

@@ -1,6 +1,6 @@
 {
   "preset": "google",
   "validateLineBreaks": "LF",
-  "validateIndentation": 2,
+  "validateIndentation": 4,
   "excludeFiles": ["node_modules/**"]
 }

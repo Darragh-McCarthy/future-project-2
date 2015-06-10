@@ -7,10 +7,10 @@ angular.module('myApp')
 		templateUrl:'sharedDirectives/fp-add-new-prediction/fp-add-new-prediction.template.html',
 		scope: {
  			topic: '=',
- 			autofocus: '=',
  			onAddNewPredictionSuccess:'&',
  			onSavingNewPrediction:'&',
- 			hideLabel:'@'
+ 			hideLabel:'@',
+ 			setFocusOnPredictionTextInput: '='
 		},
 		bindToController: true,
 		controller:'FpAddNewPrediction as makePrediction'
@@ -23,7 +23,9 @@ angular.module('myApp')
 
 FpAddNewPrediction.$inject=['$scope','$state','PredictionService','focusElementById','currentUser'];
 function FpAddNewPrediction( $scope,  $state,  PredictionService,  focusElementById,  currentUser ) {
+
 	var _this = this;
+	_this.predictionTextInputElementId = 'fp-add-new-prediction__prediction-title-input';
 	_this.isAddingSecondPrediction;
 	_this.addNewPrediction = addNewPrediction;
 	_this.newPredictionDataConstraints = PredictionService.newPredictionDataConstraints;
@@ -32,12 +34,11 @@ function FpAddNewPrediction( $scope,  $state,  PredictionService,  focusElementB
 	_this.currentUser = currentUser;
 	_this.newPredictionTitle = '';
 
-	console.log('FpAddNewPrediction autofocus', _this.autofocus);
-
-	if (_this.autofocus) {
-		console.log('setting autofocus');
-		focusElementById('fp-add-new-prediction__prediction-title-input');
-	}
+	focusElementById(_this.predictionTextInputElementId);
+	$scope.$watch('makePrediction.setFocusOnPredictionTextInput', function(newVal, oldVal){
+		focusElementById(_this.predictionTextInputElementId);
+		_this.setFocusOnPredictionTextInput = false;
+	});
 
 	$scope.$watch('makePrediction.newPredictionTitle', function(newVal) {
 		_this.predictionValidationErrors = PredictionService.validateNewPrediction(newVal);

@@ -21,7 +21,8 @@
 				<fp-prediction 
 					show-topic-editing-by-default="true" 
 					prediction="prediction" 
-					ng-repeat="prediction in makePrediction.newlyAddedPredictions">
+					ng-repeat="prediction in makePrediction.newlyAddedPredictions"
+					on-delete-prediction-success="makePrediction.removePredictionFromList(predictionId)">
 				</fp-prediction>
 			</ul>
 		</div>
@@ -30,29 +31,19 @@
 	<div class="make-prediction-page__add-new-prediction-container">
 		<fp-add-new-prediction 
 			topic="makePrediction.topic" 
-			autofocus="true"
+			set-focus-on-prediction-text-input="makePrediction.setFocusOnPredictionTextInput"
 			on-add-new-prediction-success="makePrediction.onAddNewPredictionSuccess(newPrediction)"
     		on-saving-new-prediction="makePrediction.onSavingNewPrediction()">
 		</fp-add-new-prediction>	
 	</div>
 
-	<div class="make-prediction-page__topic-suggestions" ng-if="makePrediction.topicSuggestionsPreviouslySelected.length">
-		<div class="make-prediction-page__topic-suggestions__title">You previously selected:</div>
-		<ul class="make-prediction-page__topic-suggestions__topics-list">
-			<li class="make-prediction-page__topic-suggestions__topic" 
-				ng-click="makePrediction.addSuggestedTopic(makePrediction.topicSuggestionsPreviouslySelected, $index)"
-				ng-repeat="topic in makePrediction.topicSuggestionsPreviouslySelected track by $index">
-				{{topic}}
-			</li>
-		</ul>
-	</div>
 	<div class="make-prediction-page__topic-suggestions">
-		<div class="make-prediction-page__topic-suggestions__title">Can you make predictions for the following topics?</div>
 		<ul class="make-prediction-page__topic-suggestions__topics-list">
 			<li class="make-prediction-page__topic-suggestions__topic" 
 				ng-repeat="topic in makePrediction.topicSuggestions track by $index"
-				ng-click="makePrediction.addSuggestedTopic(makePrediction.topicSuggestions, $index)">
-				{{topic}}
+				ng-click="makePrediction.addSuggestedTopicOrGoToTopic($event,makePrediction.topicSuggestions, $index)"
+				ng-class="{active:topic.active, 'previously-active': topic.previouslyActive}">
+				{{topic.title}}
 			</li>
 		</ul>
 	</div>

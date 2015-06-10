@@ -16,11 +16,11 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 
 	var ParsePrivateUserDataModel = Parse.Object.extend('PrivateUserData');
 
-	var isUserLoggedIntoFacebookAndParse;
+	//var isUserLoggedIntoFacebookAndParse;
 	var facebookBigProfilePictureWidth = 200;
 	var facebookBigProfilePictureHeight = 200;
 	var _whenFacebookSdkLoaded = loadAndInitializeFacebookSdk();
-	var _whenLoggedIn = $q.defer();
+	//var _whenLoggedIn = $q.defer();
 
 	var currentUserObject = {
 		'loginWithFacebook': loginWithFacebook,
@@ -30,6 +30,7 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 		'userThumbnailUrl': null,
 		'userId': null
 	};
+	//Parse.User.logOut();
 
 	(function(){
 		var currentUser = Parse.User.current();
@@ -41,7 +42,7 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 			});
 			getUserBigPictureUrl().then(function(url){
 				currentUserObject.userBigPictureUrl = url;
-			})
+			});
 		}
 	})();
 
@@ -69,28 +70,35 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 
 	function loginWithFacebook() {
 		return logIntoParseWithFacebook().then(function(currentUser) {
+
+
 			currentUserObject.userId = currentUser.id;
 
 			getUserThumbnailUrl().then(function(url) {
 				currentUserObject.userThumbnailUrl = url;
 			});
 
+
 			return getBasicFacebookUserData().then(function(facebookData){
-				var publicUserData = {
-					'first_name': facebookData.first_name,
-					'last_name': facebookData.last_name,
+				var publicUserData;
+				/* jshint ignore:start */
+				publicUserData = {
+					'firstName': facebookData.first_name,
+					'lastName': facebookData.last_name,
 					'id': facebookData.id,
 					'link': facebookData.link,
-					'updated_time': facebookData.updated_time,
+					'updatedTime': facebookData.updated_time,
 					'locale': facebookData.locale,
 					'name': facebookData.name,
 					'timezone': facebookData.timezone,
 					'verified': facebookData.verified,
 				};
+				/* jshint ignore:end */
+
 
 				var privateFacebookData = currentUser.get('privateFacebookData');
 				if ( ! privateFacebookData) {
-					privateFacebookData = new ParsePrivateUserDataModel;
+					privateFacebookData = new ParsePrivateUserDataModel();
 					privateFacebookData.setACL(currentUser);
 				}
 				privateFacebookData.set('email', facebookData.email);
@@ -136,7 +144,7 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 		});
 	}
 	function getFacebookUserProfilePictureUrl(userId, width, height) {
-		var apiUrl = "/" + userId + "/picture";
+		var apiUrl = '/' + userId + '/picture';
 
 		if (width && height) {
 			apiUrl += '?width=' + width + '&height=' + height;
@@ -156,38 +164,12 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 	}
 
 	function isLoggedIntoParse() {
-		return $q(function(resolve, reject) {
-			if (typeof isUserLoggedIntoFacebookAndParse !== 'undefined') {
-				console.log(isUserLoggedIntoFacebookAndParse);
-				resolve(isUserLoggedIntoFacebookAndParse);
-			}
-			else {
-				isLoggedInToFacebook().then(function(response){
-					var currentParseUser = Parse.User.current();
-					var currentFacebookUserId;
-					var savedFacebookId;
-					if (response && response.authResponse && response.authResponse.userID) {
-						currentFacebookUserId = response.authResponse.userID;
-					}
-					if (currentParseUser) {
-						savedFacebookId = currentParseUser.get('copyOfBasicFacebookUserData').id;
-					}
-					var areUserIdsMatching = (currentFacebookUserId === savedFacebookId);
-
-					if ( ! areUserIdsMatching ) {
-						Parse.User.logOut();
-					}
-					isUserLoggedIntoFacebookAndParse = areUserIdsMatching;
-					resolve(areUserIdsMatching);
-				});
-
-			}
-		});
+		return !! Parse.User.current();
 	}
 
 	function logout() {
 		Parse.User.logOut();
-		return FB.logout();
+		return $window.FB.logout();
 	}
 
 	function logIntoParseWithFacebook() {
@@ -235,7 +217,7 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 
 		});
 	}
-
+/*
 	function isLoggedInToFacebook(){
 		return $q(function(resolve, reject) {
 			_whenFacebookSdkLoaded.then(function(fbSdk) {
@@ -246,7 +228,7 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 			});
 		})
 	}
-
+*/
 }
 
 

@@ -36,14 +36,6 @@ function FpPredictionList( $scope,  $state,  $window ) {
 	_this.expandPrediction = expandPrediction;
 	_this.removePredictionFromList = removePredictionFromList;
 	_this.navigateToPage = navigateToPage;
-	_this.isLargeScreenSize = (function(){
-		//var x = window.innerWidth  || document.documentElement.clientWidth  || document.body.clientWidth;
-		var y = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-		var isLargeScreenSize = !! (y > IS_LARGE_SCREEN_HEIGHT)
-		console.log('isLargeScreenSize', isLargeScreenSize)
-		console.log('Screen y:', y);
-		return isLargeScreenSize;
-	})();
 
 	$scope.$watch('::list.paginationObject', function(newPaginationObject) {
 		if (newPaginationObject) {
@@ -71,9 +63,10 @@ function FpPredictionList( $scope,  $state,  $window ) {
 		_this.isSavingNewPrediction = true;
 	}
 	function expandPrediction(expandedPrediction) {
-		_this.paginationObject.predictions.forEach(function(eachPrediction){
+		console.log('FpPredictionList expandPrediction disabled');
+		/*_this.paginationObject.predictions.forEach(function(eachPrediction){
 			eachPrediction.isExpanded = false;
-		});
+		});*/
 	}
 	function removePredictionFromList(predictionId) {
 		removePredictionFromArrayByPredictionId(_this.paginationObject.predictions, predictionId);

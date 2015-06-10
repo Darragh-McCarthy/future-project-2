@@ -10,7 +10,7 @@ function UserService( Parse ) {
 	return {
 		'castParseUserAsPlainObject':castParseUserAsPlainObject,
 		'getUserById':getUserById
-	}
+	};
 
 	function castParseUserAsPlainObject(parseUser){
 		return {
@@ -18,8 +18,7 @@ function UserService( Parse ) {
 			'copyOfBasicFacebookUserData':parseUser.get('copyOfBasicFacebookUserData'),
 			'userThumbnailUrl':parseUser.get('userThumbnailUrl'),
 			'userBigPictureUrl': parseUser.get('userBigPictureUrl')
-		}
-		
+		};
 	}
 	function getUserById(userId) {
 		return new Parse.Query(Parse.User)

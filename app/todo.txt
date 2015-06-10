@@ -1,24 +1,14 @@
 
 make likelihood selection more responsive
+adding likelihood estimate before estimates have downloaded
 
 
 git commit on every additional feature
 
 
 Prioritise
-	assign access rights to different Parse models
 	notifications
-	Reasons for prediction
-	Fb permissions for public deployment
-	report prediction
-
-adding likelihood estimate before estimates have downloaded
-
-Ignorable Bugs
-	
-	When viewing predictions in a topic, edit topics indicated 0 topics
-	reloading make-prediction breaks back header link
-
+	Reasons for prediction	
 
 Less important
 
@@ -84,6 +74,9 @@ later
 
 
 
+remove color from buttons to convey most popular estimates
+add dark grey border to estimate options to indicate the vote of another user
 
 
 
+preload FB profile photos

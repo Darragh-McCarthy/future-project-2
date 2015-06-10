@@ -36,18 +36,32 @@
     <div ui-view="header"></div>
     <div ui-view="logo"></div>
   </header>
-  <main><div ui-view="content"></div></main>
-  
 
+  <main>
+    <div ui-view="content"></div>
+  </main>
 
-  <!--<footer class="footer">
+  <footer>
+    <div ui-view="footer"></div>
+  </footer>
+
+  <div class="scroll-to-top-button" 
+    onclick="scroll(0,0)">
+    Back to Top
+  </div>
+
+  <!--
+  <aside>
+    <div ui-view="sidebar"></div>
+  </aside>
+  <footer class="footer">
     <p class="footer__made-by">Developed by Darragh McCarthy</p>
-  </footer>-->
+  </footer>
+  -->
 
 
 
   <div id="fb-root"></div>
-
 
 
 
@@ -64,6 +78,7 @@
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-route/angular-route.js"></script>
   <script src="bower_components/angular-resource/angular-resource.js"></script>
+  <script src="bower_components/angular-animate/angular-animate.js"></script>
   <script src="bower_components/parse-angular-patch/src/parse-angular.js"></script>
   <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
 
@@ -99,6 +114,10 @@
 
   <script src="prediction-list/prediction-list.controller.js"></script>
   <script src="sidebar/sidebar.controller.js"></script>
+
+  <script src="bower_components/jquery/dist/jquery.js"></script>
+  <script src="bower_components/toastr/toastr.js"></script>
+  <link rel="stylesheet" type="text/css" href="bower_components/toastr/toastr.css">
   <!-- endbuild -->
 
 
@@ -119,6 +138,7 @@
 
 
 <script>
+
 function countWatchers() { 
     var root = angular.element(document.getElementsByTagName('html'));
 

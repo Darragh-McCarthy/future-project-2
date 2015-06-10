@@ -22,7 +22,13 @@
                 <span ng-show="::makePrediction.isAddingSecondPrediction"><b>prediction</b></span>        
             </span>
         </div>
-
+<!--        <div style="font-size:14px;color:#777;line-height:1em;">
+          HINT: Better predictions include a timescale (when the prediction is likely to occur)
+        </div>
+        <div style="font-size:14px;color:#777;line-height:1em;">
+          HINT: Better predictions are short and clear
+        </div>
+-->
         <ul class="fp-add-new-prediction__title-error-messages">
             <li ng-repeat="errorMessage in makePrediction.predictionValidationErrors.predictionTitleLengthErrors" 
                 ng-if="makePrediction.areTitleLengthErrorsVisible">
@@ -44,16 +50,10 @@
 
       <div class="fp-add-new-prediction__input">
         <input type="text" 
-          id="fp-add-new-prediction__prediction-title-input" 
+          id="{{makePrediction.predictionTextInputElementId}}" 
           ng-if=" ! makePrediction.hideLabel"
           ng-model="makePrediction.newPredictionTitle" 
           autocomplete="off" />
-        <input type="text"
-          ng-if="makePrediction.hideLabel" 
-          id="fp-add-new-prediction__prediction-title-input" 
-          ng-model="makePrediction.newPredictionTitle" 
-          autocomplete="off"
-          placeholder="Add your {{makePrediction.topic}} prediction" />
       </div>
     </label>
 
@@ -62,4 +62,4 @@
       ng-click="makePrediction.addNewPrediction(makePrediction.newPredictionTitle, makePrediction.topic)">
       Add prediction
     </button>
-  </form>
+</form>

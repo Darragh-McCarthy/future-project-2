@@ -9,10 +9,7 @@ angular
 
 
 MainController.$inject=[];
-function MainController() {
-
-
-}
+function MainController() {}
 
 
 
