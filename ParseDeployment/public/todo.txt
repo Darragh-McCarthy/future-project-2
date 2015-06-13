@@ -1,5 +1,3 @@
-beforeDelete Prediction also deal with readOnlyPredictionData 
-
 
 make likelihood selection more responsive
 adding likelihood estimate before estimates have downloaded
@@ -13,6 +11,8 @@ Prioritise
 	Reasons for prediction	
 
 Less important
+
+	DOM manipulation of Prediction graph
 	Add list of voters to prediction graph
 	Please make a prediction in the format... eg.
 	What should user predict?
@@ -24,8 +24,6 @@ Less important
 	prediction guidelines
 	no validations on topic titles
 	Private predictions for friends: who will date who, etc.
-
-if Parse query fails: eg due to network delay. Need to handle retry.
 
 
 

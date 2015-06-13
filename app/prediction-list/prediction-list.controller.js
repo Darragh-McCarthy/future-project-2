@@ -20,6 +20,11 @@ function PredictionList( PredictionService,  $stateParams,  TopicService) {
 		}
 	})().then(function(paginationObject) {
 		_this.paginationObject = paginationObject;
+		for (var i = 0; i < _this.paginationObject.predictions.length; i++) {
+			_this.paginationObject.predictions[i].userEstimatePromise.then(function(userEstimate){
+				_this.paginationObject.predictions[i].userEstimate = userEstimate;
+			});
+		}
 	});
 }
 

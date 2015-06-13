@@ -10,8 +10,23 @@ function TopicService( $q,  Parse ) {
   var minTopicCharacterLength = 2;
   var maxTopicCharacterLength = 100;
   var featuredTopicTitles = [
+    {'title':'Innovation'},
     {'title':'Technology'},
+    {'title':'Artificial Intelligence'},
+    {'title':'Robotics'},
+    {'title':'Human Enhancement'},
     {'title':'Gaming'},
+    {'title':'Biotechnology'},
+    {'title':'Electronics'},
+    {'title':'Nanotechnology'},
+    {'title':'Virtual Reality'},
+    {'title':'Augmented Reality'},
+    {'title':'Space Travel'},
+    {'title':'Social Networks'},
+    {'title':'Environment'},
+    {'title':'Synthetic Biology'},
+    {'title':'Survival / defence'},
+    {'title':'Mobile Devices'},
     {'title':'Design'},
     {'title':'Health'},
     {'title':'Medicine'},

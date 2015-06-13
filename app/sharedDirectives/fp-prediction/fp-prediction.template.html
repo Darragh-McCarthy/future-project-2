@@ -29,17 +29,18 @@
                     </span>
                     <a ui-sref="app.prediction({predictionId:predictionCtrl.prediction.id})" 
                         class="prediction__title">
-                        {{::predictionCtrl.prediction.title}}
+                        <!-- if no reasons added, color should be gray -->
+                        {{::predictionCtrl.prediction.title}} 
+                        <!--<span style="font-size:.9rem;font-weight:200;color:#777;">
+                            6 reasons, 22 votes
+                        </span>-->
                     </a>
                 </div>
 
                 
                 <div class="prediction__reasons" 
                     ng-if="predictionCtrl.prediction.isExpanded">
-                    <div class="likelihood__community-estimate__count">
-                        {{predictionCtrl.prediction.communityEstimatesCount}} 
-                        votes, 13 reasons for and against
-                    </div>
+                    <!---->
                 <div>
                     <!--
     &:nth-child(1)  { background: rgb(20,180,240);  }
@@ -56,21 +57,34 @@
                     -->
 
                         <div style="position:relative">
-                            <div style="margin:10px 0 5px;" ng-if="!predictionCtrl.reason">
-                                <label style="font-size:1.1rem;color:#333;">
-                                    <b>{{predictionCtrl.prediction.userEstimate.likelihoodEstimatePercent}}% likely because?</b>
-                                 </label>
+                            <div style="" ng-if="!predictionCtrl.reason">
+                                <label style="color:#333;display:block;margin:5px 0;">
+                                    <div style="display:block;font-weight:normal;font-size:1.1rem;">
+                                        Why is this {{predictionCtrl.prediction.userEstimate.percent}}% 
+                                        likely?
+                                    </div>
 
-                                <input type="text"
-                                    id="prediction-{{predictionCtrl.prediction.id}}__add-reason-text-input" 
-                                    ng-model="predictionCtrl.reasonInputText"
-                                    ng-keyup="$event.keyCode === 13 && predictionCtrl.addReason()" />
-                              
+                                    <input type="text"
+                                        id="prediction-{{predictionCtrl.prediction.id}}__add-reason-text-input" 
+                                        ng-model="predictionCtrl.reasonInputText"
+                                        ng-keyup="$event.keyCode === 13 && predictionCtrl.addReason()"
+                                         />
+                                </label>
+
+                                    <button class="prediction__add-reason-button" 
+                                        ng-show="predictionCtrl.reasonInputText.length"  
+                                        ng-click="predictionCtrl.addReason()" >
+                                        Add reason
+                                    </button>
                             </div>
 
-                            <div style="font-size:1.15rem;margin:10px 0;color:rgb(50,150,100);" 
+                            <div style="" 
                                 ng-if="predictionCtrl.reason">
-                                {{predictionCtrl.reason}}
+                                <!--{{predictionCtrl.reason}}-->
+                                <div style="font-size:1rem;">
+                                    <div style="font-size:1.1rem;font-weight:normal;">113 reasons, 553 votes<!--{{predictionCtrl.prediction.communityEstimatesCount}} -->
+                                    </div>
+                                </div>
                             </div>
 
                         </div>
@@ -98,7 +112,7 @@
                         <div class="likelihood__user-estimate-option" 
                             ng-click="predictionCtrl.toggleLikelihoodEstimate(estimate.percent)" 
                             ng-repeat="estimate in predictionCtrl.prediction.communityEstimates track by $index" 
-                            ng-class="{'likelihood__user-estimate-option--active': estimate.percent == predictionCtrl.prediction.userEstimate.likelihoodEstimatePercent}"><span class="test"><!--
+                            ng-class="{'likelihood__user-estimate-option--active': estimate.percent == predictionCtrl.prediction.userEstimate.percent}"><span class="test"><!--
                             --><span class="percent">{{::estimate.percent}}</span><span class="show-on-active">%<br/>likely</span><!--
                             --></span><!--
                      --></div>
@@ -125,9 +139,6 @@
                 <form class="edit-prediction__add-topics-form" 
                     ng-if="predictionCtrl.prediction.topics.length < predictionCtrl.maxTopicsPerPrediction">
 
-                    <div class="edit-prediction__prediction-title">
-                        {{::predictionCtrl.prediction.title}}
-                    </div>
                     <div class="edit-prediction__topics">
                         <span class="edit-prediction__topic" 
                             ng-repeat="topic in predictionCtrl.prediction.topics">
@@ -143,6 +154,10 @@
                             {{predictionCtrl.topicIsSavingMessage}}
                         </span>
                     </div>
+                    <div class="edit-prediction__prediction-title">
+                        {{::predictionCtrl.prediction.title}}
+                    </div>
+                   
 
                     <span class="prediction__topics-not-set-notice" 
                         ng-hide="predictionCtrl.prediction.topics.length">

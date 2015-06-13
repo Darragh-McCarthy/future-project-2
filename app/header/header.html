@@ -24,6 +24,15 @@
         <div class="header__center-aligned-container">
             <nav class="header__navigation">
                 <ul class="header__navigation__list"><!--
+                 --><li class="header__navigation-item">
+                        <a class="header__profile-photo-container" 
+                            ui-sref="app.user-profile({userId:header.currentUser.userId})" 
+                            ui-sref-active="active">
+                            <img class="header__profile-photo" 
+                                ng-src="{{header.currentUser.userThumbnailUrl}}" 
+                            />
+                        </a>
+                    </li><!--
                 --><li class="header__navigation-item">
                         <a class="header__navigation-item__link" 
                             ui-sref="app.recent" 
@@ -43,15 +52,6 @@
                             ui-sref="app.make-prediction" 
                             ui-sref-active="active">
                             Add predictions
-                        </a>
-                    </li><!--
-                 --><li class="header__navigation-item">
-                        <a class="header__profile-photo-container" 
-                            ui-sref="app.user-profile({userId:header.currentUser.userId})" 
-                            ui-sref-active="active">
-                            <img class="header__profile-photo" 
-                                ng-src="{{header.currentUser.userThumbnailUrl}}" 
-                            />
                         </a>
                     </li>
                 </ul>

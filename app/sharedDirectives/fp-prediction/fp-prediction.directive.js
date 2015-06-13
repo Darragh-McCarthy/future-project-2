@@ -24,8 +24,8 @@ angular.module('myApp')
 angular.module('myApp')
 	.controller('FpPrediction', FpPrediction);
 
-FpPrediction.$inject=['$q','$state','PredictionService','LikelihoodEstimateService','currentUser','focusElementById','TopicService'];
-function FpPrediction( $q,  $state,  PredictionService,  LikelihoodEstimateService,  currentUser,  focusElementById,  TopicService ) {
+FpPrediction.$inject=['$scope','$q','$state','PredictionService','LikelihoodEstimateService','currentUser','focusElementById','TopicService'];
+function FpPrediction( $scope,  $q,  $state,  PredictionService,  LikelihoodEstimateService,  currentUser,  focusElementById,  TopicService ) {
 
     var MAX_GRAPHBAR_HEIGHT = 100;
     var MIN_GRAPHBAR_HEIGHT = 3;
@@ -37,11 +37,26 @@ function FpPrediction( $q,  $state,  PredictionService,  LikelihoodEstimateServi
 
 
 
+
+
 	var _this = this;
   //overriding directive init property
   _this.showDateAdded = true;
 
 
+
+  _this.isAddReasonLabelDisplayed = true;
+  _this.hideAddReasonLabel = hideAddReasonLabel;
+
+  function hideAddReasonLabel () {
+    _this.isAddReasonLabelDisplayed = false;
+  }
+
+  //$scope.$watch('predictionCtrl.prediction.userEstimate', function(newVal, oldVal){
+  //  if (oldVal) {
+     // _this.addReasonTextInputPlaceholderText = 'Why is this ' + newVal.likelihoodEstimatePercent + '% likely?';
+  //  }
+  //});
 
 
 
@@ -64,6 +79,7 @@ function FpPrediction( $q,  $state,  PredictionService,  LikelihoodEstimateServi
   function addReason() {
     _this.reason = _this.reasonInputText;
     _this.reasonInputText = '';
+    toastr.success('Added reason', 'Thank you for your insights.');
   }
 
   updateSuggestedTopics();
@@ -97,25 +113,15 @@ function FpPrediction( $q,  $state,  PredictionService,  LikelihoodEstimateServi
     function toggleLikelihoodEstimate(percent){
         percent = parseInt(percent, 10);
         expandPrediction();
+        var settingEstimate = LikelihoodEstimateService.setLikelihoodEstimate(_this.prediction.id, percent);
+        allocateGraphBarHeights(_this.prediction.communityEstimates, _this.userEstimate);
         _this.prediction.userEstimate = {
-            'likelihoodEstimatePercent':percent 
+            'percent': percent
         }
-
-        /*
-        var updatingEstimate = null;
-        if (percent === _this.prediction.likelihoodEstimates.userEstimate.percent) {
-            updatingEstimate = LikelihoodEstimateService.deleteEstimate(_this.prediction.id);
-        } else {
-            updatingEstimate = LikelihoodEstimateService.setUserEstimate(_this.prediction.id, percent)
-        }
-        _this.prediction.likelihoodEstimates = updatingEstimate.anticipatedUpdatedLikelihoodEstimates;
-        allocateGraphBarHeights(_this.prediction.communityEstimates);
-
-        updatingEstimate.promise.then(function(updatedLikelihoodEstimates){
-            _this.prediction.likelihoodEstimates = updatedLikelihoodEstimates;
-            allocateGraphBarHeights(_this.prediction.communityEstimates);
+        settingEstimate.then(null, function error(){
+            _this.userEstimate = null;
+            allocateGraphBarHeights(_this.prediction.communityEstimates, _this.userEstimate);
         });
-        */
     }
 
     function expandPrediction() {
