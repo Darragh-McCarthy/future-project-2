@@ -8,6 +8,8 @@ angular.module('myApp')
 PredictionService.$inject=['$q','TopicService','LikelihoodEstimateService','UserService'];
 function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  UserService ) {
 
+
+
     var ParsePredictionModel = Parse.Object.extend('Prediction');
 
     var NUM_PREDICTIONS_PER_PARSE_QUERY = 100;
@@ -67,8 +69,6 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
             .include('readOnlyPredictionData')
             .get(predictionId)
             .then(function(prediction){
-                console.log(prediction);
-                console.log(prediction.get('readOnlyPredictionData'));
                 userThumbnailUrl = prediction.get('author').get('userThumbnailUrl');
                 userBigPictureUrl = prediction.get('author').get('userBigPictureUrl');
                 return prediction;
@@ -98,7 +98,6 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
                     predictionsCache.predictions.slice(indexOfFirstPrediction, indexOfFirstPrediction + PREDICTIONS_PER_PAGE)
                 );
                 getUserEstimatesForPredictions(predictionsCopy);
-                console.log('predictionsCopy', predictionsCopy);
                 var promises;
                 if ( ! stopRecursion) {
                     promises = [
@@ -115,6 +114,7 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
                     ];
                 }
                 return $q.all(promises).then(function(response) {
+
                     var paginationObject = {
                         'currentPageIndex': pageIndex,
                         'predictions': predictionsCopy,
@@ -166,13 +166,8 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
     function getUserEstimatesForPredictions(predictions) {
         return predictions.map(function(prediction){
             prediction.userEstimatePromise = LikelihoodEstimateService.getUserEstimateForPrediction(prediction.id);
-            prediction.userEstimatePromise.then(function(userEstimate){
-                console.log(userEstimate);
-            })
-            console.log('cwe');
             return prediction;
-        });
-        /*
+        });/*
         return $q(function(resolve, reject){
             var promises = [];
             for (var i = 0; i < predictions.length; i++) {
@@ -185,8 +180,7 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
                 promises.push(promise);
             }
             resolve($q.all(promises));
-        });
-        */
+        });*/
     }
 
 

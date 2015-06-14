@@ -4,12 +4,12 @@
     <div class="prediction__container">
 
             <div ng-if="!predictionCtrl.isEditingTopics">
-                <input type="button"
+                <!--<input type="button"
                     class="prediction__toggle-edit-topics" 
                     ng-hide="predictionCtrl.isEditingTopics" 
                     value="edit" 
                     ng-click="predictionCtrl.toggleEditing()"
-                />
+                />-->
                 <div class="prediction__header">
                     <span class="prediction__topics"><!--
                         --><span class="prediction__topic" 
@@ -23,10 +23,10 @@
                             ...
                         </span>--><!--
                 --></span><!--
-                --><span class="prediction__created-at" 
+                --><!--<span class="prediction__created-at" 
                         ng-if="predictionCtrl.showDateAdded">
                         {{predictionCtrl.prediction.createdAt}}
-                    </span>
+                    </span>-->
                     <a ui-sref="app.prediction({predictionId:predictionCtrl.prediction.id})" 
                         class="prediction__title">
                         <!-- if no reasons added, color should be gray -->
@@ -40,8 +40,7 @@
                 
                 <div class="prediction__reasons" 
                     ng-if="predictionCtrl.prediction.isExpanded">
-                    <!---->
-                <div>
+                    <div>
                     <!--
     &:nth-child(1)  { background: rgb(20,180,240);  }
     &:nth-child(2)  { background: rgb(70,190,180);  }
@@ -57,8 +56,8 @@
                     -->
 
                         <div style="position:relative">
-                            <div style="" ng-if="!predictionCtrl.reason">
-                                <label style="color:#333;display:block;margin:5px 0;">
+                            <div ng-if="!predictionCtrl.reason">
+                                <label style="color:#333;display:block;margin:3px 0;">
                                     <div style="display:block;font-weight:normal;font-size:1.1rem;">
                                         Why is this {{predictionCtrl.prediction.userEstimate.percent}}% 
                                         likely?

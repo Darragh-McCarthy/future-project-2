@@ -11,6 +11,7 @@ angular
     'myApp.sharedServices',
     'ngAnimate',
     'parse-angular',
+    'LocalForageModule',
     'ui.router'
   ])
   .config(mainConfigurations)

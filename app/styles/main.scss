@@ -424,7 +424,7 @@ fp-prediction + fp-prediction{
     &:visited { color:#333; text-decoration: none; }
     &:hover { color:#666; }
     display: block;
-    font-size:1.17rem;
+    font-size:1.2rem;
     font-weight: bold;
     line-height: 1.3em;
 }
@@ -434,7 +434,7 @@ fp-prediction + fp-prediction{
   background:#eee;
   border-radius:.2em;
   font-size:.9em;
-  margin-top:3px;
+  margin-top:0px;
   box-shadow:0 2px 3px #ddd;
   margin-bottom:20px;
 }
@@ -1058,7 +1058,7 @@ fp-prediction.ng-enter-active{
 }
 .prediction-page__prediction-title {
   font-weight: bold;
-  font-size:1rem;
+  font-size:1.5rem;
 }
 .prediction-page__prediction-author {}
 .prediction-page__author {}
@@ -1069,7 +1069,9 @@ fp-prediction.ng-enter-active{
   vertical-align: middle;
 }
 
-.prediction-page__author-img {}
+.prediction-page__author-img {
+  border-radius:3px;
+}
 .prediction-page__author-name {}
 
 

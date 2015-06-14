@@ -77,6 +77,9 @@ function FpPrediction( $scope,  $q,  $state,  PredictionService,  LikelihoodEsti
   _this.addReason = addReason;
 
   function addReason() {
+    LikelihoodEstimateService.addReason(_this.prediction.id, _this.reasonInputText).then(function(){
+      console.log('added reason');
+    });
     _this.reason = _this.reasonInputText;
     _this.reasonInputText = '';
     toastr.success('Added reason', 'Thank you for your insights.');
@@ -112,16 +115,22 @@ function FpPrediction( $scope,  $q,  $state,  PredictionService,  LikelihoodEsti
 
     function toggleLikelihoodEstimate(percent){
         percent = parseInt(percent, 10);
+        
+        var settingEstimate = (function(){
+          if (_this.prediction.userEstimate && _this.prediction.userEstimate.percent === percent) {
+            throw 'deleting estimate';
+          } else {
+            return LikelihoodEstimateService.setLikelihoodEstimate(_this.prediction.id, percent);
+          }
+        })().then(null, function error(){
+            _this.userEstimate = null;
+        });
+
+
         expandPrediction();
-        var settingEstimate = LikelihoodEstimateService.setLikelihoodEstimate(_this.prediction.id, percent);
-        allocateGraphBarHeights(_this.prediction.communityEstimates, _this.userEstimate);
         _this.prediction.userEstimate = {
             'percent': percent
         }
-        settingEstimate.then(null, function error(){
-            _this.userEstimate = null;
-            allocateGraphBarHeights(_this.prediction.communityEstimates, _this.userEstimate);
-        });
     }
 
     function expandPrediction() {

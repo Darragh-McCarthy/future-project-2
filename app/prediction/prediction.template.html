@@ -1,8 +1,95 @@
+<style>
+	
+	.likelihood-amount {
+		font-weight: bold;
+	}
+	.reason-title {
+		font-size:1.1rem;
+	}
+	.reasons-list {
+		padding:0;
+		margin: 0;
+		margin-top:30px;
+	}
+	.reason {
+		margin:0;
+		padding: 0;
+		position: relative;
+		padding-left:70px;
+		margin-bottom:20px;
+	}
+	.reason-text {
+		font-size: 1.1rem;
+		line-height: 1.3em;
+		font-weight: normal;;
+	}
+	.reason-image {
+		display: block;
+		position: absolute;;
+		top:0;
+		left: 0;
+		width: 50px;
+		height: 50px;
+		background: #ddd;
+		border-radius: 3px;
+	}
+</style>
+
 <div class="prediction-page">	
 	<img class="prediction-page__author-img" 
 		ng-src="{{prediction.prediction.author.userThumbnailUrl}}" 
-		ui-sref="app.user-profile({userId:prediction.prediction.author.id})"/>	
-	<h1 class="prediction-page__prediction-title">{{prediction.prediction.title}}</h1>
+		ui-sref="app.user-profile({userId:prediction.prediction.author.id})"
+	/>	
+	<h1 class="prediction-page__prediction-title">
+		{{prediction.prediction.title}}
+	</h1>
+
+	<ul class="reasons-list">
+		<li class="reason" ng-repeat="reason in prediction.reasons">
+			<div class="reason-image"></div>
+			<div class="reason-title">
+				<span class="likelihood-amount">100% likely</span> 
+				Darragh McCarthy, Web Developer
+			</div>
+			<p class="reason-text">{{reason.reasonText}}</p>
+		</li>
+		<li class="reason">
+			<div class="reason-image"></div>
+			<div class="reason-title">
+				<span class="likelihood-amount">40% likely</span> 
+				Darragh McCarthy, Web Developer
+			</div>
+			<p class="reason-text">Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
+			</p>
+		</li>
+		<li class="reason">
+			<div class="reason-image"></div>
+			<div class="reason-title">
+				<span class="likelihood-amount">60% likely</span> 
+				Darragh McCarthy, Web Developer
+			</div>
+			<p class="reason-text">Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
+			</p>
+		</li>
+		<li class="reason">
+			<div class="reason-image"></div>
+			<div class="reason-title">
+				<span class="likelihood-amount">80% likely</span> 
+				Darragh McCarthy, Web Developer
+			</div>
+			<p class="reason-text">Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
+			</p>
+		</li>
+		<li class="reason">
+			<div class="reason-image"></div>
+			<div class="reason-title">
+				<span class="likelihood-amount">40% likely</span> 
+				Darragh McCarthy, Web Developer
+			</div>
+			<p class="reason-text">Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
+			</p>
+		</li>
+	</ul>
 
 	
 	<!--<div class="prediction-page__author">-->

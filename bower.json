@@ -14,7 +14,9 @@
     "parse-angular-patch": "~0.1.2",
     "angular-ui-router": null,
     "lodash": "~3.7.0",
-    "angular-animate": "*"
+    "angular-animate": "*",
+    "angular-localforage": "~1.2.2",
+    "localforage": "~1.2.3"
   },
   "authors": [
     "Darragh McCarthy <darraghjames@gmail.com>"

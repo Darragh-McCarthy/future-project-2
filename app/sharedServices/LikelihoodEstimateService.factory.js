@@ -4,8 +4,10 @@
 angular.module('myApp')
 	.factory('LikelihoodEstimateService', LikelihoodEstimateService);
 
-LikelihoodEstimateService.$inject=['$timeout','Parse','$q'];
-function LikelihoodEstimateService( $timeout,  Parse,  $q) {
+LikelihoodEstimateService.$inject=['$timeout','Parse','$q','$localForage'];
+function LikelihoodEstimateService( $timeout,  Parse,  $q,  $localForage) {
+	var Prediction = Parse.Object.extend('Prediction');
+
 	var ParsePredictionModel = Parse.Object.extend('Prediction');
 	console.log('ParsePredictionModel inlined until CommunityLikelihoodEstimateCounterModel can replace it');
 
@@ -21,23 +23,33 @@ function LikelihoodEstimateService( $timeout,  Parse,  $q) {
 
 	var ParseLikelihoodEstimateModel = Parse.Object.extend('LikelihoodEstimate');
 
-	var whenEstimatesLoaded = new Parse.Query(ParseLikelihoodEstimateModel)
-		.equalTo('author', Parse.User.current())
-		.limit(1000)
-		.find()
-		.then(function(parseEstimates) {
-			var estimates = castParseLikelihoodEstimatesAsPlainObjects(parseEstimates);
-			angular.forEach(estimates, function(estimate) {
-				cachedEstimates[estimate.predictionId] = estimate;
+	var whenEstimatesLoaded = function(){
+		return $localForage.getItem('userLikelihoodEstimates').then(function(localForageEstimates) {
+			/*if (localForageEstimates) {
+				localForageEstimates.forEach(function(estimate) {
+					cachedEstimates[estimate.predictionId] = estimate;
+				});
+				return;
+			}*/
+			var query = new Parse.Query(ParseLikelihoodEstimateModel);
+			query.equalTo('author', Parse.User.current());
+			query.doesNotExist('deleted')
+			query.limit(1000);
+			return query.find().then(function(parseEstimates) {
+				var estimates = castParseLikelihoodEstimatesAsPlainObjects(parseEstimates);
+				angular.forEach(estimates, function(estimate) {
+					cachedEstimates[estimate.predictionId] = estimate;
+				});
+				return $localForage.setItem('userLikelihoodEstimates', estimates);
 			});
-		});
-	
-
-
+        });
+	}();
 
 	return {
 		'getUserEstimateForPrediction':getUserEstimateForPrediction,
-		'setLikelihoodEstimate': setLikelihoodEstimate//scheduleAddLikelihoodEstimate
+		'setLikelihoodEstimate': setLikelihoodEstimate,
+		'addReason':addReason,
+		'getReasonsForPrediction':getReasonsForPrediction
 	};
 	function getUserEstimateForPrediction(predictionId) {
 		return whenEstimatesLoaded.then(function(){
@@ -74,17 +86,10 @@ function LikelihoodEstimateService( $timeout,  Parse,  $q) {
 
 	function setLikelihoodEstimate(predictionId, percent) {
 		var prediction = new ParsePredictionModel({'id': predictionId });
-		return addNew(prediction, percent).then(function(newLikelihoodEstimate){
-			cachedEstimates[predictionId] = newLikelihoodEstimate;
-			return newLikelihoodEstimate;
-		});
-	}
-	function addNew(prediction, percent) {
 		var currentParseUser = Parse.User.current();
 		if ( ! currentParseUser) {
 			return $q.reject();
 		}
-
 		var estimate = new ParseLikelihoodEstimateModel();
 		var estimateACL = new Parse.ACL(currentParseUser);
 		estimateACL.setPublicReadAccess(true);
@@ -95,10 +100,46 @@ function LikelihoodEstimateService( $timeout,  Parse,  $q) {
 			'percent': percent
 		})
 		.then(function(newParseLikelihoodEstimate){
-			console.log('newParseLikelihoodEstimate', newParseLikelihoodEstimate);
-			return castParseLikelihoodEstimateAsPlainObject(newParseLikelihoodEstimate);
+			var newLikelihoodEstimate = castParseLikelihoodEstimateAsPlainObject(newParseLikelihoodEstimate);
+			cachedEstimates[predictionId] = newLikelihoodEstimate;
+			return newLikelihoodEstimate;
 		});
 	}
+
+	function addReason(predictionId, reasonText) {
+		var currentParseUser = Parse.User.current();
+		if ( ! currentParseUser ) {
+			return $q.reject();
+		}
+		var query = new Parse.Query('LikelihoodEstimate');
+		var prediction = new Prediction({'id': predictionId});
+		query.equalTo('prediction', prediction);
+		query.equalTo('author', currentParseUser);
+		query.doesNotExist('deleted');
+
+		return query.first().then(function(estimate){
+			if (estimate) {
+				 console.log('found estimate');
+				return estimate.save('reasonText', reasonText);
+			}
+			else {
+				console.log('estimate not found');
+			}
+		});
+	}
+
+	function getReasonsForPrediction(predictionId) {
+		var prediction = new Prediction({'id': predictionId});
+		var query = new Parse.Query('LikelihoodEstimate');
+		query.equalTo('prediction', prediction);
+		query.doesNotExist('deleted');
+		query.exists('reasonText');
+		return query.find().then(function(estimates){
+			console.log(estimates);
+			return castParseLikelihoodEstimatesAsPlainObjects(estimates);
+		});
+	}
+
 
 	function castParseLikelihoodEstimateAsPlainObject(parseEstimate) {
 		return castParseLikelihoodEstimatesAsPlainObjects([parseEstimate])[0];
@@ -109,7 +150,8 @@ function LikelihoodEstimateService( $timeout,  Parse,  $q) {
 				'id': parseEstimate.id,
 				'authorId': parseEstimate.get('author').id,
 				'predictionId': parseEstimate.get('prediction').id,
-				'percent': parseEstimate.get('percent')
+				'percent': parseEstimate.get('percent'),
+				'reasonText': parseEstimate.get('reasonText')
 			};
 		});
 	}
