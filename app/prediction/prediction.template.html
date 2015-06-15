@@ -16,7 +16,7 @@
 		padding: 0;
 		position: relative;
 		padding-left:70px;
-		margin-bottom:20px;
+		margin-bottom:40px;
 	}
 	.reason-text {
 		font-size: 1.1rem;
@@ -33,6 +33,14 @@
 		background: #ddd;
 		border-radius: 3px;
 	}
+	.change-mind-title {
+		font-size:1rem;
+		font-weight: bold;
+		margin-top:10px;
+	}
+	.user-name-and-title {
+		font-size:1rem;
+	}
 </style>
 
 <div class="prediction-page">	
@@ -43,51 +51,81 @@
 	<h1 class="prediction-page__prediction-title">
 		{{prediction.prediction.title}}
 	</h1>
+	
+    <fp-likelihood-community-estimate 
+        likelihood-estimates="predictionCtrl.prediction.communityEstimates">
+    </fp-likelihood-community-estimate>
+
 
 	<ul class="reasons-list">
 		<li class="reason" ng-repeat="reason in prediction.reasons">
 			<div class="reason-image"></div>
 			<div class="reason-title">
 				<span class="likelihood-amount">100% likely</span> 
-				Darragh McCarthy, Web Developer
+				<span class="user-name-and-title">Darragh McCarthy, Web Developer</span>
 			</div>
 			<p class="reason-text">{{reason.reasonText}}</p>
+
+			<div class="change-mind-title">You voted 80%. Did this change your opinion?</div>
+			<fp-likelihood-user-estimate 
+				user-estimate-percent="80">
+			</fp-likelihood-user-estimate>
 		</li>
 		<li class="reason">
 			<div class="reason-image"></div>
 			<div class="reason-title">
 				<span class="likelihood-amount">40% likely</span> 
-				Darragh McCarthy, Web Developer
+				<span class="user-name-and-title">Darragh McCarthy, Web Developer</span>
 			</div>
 			<p class="reason-text">Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
 			</p>
+
+			<div class="change-mind-title">You voted 80%. Did this change your opinion?</div>
+			<fp-likelihood-user-estimate 
+				user-estimate-percent="80">
+			</fp-likelihood-user-estimate>
 		</li>
 		<li class="reason">
 			<div class="reason-image"></div>
 			<div class="reason-title">
 				<span class="likelihood-amount">60% likely</span> 
-				Darragh McCarthy, Web Developer
+				<span class="user-name-and-title">Darragh McCarthy, Web Developer</span>
 			</div>
-			<p class="reason-text">Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
+			<p class="reason-text">Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
 			</p>
+
+			<div class="change-mind-title">You voted 80%. Did this change your opinion?</div>
+			<fp-likelihood-user-estimate 
+				user-estimate-percent="80">
+			</fp-likelihood-user-estimate>
 		</li>
 		<li class="reason">
 			<div class="reason-image"></div>
 			<div class="reason-title">
 				<span class="likelihood-amount">80% likely</span> 
-				Darragh McCarthy, Web Developer
+				<span class="user-name-and-title">Darragh McCarthy, Web Developer</span>
 			</div>
-			<p class="reason-text">Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
+			<p class="reason-text">Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo.
 			</p>
+
+			<div class="change-mind-title">You voted 80%. Did this change your opinion?</div>
+			<fp-likelihood-user-estimate 
+				user-estimate-percent="80">
+			</fp-likelihood-user-estimate>
 		</li>
 		<li class="reason">
 			<div class="reason-image"></div>
 			<div class="reason-title">
 				<span class="likelihood-amount">40% likely</span> 
-				Darragh McCarthy, Web Developer
+				<span class="user-name-and-title">Darragh McCarthy, Web Developer</span>
 			</div>
-			<p class="reason-text">Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
+			<p class="reason-text">Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
 			</p>
+
+			<div class="change-mind-title">You voted 80%. Did this change your opinion?</div>
+			<fp-likelihood-user-estimate 
+				user-estimate-percent="80">
+			</fp-likelihood-user-estimate>
 		</li>
 	</ul>
 

@@ -1,7 +1,6 @@
 
 
 <div class="user-profile-page">
-	
 	<div class="user-profile-page__centered-box">
 		<div class="user-profile-page__user-overview">
 			<img class="user-profile-page__user-photo-big" ng-src="{{userProfile.userToDisplay.userBigPictureUrl}}"/>
@@ -17,11 +16,9 @@
 		<div class="user-profile-page__fp-add-new-prediction-container">
 			<fp-prediction-list 
 				pagination-object="userProfile.paginationObject"
-				show-add-prediction-form="">
+				show-add-prediction-form="userProfile.currentUser.userId === userProfile.userToDisplay.id">
 			</fp-prediction-list>
 		</div>
-		
 	</div>
-  
 </div>
 

@@ -1,13 +1,9 @@
-
-<!--
-
-
-
 <div class="likelihood__user-estimate">
-  <div class="likelihood__user-estimate-option" 
-    ng-click="predictionCtrl.toggleLikelihoodEstimate(estimate.percent)" 
-    ng-repeat="estimate in predictionCtrl.prediction.communityEstimates track by $index" 
-    ng-class="{'likelihood__user-estimate-option--active': estimate.percent == predictionCtrl.prediction.userEstimate.likelihoodEstimatePercent}">
-      {{::estimate.percent}}<span class="show-on-active">%<br/>likely</span>
-  </div>
-</div>-->
+    <div class="likelihood__user-estimate-option" 
+        ng-click="userEstimateCtrl.onSelectOption({'percent':percent})" 
+        ng-repeat="percent in userEstimateCtrl.percentOptions" 
+        ng-class="{'likelihood__user-estimate-option--active': percent === userEstimateCtrl.userEstimatePercent}"><span class="test"><!--
+        --><span class="percent">{{percent}}</span><span class="show-on-active">%<br/>likely</span><!--
+        --></span><!--
+ --></div>
+</div>

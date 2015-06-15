@@ -94,10 +94,8 @@
 
 
                 <div class="likelihood">
-                    <div class="likelihood__community-estimate">
-
+                    <!--<div class="likelihood__community-estimate">
                         <div ng-if="predictionCtrl.prediction.isExpanded">
-
                             <div class="likelihood__community-estimate__graph">
                                 <div class="likelihood__community-estimate__graph-bar" 
                                     ng-repeat="estimate in predictionCtrl.prediction.communityEstimates">
@@ -105,17 +103,13 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <!--<fp-likelihood-user-estimate prediction="predictionCtrl.prediction"></fp-likelihood-user-estimate>-->
-                    <div class="likelihood__user-estimate">
-                        <div class="likelihood__user-estimate-option" 
-                            ng-click="predictionCtrl.toggleLikelihoodEstimate(estimate.percent)" 
-                            ng-repeat="estimate in predictionCtrl.prediction.communityEstimates track by $index" 
-                            ng-class="{'likelihood__user-estimate-option--active': estimate.percent == predictionCtrl.prediction.userEstimate.percent}"><span class="test"><!--
-                            --><span class="percent">{{::estimate.percent}}</span><span class="show-on-active">%<br/>likely</span><!--
-                            --></span><!--
-                     --></div>
-                    </div>
+                    </div>-->
+
+                    <fp-likelihood-user-estimate 
+                        on-select-option="predictionCtrl.toggleLikelihoodEstimate(percent)"
+                        user-estimate-percent="predictionCtrl.prediction.userEstimate.percent">
+                    </fp-likelihood-user-estimate>
+
                 </div>
             </div>
 

@@ -11,19 +11,19 @@ function LikelihoodEstimateService( $timeout,  Parse,  $q,  $localForage) {
 	var ParsePredictionModel = Parse.Object.extend('Prediction');
 	console.log('ParsePredictionModel inlined until CommunityLikelihoodEstimateCounterModel can replace it');
 
-	var DELAY_BEFORE_NEW_ESTIMATE_SAVE = 3000;
+	//var DELAY_BEFORE_NEW_ESTIMATE_SAVE = 3000;
 
 	var cachedEstimates = {};
 	//var cachedEstimateCounts = {};
-	var pendingEstimateUpdates = {
+	/*var pendingEstimateUpdates = {
 		saves: {},
 		deletes: {},
 		updateTimeouts: {}
-	};
+	};*/
 
 	var ParseLikelihoodEstimateModel = Parse.Object.extend('LikelihoodEstimate');
 
-	var whenEstimatesLoaded = function(){
+	var whenEstimatesLoaded = (function(){
 		return $localForage.getItem('userLikelihoodEstimates').then(function(localForageEstimates) {
 			/*if (localForageEstimates) {
 				localForageEstimates.forEach(function(estimate) {
@@ -33,7 +33,7 @@ function LikelihoodEstimateService( $timeout,  Parse,  $q,  $localForage) {
 			}*/
 			var query = new Parse.Query(ParseLikelihoodEstimateModel);
 			query.equalTo('author', Parse.User.current());
-			query.doesNotExist('deleted')
+			query.doesNotExist('deleted');
 			query.limit(1000);
 			return query.find().then(function(parseEstimates) {
 				var estimates = castParseLikelihoodEstimatesAsPlainObjects(parseEstimates);
@@ -43,18 +43,33 @@ function LikelihoodEstimateService( $timeout,  Parse,  $q,  $localForage) {
 				return $localForage.setItem('userLikelihoodEstimates', estimates);
 			});
         });
-	}();
+	})();
 
 	return {
 		'getUserEstimateForPrediction':getUserEstimateForPrediction,
 		'setLikelihoodEstimate': setLikelihoodEstimate,
 		'addReason':addReason,
-		'getReasonsForPrediction':getReasonsForPrediction
+		'getReasonsForPrediction':getReasonsForPrediction,
+		'deleteEstimate': deleteEstimate
 	};
 	function getUserEstimateForPrediction(predictionId) {
 		return whenEstimatesLoaded.then(function(){
 			return cachedEstimates[predictionId];
 		});
+	}
+
+	function deleteEstimate(likelihoodEstimateId, predictionId) {
+		return Parse.Cloud.run('deleteLikelihoodEstimate', {
+			'likelihoodEstimateId': likelihoodEstimateId,
+			'predictionId': predictionId
+		}).then(
+			function deleteEstimateSuccess(response) {
+				console.log(response);
+			},
+			function deleteEstimateError(error) {
+				console.log(error);
+			}
+		);
 	}
 /*
 	function removeLikelihoodEstimate(predictionId, estimateId, percent) {

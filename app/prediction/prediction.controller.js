@@ -6,6 +6,7 @@ angular.module('myApp')
 
 Prediction.$inject=['PredictionService','$stateParams','currentUser','LikelihoodEstimateService'];
 function Prediction( PredictionService,  $stateParams,  currentUser,  LikelihoodEstimateService ) {
+	scroll(0,0);
 	var _this = this;
 	PredictionService.getPredictionById($stateParams.predictionId).then(function(prediction){
 		_this.prediction = prediction;

@@ -1,14 +1,47 @@
 var ReadOnlyPredictionData = Parse.Object.extend('ReadOnlyPredictionData');
 var LIKELIHOOD_ESTIMATE_OPTIONS = [0,10,20,30,40,50,60,70,80,90,100];
+var LikelihoodEstimate = Parse.Object.extend('LikelihoodEstimate');
+var Prediction = Parse.Object.extend('Prediction');
 
 
-
-// Use Parse.Cloud.define to define as many cloud functions as you want.
-// For example:
-Parse.Cloud.define("hello", function(request, response) {
-  response.success("Hello world!");
+Parse.Cloud.define('deleteLikelihoodEstimate', function(request, response) {
+	//response.success("Hello world!");
+	var query = new Parse.Query(LikelihoodEstimate);
+	if (request.params.estimateId) {
+		query.get(request.params.estimateId).then(function(estimate) {
+			if (estimate.author.id === request.user.id) {
+				return estimate.save({'deleted':true}).then(function(){
+					response.success('deleted estimate by id');
+				});
+			}
+			else {
+				response.error('cannot delete another user\'s likelihoodEstimate');
+			}
+		});
+	}
+	else if (request.params.predictionId) {
+		var prediction = new Prediction({
+			'id': request.params.predictionId
+		});
+		query.equalTo('prediction', prediction);
+		query.equalTo('author', request.user);
+		return query.find().then(
+			function onFindEstimatesSuccess(estimates){
+				var promiseDeletes = estimates.map(function(estimate){
+					return estimate.save({
+						'deleted':true
+					});
+				});
+				return Parse.Promise.when(promiseDeletes).then(function(){
+					response.success('deleted estimate by query on predictionId, user. Better to delete by likelihoodEstimate id');
+				});
+			},
+			function onFindEstimatesError() {
+				response.error('could not find estimates by predictionId, user');
+			}
+		);
+	}
 });
-
 
 
 
@@ -35,6 +68,7 @@ Parse.Cloud.beforeSave('LikelihoodEstimate', function(request, response) {
 
 
 Parse.Cloud.afterSave('LikelihoodEstimate', function(request) {
+
 	if ( ! request.object.existed()) {
 
 		var promise = getActiveEstimatesForCurrentPrediction().then(function(estimates) {
@@ -48,9 +82,8 @@ Parse.Cloud.afterSave('LikelihoodEstimate', function(request) {
 			return promises;
 		});
 
-
-
 		Parse.Cloud.useMasterKey();
+		
 		return promise.then(function(deletedEstimatePromises){
 			return Parse.Promise.when(deletedEstimatePromises).then(function(deletedEstimates){
 				console.log('deletedEstimates');
@@ -74,12 +107,8 @@ Parse.Cloud.afterSave('LikelihoodEstimate', function(request) {
 					return readOnlyPredictionData.save();
 				});
 			});
-				
 		});
-
 	}
-
-
 
 	function getActiveEstimatesForCurrentPrediction() {
 		var query = new Parse.Query('LikelihoodEstimate');
@@ -92,6 +121,7 @@ Parse.Cloud.afterSave('LikelihoodEstimate', function(request) {
 			return estimates;
 		});
 	}
+
 });
 
 
