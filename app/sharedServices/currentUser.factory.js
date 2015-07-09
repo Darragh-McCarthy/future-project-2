@@ -193,12 +193,12 @@ function currentUser( $q,  $window,  $timeout,  Parse ) {
 			$window.fbAsyncInit = function() {
 		    Parse.FacebookUtils.init({
 		   		//localhost appId
-				appId			 : '900144096737151',
+				//appId			 : '900144096737151',
 
-				/*
-				futureprojectdev.parseapp.com
+				
+				//futureprojectdev.parseapp.com
 				appId: 910868352331392,
-				*/
+				
 
 				//futureproject.parseapp.com appId
 				//appId      : '867899246628303',

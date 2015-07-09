@@ -10,36 +10,127 @@
                     value="edit" 
                     ng-click="predictionCtrl.toggleEditing()"
                 />-->
-                <div class="prediction__header">
-                    <span class="prediction__topics"><!--
+                <span class="prediction__topics"><!--
                         --><span class="prediction__topic" 
                             ng-if="topic.title != predictionCtrl.topicToHide"
-                            ng-click="predictionCtrl.navigateToTopic(topic.title)"
+                            ng-show="predictionCtrl.prediction.isExpanded"
+                            ui-sref="app.topic({'topic':topic.title})"
                             ng-repeat="topic in predictionCtrl.prediction.topics">
                             {{topic.title}}
                         </span><!--
-                     --><!--<span class="prediction__topic" 
-                            ng-mouseover="predictionCtrl.toggleAddTopicInline()">
-                            ...
-                        </span>--><!--
-                --></span><!--
+                    --><!--<span ng-if="predictionCtrl.prediction.topics.length < 3" class="prediction__topic">...</span>--><!--
+                --></span>
+                <div style="font-size:1rem;text-transform:uppercase;text-align:center;color:#999;"
+                    ng-hide="predictionCtrl.prediction.isExpanded">
+                    Prediction
+                </div>
+                <div class="prediction__header">
+                    <!--
                 --><!--<span class="prediction__created-at" 
                         ng-if="predictionCtrl.showDateAdded">
                         {{predictionCtrl.prediction.createdAt}}
                     </span>-->
-                    <a ui-sref="app.prediction({predictionId:predictionCtrl.prediction.id})" 
-                        class="prediction__title">
-                        <!-- if no reasons added, color should be gray -->
-                        {{::predictionCtrl.prediction.title}} 
-                        <!--<span style="font-size:.9rem;font-weight:200;color:#777;">
-                            6 reasons, 22 votes
-                        </span>-->
-                    </a>
+                    <div class="fp-prediction__title-container">
+                        <!--<img ng-show="predictionCtrl.prediction.isExpanded" 
+                        src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xpf1/v/t1.0-1/c0.11.50.50/p50x50/10603421_10204534347148506_6747658294892667364_n.jpg?oh=8e17fb5508f113e4e40813ae429ac18f&oe=5632A214&__gda__=1441399627_60ccb82c80da16931d260bbdd107460e" 
+                        class="fp-prediction__author-image"/>-->
+                        <a ui-sref="app.prediction({predictionId:predictionCtrl.prediction.id})" 
+                            class="prediction__title"
+                            ng-class="{'prediction__title--flash':predictionCtrl.isFlashPredictionTitleActive}">
+                            <!-- if no reasons added, color should be gray -->
+
+                            {{::predictionCtrl.prediction.title}} 
+                            <!--<span style="font-size:.9rem;font-weight:200;color:#777;">
+                                6 reasons, 22 votes
+                            </span>-->
+                        </a>
+                    </div>
                 </div>
 
+                <div class="reason-container" 
+                    ng-if="predictionCtrl.reason">
+                   
+                    <div class="reason-content">
+                        <div class="reason-title">
+                             <img class="fp-prediction__author-image"
+                                
+                            />
+                            <span class="user-name-and-title">
+                                <span class="fullname">Darragh McCarthy,</span>
+                                <span class="short-bio">Web Developer</span>
+                            </span>
+                        </div>
+                        <p class="reason-text">
+                            <span class="likelihood-amount">{{predictionCtrl.prediction.userEstimate.percent}}% likely,</span>
+                            Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
+                            <br/>
+                            <br/>
+                            Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
+                            <br/>
+                            <br/>
+                            Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
+                        </p>
+
+
+
+                        <div class="prediction__header">
+                        <!--
+                    --><!--<span class="prediction__created-at" 
+                            ng-if="predictionCtrl.showDateAdded">
+                            {{predictionCtrl.prediction.createdAt}}
+                        </span>-->
+                        
+                    </div>
+                        <!--<fp-likelihood-user-estimate 
+                            on-select-option="predictionCtrl.toggleLikelihoodEstimate(percent)"
+                            user-estimate-percent="predictionCtrl.prediction.userEstimate.percent">
+                        </fp-likelihood-user-estimate>-->
+                    </div>
+                    <!--<div style="margin-top:30px;">132 comments, 552 votes</div>-->
+                </div>
                 
+
+
+                <div class="likelihood">
+                    <!--<div class="likelihood__community-estimate">
+                        <div ng-if="predictionCtrl.prediction.isExpanded">
+                            <div class="likelihood__community-estimate__graph">
+                                <div class="likelihood__community-estimate__graph-bar" 
+                                    ng-repeat="estimate in predictionCtrl.prediction.communityEstimates">
+                                    <div ng-style="estimate.graphBarHeight"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>-->
+                    <div class="fp-prediction__title-container"
+                        ng-show="predictionCtrl.reason"
+                        style="font-size:1.1rem;margin-top:20px;">
+                        <!--<img ng-show="predictionCtrl.prediction.isExpanded" 
+                        src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xpf1/v/t1.0-1/c0.11.50.50/p50x50/10603421_10204534347148506_6747658294892667364_n.jpg?oh=8e17fb5508f113e4e40813ae429ac18f&oe=5632A214&__gda__=1441399627_60ccb82c80da16931d260bbdd107460e" 
+                        class="fp-prediction__author-image"/>-->
+                        <a ui-sref="app.prediction({predictionId:predictionCtrl.prediction.id})" 
+                            class="prediction__title"
+                            ng-class="{'prediction__title--flash':predictionCtrl.isFlashPredictionTitleActive}"
+                            >
+                            <!-- if no reasons added, color should be gray -->
+
+                            {{::predictionCtrl.prediction.title}} 
+                            <!--<span style="font-size:.9rem;font-weight:200;color:#777;">
+                                6 reasons, 22 votes
+                            </span>-->
+                        </a>
+                    </div>
+
+                    <fp-likelihood-user-estimate 
+                        on-select-option="predictionCtrl.toggleLikelihoodEstimate(percent)"
+                        user-estimate-percent="predictionCtrl.prediction.userEstimate.percent">
+                    </fp-likelihood-user-estimate>
+
+                </div>
+
                 <div class="prediction__reasons" 
                     ng-if="predictionCtrl.prediction.isExpanded">
+
                     <div>
                     <!--
     &:nth-child(1)  { background: rgb(20,180,240);  }
@@ -57,33 +148,32 @@
 
                         <div style="position:relative">
                             <div ng-if="!predictionCtrl.reason">
-                                <label style="color:#333;display:block;margin:3px 0;">
-                                    <div style="display:block;font-weight:normal;font-size:1.1rem;">
-                                        Why is this {{predictionCtrl.prediction.userEstimate.percent}}% 
-                                        likely?
-                                    </div>
+
+                                <label style="color:#333;display:block;margin:8px 0 0;">
+                                    <!--<div style="display:block;font-weight:normal; font-size:1rem;">
+                                        Why is this {{predictionCtrl.prediction.userEstimate.percent}}% likely?
+                                    </div>-->
 
                                     <input type="text"
                                         id="prediction-{{predictionCtrl.prediction.id}}__add-reason-text-input" 
                                         ng-model="predictionCtrl.reasonInputText"
                                         ng-keyup="$event.keyCode === 13 && predictionCtrl.addReason()"
-                                         />
+                                        placeholder="Why is this prediction {{predictionCtrl.prediction.userEstimate.percent}}% likely?"
+                                        style="text-align:center;max-width:700px;margin:0 auto;"
+                                        />
                                 </label>
 
                                     <button class="prediction__add-reason-button" 
                                         ng-show="predictionCtrl.reasonInputText.length"  
                                         ng-click="predictionCtrl.addReason()" >
-                                        Add reason
+                                        Add Reason
                                     </button>
                             </div>
 
                             <div style="" 
                                 ng-if="predictionCtrl.reason">
                                 <!--{{predictionCtrl.reason}}-->
-                                <div style="font-size:1rem;">
-                                    <div style="font-size:1.1rem;font-weight:normal;">113 reasons, 553 votes<!--{{predictionCtrl.prediction.communityEstimatesCount}} -->
-                                    </div>
-                                </div>
+                               
                             </div>
 
                         </div>
@@ -93,24 +183,9 @@
                 </div>
 
 
-                <div class="likelihood">
-                    <!--<div class="likelihood__community-estimate">
-                        <div ng-if="predictionCtrl.prediction.isExpanded">
-                            <div class="likelihood__community-estimate__graph">
-                                <div class="likelihood__community-estimate__graph-bar" 
-                                    ng-repeat="estimate in predictionCtrl.prediction.communityEstimates">
-                                    <div ng-style="estimate.graphBarHeight"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>-->
+                
 
-                    <fp-likelihood-user-estimate 
-                        on-select-option="predictionCtrl.toggleLikelihoodEstimate(percent)"
-                        user-estimate-percent="predictionCtrl.prediction.userEstimate.percent">
-                    </fp-likelihood-user-estimate>
 
-                </div>
             </div>
 
 

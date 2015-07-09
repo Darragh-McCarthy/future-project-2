@@ -10,7 +10,6 @@ function TopicService( $q,  Parse ) {
   var minTopicCharacterLength = 2;
   var maxTopicCharacterLength = 100;
   var featuredTopicTitles = [
-    {'title':'Innovation'},
     {'title':'Technology'},
     {'title':'Artificial Intelligence'},
     {'title':'Robotics'},
@@ -25,7 +24,7 @@ function TopicService( $q,  Parse ) {
     {'title':'Social Networks'},
     {'title':'Environment'},
     {'title':'Synthetic Biology'},
-    {'title':'Survival / defence'},
+    /*{'title':'Survival / defence'},*/
     {'title':'Mobile Devices'},
     {'title':'Design'},
     {'title':'Health'},
@@ -40,9 +39,23 @@ function TopicService( $q,  Parse ) {
     {'title':'Startups'},
     {'title':'Business'},
     {'title':'Education'},
-    {'title':'Entertainment'},
-    {'title':'Movies'},
-    {'title':'Television'}
+    {'title':'Entertainment'}
+  ];
+
+  var newPredictionTopicSuggestions = [
+    {'title':'Technology'},
+    {'title':'Design'},
+    {'title':'Health'},
+    {'title':'Medicine'},
+    {'title':'Fashion'},
+    {'title':'Politics'},
+    {'title':'Sports'},
+    {'title':'Science'},
+    {'title':'Culture'},
+    {'title':'Startups'},
+    {'title':'Business'},
+    {'title':'Education'},
+    {'title':'Entertainment'}
   ];
 
 	return {
@@ -52,7 +65,8 @@ function TopicService( $q,  Parse ) {
     'getTopicsById':getTopicsById,
     'getTopicByTitle':getTopicByTitle,
     'getEmptyTopicReferenceById':getEmptyTopicReferenceById,
-    'featuredTopicTitles': featuredTopicTitles
+    'featuredTopicTitles': featuredTopicTitles,
+    'newPredictionTopicSuggestions': newPredictionTopicSuggestions
 	};
 
 

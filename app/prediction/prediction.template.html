@@ -1,133 +1,152 @@
-<style>
-	
-	.likelihood-amount {
-		font-weight: bold;
-	}
-	.reason-title {
-		font-size:1.1rem;
-	}
-	.reasons-list {
-		padding:0;
-		margin: 0;
-		margin-top:30px;
-	}
-	.reason {
-		margin:0;
-		padding: 0;
-		position: relative;
-		padding-left:70px;
-		margin-bottom:40px;
-	}
-	.reason-text {
-		font-size: 1.1rem;
-		line-height: 1.3em;
-		font-weight: normal;;
-	}
-	.reason-image {
-		display: block;
-		position: absolute;;
-		top:0;
-		left: 0;
-		width: 50px;
-		height: 50px;
-		background: #ddd;
-		border-radius: 3px;
-	}
-	.change-mind-title {
-		font-size:1rem;
-		font-weight: bold;
-		margin-top:10px;
-	}
-	.user-name-and-title {
-		font-size:1rem;
-	}
-</style>
-
 <div class="prediction-page">	
-	<img class="prediction-page__author-img" 
+	<!--<img class="prediction-page__author-img" 
 		ng-src="{{prediction.prediction.author.userThumbnailUrl}}" 
 		ui-sref="app.user-profile({userId:prediction.prediction.author.id})"
-	/>	
-	<h1 class="prediction-page__prediction-title">
-		{{prediction.prediction.title}}
-	</h1>
+	/>-->
+	<div class="prediction__topics">
+		<span class="prediction__topic" 
+            ui-sref="app.topic({'topic':topic.title})"
+            ng-repeat="topic in prediction.prediction.topics">
+            {{topic.title}}
+        </span>
+    </div>
+	<h1 class="prediction-page__prediction-title">{{prediction.prediction.title}}</h1>
+
+	<div style="margin-bottom:50px;" ng-if="prediction.prediction.communityEstimatesCount > 0">
+		<label style="font-size:1.2rem;font-weight: normal;margin-top:3px;display:block;">
+			Why is this {{prediction.prediction.userEstimate.percent}}% likely?
+			<div style="position:relative">
+				<input type="text" />
+			</div>
+		</label>
+	</div>
+	<div class="likelihood__community-estimate__count">{{prediction.prediction.communityEstimatesCount}} votes</div>
+	<div class="community-estimate-graph-container">
+
+		<fp-likelihood-community-estimate 
+	        community-estimates="prediction.prediction.communityEstimates"
+	        community-estimates-count="prediction.prediction.communityEstimatesCount"
+	        user-estimate="prediction.prediction.userEstimate">
+
+	    </fp-likelihood-community-estimate>
+		<fp-likelihood-user-estimate
+			on-select-option="prediction.toggleLikelihoodEstimate(percent)"
+	        user-estimate-percent="prediction.prediction.userEstimate.percent">
+		</fp-likelihood-user-estimate>
+	</div>
+
+
+
+	<div class="reasons">
+		<ul class="reasons-list">
+			<li class="reason" 
+				ng-repeat="reason in prediction.reasons">
+				<div class="reason-image"></div>
+				<div class="reason-title">
+					<span class="likelihood-amount">
+						100% likely,
+					</span>
+					<span class="user-name-and-title">
+						<span class="fullname">Darragh McCarthy</span>
+						<span class="short-bio">, Web Developer</span>
+					</span>
+				</div>
+				<p class="reason-text">{{reason.reasonText}}</p>
+
+				<div class="change-mind-title" ng-if="prediction.prediction.userEstimate.percent">You voted {{prediction.prediction.userEstimate.percent}}%, did this change your opinion?</div>
+
+		<fp-likelihood-user-estimate
+			ng-if="prediction.prediction.userEstimate"
+			on-select-option="prediction.toggleLikelihoodEstimate(percent)"
+	        user-estimate-percent="prediction.prediction.userEstimate.percent">
+		</fp-likelihood-user-estimate>
+
+			</li>
+			<li class="reason">
+				<div class="reason-image"></div>
+				<div class="reason-content">
+					<div class="reason-title">
+						<span class="likelihood-amount">40% likely,</span> 
 	
-    <fp-likelihood-community-estimate 
-        likelihood-estimates="predictionCtrl.prediction.communityEstimates">
-    </fp-likelihood-community-estimate>
+					<span class="user-name-and-title">
+						<span class="fullname">Darragh McCarthy</span>
+						<span class="short-bio">, Web Developer</span>
+					</span>		
+						</div>
+					<p class="reason-text">Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
+					</p>
+					<div class="change-mind-title" ng-if="prediction.prediction.userEstimate.percent">You voted {{prediction.prediction.userEstimate.percent}}%, did this change your opinion?</div>
+					<fp-likelihood-user-estimate
+						ng-if="prediction.prediction.userEstimate"
+						on-select-option="prediction.toggleLikelihoodEstimate(percent)"
+				        user-estimate-percent="prediction.prediction.userEstimate.percent">
+					</fp-likelihood-user-estimate>
+				</div>
 
+		
+			</li>
+			<li class="reason">
+				<div class="reason-image"></div>
+				<div class="reason-title">
+					<span class="likelihood-amount">60% likely,</span> 
 
-	<ul class="reasons-list">
-		<li class="reason" ng-repeat="reason in prediction.reasons">
-			<div class="reason-image"></div>
-			<div class="reason-title">
-				<span class="likelihood-amount">100% likely</span> 
-				<span class="user-name-and-title">Darragh McCarthy, Web Developer</span>
-			</div>
-			<p class="reason-text">{{reason.reasonText}}</p>
+					<span class="user-name-and-title">
+						<span class="fullname">Darragh McCarthy</span>
+						<span class="short-bio">, Web Developer</span>
+					</span>		
+				</div>
+				<p class="reason-text">Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
+				</p>
 
-			<div class="change-mind-title">You voted 80%. Did this change your opinion?</div>
-			<fp-likelihood-user-estimate 
-				user-estimate-percent="80">
-			</fp-likelihood-user-estimate>
-		</li>
-		<li class="reason">
-			<div class="reason-image"></div>
-			<div class="reason-title">
-				<span class="likelihood-amount">40% likely</span> 
-				<span class="user-name-and-title">Darragh McCarthy, Web Developer</span>
-			</div>
-			<p class="reason-text">Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
-			</p>
+				<div class="change-mind-title" ng-if="prediction.prediction.userEstimate.percent">You voted {{prediction.prediction.userEstimate.percent}}%, did this change your opinion?</div>
+		<fp-likelihood-user-estimate
+			ng-if="prediction.prediction.userEstimate"
+			on-select-option="prediction.toggleLikelihoodEstimate(percent)"
+	        user-estimate-percent="prediction.prediction.userEstimate.percent">
+		</fp-likelihood-user-estimate>
+			</li>
+			<li class="reason">
+				<div class="reason-image"></div>
+				<div class="reason-title">
+					<span class="likelihood-amount">80% likely,</span> 
 
-			<div class="change-mind-title">You voted 80%. Did this change your opinion?</div>
-			<fp-likelihood-user-estimate 
-				user-estimate-percent="80">
-			</fp-likelihood-user-estimate>
-		</li>
-		<li class="reason">
-			<div class="reason-image"></div>
-			<div class="reason-title">
-				<span class="likelihood-amount">60% likely</span> 
-				<span class="user-name-and-title">Darragh McCarthy, Web Developer</span>
-			</div>
-			<p class="reason-text">Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
-			</p>
+					<span class="user-name-and-title">
+						<span class="fullname">Darragh McCarthy</span>
+						<span class="short-bio">, Web Developer</span>
+					</span>		
+				</div>
+				<p class="reason-text">Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo.
+				</p>
 
-			<div class="change-mind-title">You voted 80%. Did this change your opinion?</div>
-			<fp-likelihood-user-estimate 
-				user-estimate-percent="80">
-			</fp-likelihood-user-estimate>
-		</li>
-		<li class="reason">
-			<div class="reason-image"></div>
-			<div class="reason-title">
-				<span class="likelihood-amount">80% likely</span> 
-				<span class="user-name-and-title">Darragh McCarthy, Web Developer</span>
-			</div>
-			<p class="reason-text">Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo.
-			</p>
+				<div class="change-mind-title" ng-if="prediction.prediction.userEstimate.percent">You voted {{prediction.prediction.userEstimate.percent}}%, did this change your opinion?</div>
+		<fp-likelihood-user-estimate
+			ng-if="prediction.prediction.userEstimate"
+			on-select-option="prediction.toggleLikelihoodEstimate(percent)"
+	        user-estimate-percent="prediction.prediction.userEstimate.percent">
+		</fp-likelihood-user-estimate>
+			</li>
+			<li class="reason">
+				<div class="reason-image"></div>
+				<div class="reason-title">
+					<span class="likelihood-amount">40% likely,</span> 
 
-			<div class="change-mind-title">You voted 80%. Did this change your opinion?</div>
-			<fp-likelihood-user-estimate 
-				user-estimate-percent="80">
-			</fp-likelihood-user-estimate>
-		</li>
-		<li class="reason">
-			<div class="reason-image"></div>
-			<div class="reason-title">
-				<span class="likelihood-amount">40% likely</span> 
-				<span class="user-name-and-title">Darragh McCarthy, Web Developer</span>
-			</div>
-			<p class="reason-text">Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
-			</p>
+					<span class="user-name-and-title">
+						<span class="fullname">Darragh McCarthy</span>
+						<span class="short-bio">, Web Developer</span>
+					</span>		
+				</div>
+				<p class="reason-text">Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
+				</p>
 
-			<div class="change-mind-title">You voted 80%. Did this change your opinion?</div>
-			<fp-likelihood-user-estimate 
-				user-estimate-percent="80">
-			</fp-likelihood-user-estimate>
-		</li>
-	</ul>
+				<div class="change-mind-title" ng-if="prediction.prediction.userEstimate.percent">You voted {{prediction.prediction.userEstimate.percent}}%, did this change your opinion?</div>
+		<fp-likelihood-user-estimate
+			ng-if="prediction.prediction.userEstimate"
+			on-select-option="prediction.toggleLikelihoodEstimate(percent)"
+	        user-estimate-percent="prediction.prediction.userEstimate.percent">
+		</fp-likelihood-user-estimate>
+			</li>
+		</ul>
+	</div>
 
 	
 	<!--<div class="prediction-page__author">-->

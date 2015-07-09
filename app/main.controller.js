@@ -1,20 +1,11 @@
-(function(){
+(function() {
 'use strict';
-
 
 angular
   .module('myApp')
   .controller('MainController', MainController);
 
-
-
-MainController.$inject=[];
+MainController.$inject = [];
 function MainController() {}
 
-
-
-
-
 })();
-
-

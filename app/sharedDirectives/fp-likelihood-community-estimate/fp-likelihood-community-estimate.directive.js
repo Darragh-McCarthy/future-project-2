@@ -7,31 +7,67 @@ angular.module('myApp')
 		return {
 			templateUrl: 'sharedDirectives/fp-likelihood-community-estimate/fp-likelihood-community-estimate.template.html',
 			scope: {
-				communityEstimates: '='
+				communityEstimates: '=',
+				communityEstimatesCount: '=',
+				userEstimate: '='
 			},
 			bindToController: true,
 			controller: 'FpLikelihoodCommunityEstimate as communityEstimates'
 		};
-	})
+	});
 
 
 
-FpLikelihoodCommunityEstimate.$inject=[];
-function FpLikelihoodCommunityEstimate() {
+FpLikelihoodCommunityEstimate.$inject=['$scope'];
+function FpLikelihoodCommunityEstimate( $scope ) {
+
+    var MAX_GRAPHBAR_HEIGHT = 100;
+    var MIN_GRAPHBAR_HEIGHT = 3;
+
 	var _this = this;
-	//_this.graphBars = [{'height':'height:55px'},{'height':'height:55px'},{'height':'height:55px'}];
-	function allocateGraphBarHeights(communityEstimates) {
+
+	$scope.$watch('communityEstimates.communityEstimates', function(newVal){
+		//console.log('new communityEstimates', newVal);
+		if (_this.userEstimate) {
+			_this.graphBars = allocateGraphBarHeights(_this.communityEstimates, _this.userEstimate.percent);		
+		}
+	});
+	$scope.$watch('communityEstimates.userEstimate', function(newVal){
+		//console.log('new userEstimatePercent', _this.communityEstimates);
+		if (_this.communityEstimates) {
+			var userEstimatePercent = null;
+			if (_this.userEstimate) {
+				userEstimatePercent = _this.userEstimate.percent;
+			}
+			_this.graphBars = allocateGraphBarHeights(_this.communityEstimates, userEstimatePercent);
+		}
+	});
+
+	function allocateGraphBarHeights(communityEstimates, userEstimatePercent) {
+		var graphBarHeights = [];
 		var largestCount = 0;
 			angular.forEach(communityEstimates, function(estimate) {
-			largestCount = Math.max(largestCount, estimate.count);
+			var currentCount = estimate.count;
+			if (estimate.percent === userEstimatePercent) {
+				currentCount++;
+			};
+			largestCount = Math.max(largestCount, currentCount);
 		});
 		angular.forEach(communityEstimates, function(estimate) {
 			var graphBarHeight = MIN_GRAPHBAR_HEIGHT;
-			if (estimate.count > 0 ) {
-				graphBarHeight = MAX_GRAPHBAR_HEIGHT / largestCount * estimate.count;
+			var currentCount = estimate.count;
+			if (userEstimatePercent === estimate.percent) {
+				currentCount++;
 			}
-			estimate.graphBarHeight = {'height':graphBarHeight + 'px'};
+			if (currentCount > 0 ) {
+				graphBarHeight = MAX_GRAPHBAR_HEIGHT / largestCount * currentCount;
+			}
+			graphBarHeights.push({
+				'height':graphBarHeight + 'px'
+			});
 		});
+		console.log(graphBarHeights, communityEstimates, userEstimatePercent);
+		return graphBarHeights;
 	}
 }
 

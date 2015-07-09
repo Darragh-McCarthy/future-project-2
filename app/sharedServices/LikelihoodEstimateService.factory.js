@@ -59,17 +59,22 @@ function LikelihoodEstimateService( $timeout,  Parse,  $q,  $localForage) {
 	}
 
 	function deleteEstimate(likelihoodEstimateId, predictionId) {
-		return Parse.Cloud.run('deleteLikelihoodEstimate', {
-			'likelihoodEstimateId': likelihoodEstimateId,
-			'predictionId': predictionId
-		}).then(
-			function deleteEstimateSuccess(response) {
-				console.log(response);
-			},
-			function deleteEstimateError(error) {
-				console.log(error);
-			}
-		);
+		if (predictionId) {
+			return Parse.Cloud.run('deleteLikelihoodEstimateByPredictionId', {
+				'predictionId': predictionId
+			}).then(
+			console.log.bind(console),
+				console.log.bind(console));
+		}/*
+		else if (likelihoodEstimateId) {
+			return Parse.Cloud.run('deleteLikelihoodEstimateById', {
+				'likelihoodEstimateId': likelihoodEstimateId
+			}).then(
+				console.log.bind(console),
+				console.log.bind(console)
+			);
+		}*/
+			
 	}
 /*
 	function removeLikelihoodEstimate(predictionId, estimateId, percent) {

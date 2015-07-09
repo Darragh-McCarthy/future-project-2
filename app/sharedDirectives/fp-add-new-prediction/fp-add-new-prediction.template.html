@@ -1,7 +1,7 @@
 <form class="fp-add-new-prediction">  
     <label>
         <div class="fp-add-new-prediction__prediction-title-label" ng-if=" ! makePrediction.hideLabel">
-            <span>
+            <!--<span>
                 <span ng-hide="::makePrediction.isAddingSecondPrediction">
                     What is your
                 </span>
@@ -20,7 +20,7 @@
             <span>
                 <span ng-hide="::makePrediction.isAddingSecondPrediction">prediction?</span>
                 <span ng-show="::makePrediction.isAddingSecondPrediction"><b>prediction</b></span>        
-            </span>
+            </span>-->
         </div>
 <!--        <div style="font-size:14px;color:#777;line-height:1em;">
           HINT: Better predictions include a timescale (when the prediction is likely to occur)
@@ -49,16 +49,26 @@
       </div>
 
       <div class="fp-add-new-prediction__input">
-        <input type="text" 
+        <input ng-if=" ! makePrediction.topic"
+          type="text" 
           id="{{makePrediction.predictionTextInputElementId}}" 
-          ng-if=" ! makePrediction.hideLabel"
           ng-model="makePrediction.newPredictionTitle" 
+          placeholder="What is your prediction?"
+          autocomplete="off"
+          class="fp-add-new-prediction__prediction-title-input"
+           />
+        <input ng-if="makePrediction.topic"
+          type="text" 
+          id="{{makePrediction.predictionTextInputElementId}}" 
+          ng-model="makePrediction.newPredictionTitle" 
+          placeholder="What is your {{makePrediction.topic}} prediction?"
+          class="fp-add-new-prediction__prediction-title-input"
           autocomplete="off" />
       </div>
     </label>
 
     <button class="fp-add-new-prediction__add-prediction-button" 
-      ng-show="makePrediction.newPredictionTitle.length >= makePrediction.newPredictionDataConstraints.predictionTitleCharacters.min.value && !makePrediction.predictionValidationErrors"  
+      ng-class="{enabled: (makePrediction.newPredictionTitle.length >= makePrediction.newPredictionDataConstraints.predictionTitleCharacters.min.value && !makePrediction.predictionValidationErrors) }"  
       ng-click="makePrediction.addNewPrediction(makePrediction.newPredictionTitle, makePrediction.topic)">
       Add prediction
     </button>

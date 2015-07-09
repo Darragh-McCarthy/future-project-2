@@ -8,12 +8,12 @@ angular.module('myApp')
 		templateUrl: 'sharedDirectives/fp-prediction/fp-prediction.template.html',
 		scope: {
 			prediction: '=',
-            topicToHide: '=',
-            onexpand: '&onexpand',
-            onDeletePredictionSuccess: '&',
-            showTopicEditingByDefault: '@',
-            showDateAdded: '@',
-            showLikelihoodEstimateByDefault: '@',
+      topicToHide: '=',
+      onexpand: '&onexpand',
+      onDeletePredictionSuccess: '&',
+      showTopicEditingByDefault: '@',
+      showDateAdded: '@',
+      showLikelihoodEstimateByDefault: '@',
 		},
 		bindToController: true,
 		controller: 'FpPrediction as predictionCtrl'
@@ -24,17 +24,16 @@ angular.module('myApp')
 angular.module('myApp')
 	.controller('FpPrediction', FpPrediction);
 
-FpPrediction.$inject=['$scope','$q','$state','PredictionService','LikelihoodEstimateService','currentUser','focusElementById','TopicService'];
-function FpPrediction( $scope,  $q,  $state,  PredictionService,  LikelihoodEstimateService,  currentUser,  focusElementById,  TopicService ) {
+FpPrediction.$inject=['$timeout','$scope','$q','$state','PredictionService','LikelihoodEstimateService','currentUser','focusElementById','TopicService'];
+function FpPrediction( $timeout,  $scope,  $q,  $state,  PredictionService,  LikelihoodEstimateService,  currentUser,  focusElementById,  TopicService ) {
 
-    var MAX_GRAPHBAR_HEIGHT = 100;
-    var MIN_GRAPHBAR_HEIGHT = 3;
     var MAX_TOPICS_PER_PREDICTION = 8;
 
-    var mainTopics = TopicService.featuredTopicTitles.map(function(topic){
+
+
+    var mainTopics = TopicService.newPredictionTopicSuggestions.map(function(topic){
         return topic.title;
     });
-
 
 
 
@@ -43,6 +42,8 @@ function FpPrediction( $scope,  $q,  $state,  PredictionService,  LikelihoodEsti
   //overriding directive init property
   _this.showDateAdded = true;
 
+
+  //_this.showTopics = ! (_this.prediction.topics.length === 0 || _this.prediction.topics.length === 1 && _this.topicToHide);
 
 
   _this.isAddReasonLabelDisplayed = true;
@@ -71,19 +72,18 @@ function FpPrediction( $scope,  $q,  $state,  PredictionService,  LikelihoodEsti
   _this.topicIsSavingMessage = '';
   _this.removeTopicFromPrediction = removeTopicFromPrediction;
   _this.toggleEditing = toggleEditing;
-  _this.navigateToTopic = navigateToTopic;
   _this.deletePrediction = deletePrediction;
   _this.toggleShowDeletionConfirmation = toggleShowDeletionConfirmation;
   _this.addReason = addReason;
   
-  function addReason() {
-    LikelihoodEstimateService.addReason(_this.prediction.id, _this.reasonInputText).then(function(){
-      console.log('added reason');
-    });
-    _this.reason = _this.reasonInputText;
-    _this.reasonInputText = '';
-    toastr.success('Added reason', 'Thank you for your insights.');
-  }
+    function addReason() {
+        LikelihoodEstimateService.addReason(_this.prediction.id, _this.reasonInputText);
+        _this.reason = _this.reasonInputText;
+        _this.reasonInputText = '';
+        _this.isFlashPredictionTitleActive = true;
+        $timeout(function(){ _this.isFlashPredictionTitleActive = false; }, 500);
+        toastr.success(null, 'Reason Added');
+    }
 
   updateSuggestedTopics();
 
@@ -113,6 +113,7 @@ function FpPrediction( $scope,  $q,  $state,  PredictionService,  LikelihoodEsti
         }
     })();
 
+    //NOTE: DUPLICATE FUNCTIONALITY EXISTS IN prediction.controller.js - prediction page
     function toggleLikelihoodEstimate(percent){
         percent = parseInt(percent, 10);
 
@@ -130,6 +131,7 @@ function FpPrediction( $scope,  $q,  $state,  PredictionService,  LikelihoodEsti
             );
             _this.prediction.userEstimate = {'percent': percent}
             expandPrediction();
+            _this.reason = null;
         }
     }
 
@@ -137,6 +139,7 @@ function FpPrediction( $scope,  $q,  $state,  PredictionService,  LikelihoodEsti
         _this.prediction.isExpanded = false;
     }
     function expandPrediction() {
+      console.log('expanding prediction');
         if ( ! _this.prediction.isExpanded) {
             _this.onexpand();
             _this.prediction.isExpanded = true;
@@ -192,13 +195,6 @@ function FpPrediction( $scope,  $q,  $state,  PredictionService,  LikelihoodEsti
       updateSuggestedTopics();
     });
   }
-  function navigateToTopic(topicTitle) {
-    if ( ! _this.isEditingTopics) {
-      $state.go('app.topic', {
-        topic: topicTitle
-      });
-    }
-  }
   function toggleEditing() {
     _this.isEditingTopics =              ! _this.isEditingTopics;
     _this.isLikelihoodSelectionVisible = ! _this.isEditingTopics;
@@ -208,8 +204,8 @@ function FpPrediction( $scope,  $q,  $state,  PredictionService,  LikelihoodEsti
   }
   function updateSuggestedTopics() {
     _this.suggestedTopicTitles = angular.copy(mainTopics);
-    angular.forEach(_this.prediction.topics, function(eachPredictionTopic){
-      var index = _this.suggestedTopicTitles.indexOf(eachPredictionTopic.title);
+    angular.forEach(_this.prediction.topics, function(topic){
+      var index = _this.suggestedTopicTitles.indexOf(topic.title);
       if (index > -1) {
         _this.suggestedTopicTitles.splice(index, 1);
       }

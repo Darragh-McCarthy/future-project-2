@@ -51,8 +51,7 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
     };
 
     function deletePredictionById(id) {
-        //var prediction = new ParsePredictionModel({'id': id});
-        /*
+        var prediction = new ParsePredictionModel({'id': id});
         return prediction.destroy().then(function(){
             if (recentPredictionsCache.predictions) {
                 for (var i = 0; i < recentPredictionsCache.predictions.length; i++) {
@@ -61,7 +60,7 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
                     }
                 }  
             }
-        });*/
+        });
         //console.log('delete doesn\'t remove from cache');
     }
     
@@ -86,6 +85,7 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
             .then(function(prediction){
                 prediction.author.userThumbnailUrl = userThumbnailUrl;
                 prediction.author.userBigPictureUrl = userBigPictureUrl;
+                getUserEstimatesForPredictions([prediction]);
                 return prediction;
             });
     }
@@ -279,25 +279,23 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
   }
 
 
-  function getParsePredictionsByTopic(topic, startingIndex) {
-    return new Parse.Query(ParsePredictionModel)
-      .include('topics')
-      .equalTo('topics', topic)
-      .descending('createdAt')
-      .skip(startingIndex)
-      .limit(NUM_PREDICTIONS_PER_PARSE_QUERY)
-      .find()
-      .then(function(predictions){
-
-        var response = {
-            'predictions': predictions || []
-        };
-        if (predictions.length < NUM_PREDICTIONS_PER_PARSE_QUERY) {
-            response.isRequestQuotaNotReached = true;
-        }
-        return response;
-      });
-  }
+    function getParsePredictionsByTopic(topic, startingIndex) {
+        return new Parse.Query(ParsePredictionModel)
+            .include('topics')
+            .equalTo('topics', topic)
+            .descending('createdAt')
+            .skip(startingIndex)
+            .limit(NUM_PREDICTIONS_PER_PARSE_QUERY)
+            .find()
+            .then(function(predictions) {
+                var response = {'predictions': predictions || []};
+                if (predictions.length < NUM_PREDICTIONS_PER_PARSE_QUERY) {
+                    response.isRequestQuotaNotReached = true;
+                }
+                return response;
+            })
+        ;
+    }
 
 
     function createNewPredictionWithTopicTitle(predictionTitle, topicTitle) {
@@ -345,7 +343,6 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
     parseTopics = parseTopics || parsePrediction.get('topics');
     var parseAuthor = parsePrediction.get('author');
     var author = UserService.castParseUserAsPlainObject(parseAuthor);
-    //var readOnlyPredictionData = parsePrediction.get('readOnlyPredictionData');
 
     var prediction = {
       'id':                       parsePrediction.id,
@@ -354,23 +351,16 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
       'title':                    parsePrediction.get('title'),
       'topics':                   TopicService.castParseTopicsAsPlainObjects(parseTopics),
       'communityEstimates':       [],
-      //'communityEstimatesCount':  0,
-      'readOnlyPredictionData': []
+      'communityEstimatesCount':  0
     };
     angular.forEach([100,90,80,70,60,50,40,30,20,10,0], function(percent) {
-        var percentEstimateCount = parsePrediction.get('likelihoodEstimateCountFor' + percent + 'Percent');
+        var readOnlyPredictionData = parsePrediction.get('readOnlyPredictionData');
+        var percentEstimateCount = readOnlyPredictionData.get('likelihoodEstimateCountFor' + percent + 'Percent');
         if ( ! percentEstimateCount ) {
             percentEstimateCount = 0;
         }
         prediction.communityEstimates.push({'percent':percent, 'count':percentEstimateCount});
         prediction.communityEstimatesCount += percentEstimateCount;
-      /*var percentEstimateCount = parsePrediction.get('percentEstimateCount' + percent);
-      if ( ! percentEstimateCount ) {
-        percentEstimateCount = 0;
-      }
-      prediction.communityEstimates.push({'percent':percent, 'count':percentEstimateCount});
-      prediction.communityEstimatesCount += percentEstimateCount;*/
-
     });
     return prediction;
   }

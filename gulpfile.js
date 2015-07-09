@@ -12,7 +12,7 @@ var browserSync = require('browser-sync');
 var pagespeed = require('psi');
 var reload = browserSync.reload;
 var debug = require('gulp-debug');
-
+var rev = require('gulp-rev');
 
 
 

@@ -9,7 +9,6 @@ angular.module('myApp')
  			topic: '=',
  			onAddNewPredictionSuccess:'&',
  			onSavingNewPrediction:'&',
- 			hideLabel:'@',
  			setFocusOnPredictionTextInput: '='
 		},
 		bindToController: true,

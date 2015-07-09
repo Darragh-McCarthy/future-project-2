@@ -3,6 +3,7 @@
 <!-- update class names -->
 
 <div class="fp-prediction-list">
+
     <fp-add-new-prediction
         ng-if="list.showAddPredictionForm"
         autofocus="true"
@@ -10,6 +11,9 @@
         on-add-new-prediction-success="list.onAddNewPredictionSuccess(newPrediction)"
         on-saving-new-prediction="list.onSavingNewPrediction()">
     </fp-add-new-prediction>
+
+    <!--<div>Ideas for predictions</div>-->
+
 
     <div>
         <div class="fp-prediction-list__isloading-notice" 
@@ -43,8 +47,9 @@
 
 
         <div class="fp-prediction-list__no-predictions-found"
-            ng-show="list.currentTopic && list.paginationObject.predictions.length === 0 && list.newlyAddedPredictions.length === 0">
-            No predictions found for {{list.currentTopic}}
+            ng-show="list.currentTopic && list.paginationObject.predictions.length === 0 && list.newlyAddedPredictions.length === 0"
+            >
+            We couldn't find any {{list.currentTopic}} predictions
         </div>
         <div class="fp-prediction-list__loaded" 
             ng-show="list.paginationObject.predictions.length">
@@ -57,17 +62,19 @@
                 on-delete-prediction-success="list.removePredictionFromList(predictionId)">
             </fp-prediction>
 
-            <div class="fp-prediction-list__end-of-list-notice" 
+            <div  class="fp-prediction-list__end-of-list-notice" 
                 ng-if="list.paginationPages.length < 2 || list.paginationObject.currentPageIndex === list.paginationPages.length -1">
-                No more {{list.currentTopic}} predictions. What's yours?
-
+                <div>No more {{list.currentTopic}} predictions found.</div>
+                <div class="end-of-list-notice__fp-add-new-prediction-container">
+                        
                     <fp-add-new-prediction
-                        ng-if="list.showAddPredictionForm && list.paginationObject.predictions.length > 10"
+                        ng-if="list.showAddPredictionForm && list.paginationObject.predictions.length > 2"
                         autofocus="true"
                         topic="list.currentTopic"
                         on-add-new-prediction-success="list.onAddNewPredictionSuccess(newPrediction)"
                         on-saving-new-prediction="list.onSavingNewPrediction()">
                     </fp-add-new-prediction>
+                </div>
             </div>
 
             <div class="fp-prediction-list__pagination" 
