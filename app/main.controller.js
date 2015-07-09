@@ -8,4 +8,15 @@ angular
 MainController.$inject = [];
 function MainController() {}
 
+function addingSomeFunction() {
+
+}
+
+function addingAnotherFunction() {
+
+}
+
+addingAnotherFunction();
+addingSomeFunction();
+
 })();
