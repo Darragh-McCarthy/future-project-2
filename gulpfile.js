@@ -12,10 +12,7 @@ var browserSync = require('browser-sync');
 var pagespeed = require('psi');
 var reload = browserSync.reload;
 var debug = require('gulp-debug');
-var rev = require('gulp-rev');
-
-
-
+//var rev = require('gulp-rev');
 
 var AUTOPREFIXER_BROWSERS = [
   'ie >= 10',
@@ -179,14 +176,14 @@ gulp.task('serve', ['styles'], function () {
 
 
 // Build and serve the output from the dist build
-gulp.task('serve:dist', ['default'], function () {
+gulp.task('serve:dist', ['default'], function() {
   browserSync({
     notify: false,
     logPrefix: 'WSK',
-    // Run as an https by uncommenting 'https: true'
-    // Note: this uses an unsigned certificate which on first access
-    //       will present a certificate warning in the browser.
-    // https: true,
+    //Run as an https by uncommenting 'https: true'
+    //Note: this uses an unsigned certificate which on first access
+    //will present a certificate warning in the browser.
+    //https: true,
     server: 'dist'
   });
 });

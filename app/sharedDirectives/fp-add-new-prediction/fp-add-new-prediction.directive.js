@@ -9,7 +9,9 @@ angular.module('myApp')
  			topic: '=',
  			onAddNewPredictionSuccess:'&',
  			onSavingNewPrediction:'&',
- 			setFocusOnPredictionTextInput: '='
+ 			setFocusOnPredictionTextInput: '=',
+            showAddPredictionFormTopicLink:'@'
+
 		},
 		bindToController: true,
 		controller:'FpAddNewPrediction as makePrediction'
@@ -64,7 +66,7 @@ function FpAddNewPrediction( $scope,  $state,  PredictionService,  focusElementB
 	}
 	
 	function removeDefaultTopic() {
-		_this.topic = null;
+		//_this.topic = null;
 		$state.go('app.make-prediction');
 	}
 

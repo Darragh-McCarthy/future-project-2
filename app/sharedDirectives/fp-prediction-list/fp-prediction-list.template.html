@@ -9,7 +9,8 @@
         autofocus="true"
         topic="list.currentTopic"
         on-add-new-prediction-success="list.onAddNewPredictionSuccess(newPrediction)"
-        on-saving-new-prediction="list.onSavingNewPrediction()">
+        on-saving-new-prediction="list.onSavingNewPrediction()"
+        show-add-prediction-form-topic-link="{{list.showAddPredictionFormTopicLink}}">
     </fp-add-new-prediction>
 
     <!--<div>Ideas for predictions</div>-->
@@ -17,7 +18,7 @@
 
     <div>
         <div class="fp-prediction-list__isloading-notice" 
-            ng-hide="list.paginationObject">
+            ng-show="list.isLoading">
             Loading {{list.currentTopic}} predictions...
         </div>
 
@@ -47,9 +48,8 @@
 
 
         <div class="fp-prediction-list__no-predictions-found"
-            ng-show="list.currentTopic && list.paginationObject.predictions.length === 0 && list.newlyAddedPredictions.length === 0"
-            >
-            We couldn't find any {{list.currentTopic}} predictions
+            ng-show="list.currentTopic && list.paginationObject.predictions.length === 0 && list.newlyAddedPredictions.length === 0">
+            Sorry there are no {{list.currentTopic}} predictions available at this time.
         </div>
         <div class="fp-prediction-list__loaded" 
             ng-show="list.paginationObject.predictions.length">
@@ -61,12 +61,12 @@
                 onexpand="list.expandPrediction(prediction)"
                 on-delete-prediction-success="list.removePredictionFromList(predictionId)">
             </fp-prediction>
+        
 
-            <div  class="fp-prediction-list__end-of-list-notice" 
+
+            <div class="fp-prediction-list__end-of-list-notice" 
                 ng-if="list.paginationPages.length < 2 || list.paginationObject.currentPageIndex === list.paginationPages.length -1">
-                <div>No more {{list.currentTopic}} predictions found.</div>
                 <div class="end-of-list-notice__fp-add-new-prediction-container">
-                        
                     <fp-add-new-prediction
                         ng-if="list.showAddPredictionForm && list.paginationObject.predictions.length > 2"
                         autofocus="true"

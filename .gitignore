@@ -9,3 +9,4 @@ tmp
 dist
 .tmp
 coverage
+ParseDeployment/public/

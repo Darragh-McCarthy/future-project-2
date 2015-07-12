@@ -14,7 +14,9 @@
                 ng-keyup="$event.keyCode == 13 && header.submitFeedback($event)"
             />
             -->
-<!--            <button class="header__feedback-submit-button" 
+
+<!--            
+            <button class="header__feedback-submit-button" 
                 ng-show="header.feedbackText.length"
                 ng-click="header.submitFeedback()">
                 Send feedback
@@ -48,20 +50,22 @@
                             Topics
                         </a>
                     </li><!--
-                 --><li class="header__navigation-item">
+                 --><!--<li class="header__navigation-item">
                         <a class="header__navigation-item__link" 
                             ui-sref="app.make-prediction" 
                             ui-sref-active="active">
                             Add predictions
                         </a>
-                    </li><!--
+                    </li>--><!--
                  --><li class="header__navigation-item">
                         <a class="header__navigation-item__link header__navigation-item__link--feedback" 
-                            ui-sref="app.feedback"                              
-                            ui-sref-active="active">
+                            href="mailto:darraghjames@gmail.com?Subject=Future%20project%20feedback">
                             Feedback
                         </a>
                     </li>
+                    <!--<li ng-click="header.logout()">
+                        Logout
+                    </li>-->
                 </ul>
             </nav>
 

@@ -162,7 +162,7 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
             .skip(numPredictionsToSkip)
             .limit(NUM_PREDICTIONS_PER_PARSE_QUERY)
             .find()
-            .then(function(predictions){
+            .then(function(predictions) {
                 var response = {
                     predictions: predictions || [],
                 };
@@ -312,7 +312,9 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
         }
 
         var newParsePredictionModel = new ParsePredictionModel();
-        newParsePredictionModel.setACL(new Parse.ACL(currentParseUser));
+        var acl = new Parse.ACL(currentParseUser);
+        acl.setPublicReadAccess(true);
+        newParsePredictionModel.setACL(acl);
         return newParsePredictionModel.save({
             'title': predictionTitle,
             'author': currentParseUser,
@@ -328,56 +330,70 @@ function PredictionService( $q,  TopicService,  LikelihoodEstimateService,  User
 
 
 
-  function castParsePredictionsAsPlainObjects(parsePredictions) {
-    var predictions = [];
-    angular.forEach(parsePredictions, function(parsePrediction){
-      predictions.push(castParsePredictionAsPlainObject(parsePrediction));
-    });
-    return predictions;
-  }
-  function castParsePredictionAsPlainObject(parsePrediction, parseTopics) {
-    if ( ! parsePrediction ){
-        return [];
+    function castParsePredictionsAsPlainObjects(parsePredictions) {
+        var predictions = [];
+        angular.forEach(parsePredictions, function(parsePrediction){
+            predictions.push(castParsePredictionAsPlainObject(parsePrediction));
+        });
+        return predictions;
     }
-
-    parseTopics = parseTopics || parsePrediction.get('topics');
-    var parseAuthor = parsePrediction.get('author');
-    var author = UserService.castParseUserAsPlainObject(parseAuthor);
-
-    var prediction = {
-      'id':                       parsePrediction.id,
-      'author':                   author,
-      'createdAt':                parsePrediction.createdAt,
-      'title':                    parsePrediction.get('title'),
-      'topics':                   TopicService.castParseTopicsAsPlainObjects(parseTopics),
-      'communityEstimates':       [],
-      'communityEstimatesCount':  0
-    };
-    angular.forEach([100,90,80,70,60,50,40,30,20,10,0], function(percent) {
-        var readOnlyPredictionData = parsePrediction.get('readOnlyPredictionData');
-        var percentEstimateCount = readOnlyPredictionData.get('likelihoodEstimateCountFor' + percent + 'Percent');
-        if ( ! percentEstimateCount ) {
-            percentEstimateCount = 0;
+    function castParsePredictionAsPlainObject(parsePrediction, parseTopics) {
+        if (!parsePrediction) {
+            return [];
         }
-        prediction.communityEstimates.push({'percent':percent, 'count':percentEstimateCount});
-        prediction.communityEstimatesCount += percentEstimateCount;
-    });
-    return prediction;
-  }
-  function validateNewPrediction(predictionTitle) {
-    var errors = {};
-    var predictionTitleLengthErrors = validateNewPredictionTitleLength(predictionTitle);
-    var predictionTitleContentErrors = validateNewPredictionTitleContents(predictionTitle);
 
-    if (predictionTitleLengthErrors.length) { errors.predictionTitleLengthErrors = predictionTitleLengthErrors; }
-    if (predictionTitleContentErrors.length) { errors.predictionTitleContentErrors = predictionTitleContentErrors; }
+        parseTopics = parseTopics || parsePrediction.get('topics');
+        var parseAuthor = parsePrediction.get('author');
+        var author = UserService.castParseUserAsPlainObject(parseAuthor);
 
-    if (_.size(errors)) {
-      return errors;
-    } else {
-      return null;
+        var prediction = {
+            'id':                       parsePrediction.id,
+            'author':                   author,
+            'createdAt':                parsePrediction.createdAt,
+            'title':                    parsePrediction.get('title'),
+            'topics':                   TopicService.castParseTopicsAsPlainObjects(parseTopics),
+            'communityEstimates':       [],
+            'communityEstimatesCount':  0
+        };
+        angular.forEach(
+            [100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0],
+            function(percent) {
+            var readOnlyPredictionData =
+                parsePrediction.get('readOnlyPredictionData');
+
+            var prop = 'likelihoodEstimateCountFor' + percent + 'Percent';
+            if (readOnlyPredictionData) {
+                var percentEstimateCount = readOnlyPredictionData.get(prop);
+                if (!percentEstimateCount) {
+                    percentEstimateCount = 0;
+                }
+                prediction.communityEstimates.push({
+                    'percent':percent,
+                    'count':percentEstimateCount
+                });
+                prediction.communityEstimatesCount += percentEstimateCount;
+            }
+        });
+        return prediction;
     }
-  }
+
+    function validateNewPrediction(predictionTitle) {
+        var errors = {};
+        var predictionTitleLengthErrors = validateNewPredictionTitleLength(predictionTitle);
+        var predictionTitleContentErrors = validateNewPredictionTitleContents(predictionTitle);
+
+        if (predictionTitleLengthErrors.length) {
+            errors.predictionTitleLengthErrors = predictionTitleLengthErrors;
+        }
+        if (predictionTitleContentErrors.length) {
+            errors.predictionTitleContentErrors = predictionTitleContentErrors;
+        }
+        if (_.size(errors)) {
+            return errors;
+        } else {
+            return null;
+        }
+    }
   function validateNewPredictionTitleLength(predictionTitle) {
     var errors = [];
     if ( ! predictionTitle || predictionTitle.length < newPredictionDataConstraints.predictionTitleCharacters.min.value) {

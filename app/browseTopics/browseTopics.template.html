@@ -1,19 +1,16 @@
 
 
 <div class="browse-topics-page">
-	<h1>Topics</h1>
 	<ul class="browse-topics-page__topics-list">
+		<li class="browse-topics-page__topic" ng-repeat="topic in browseTopics.topics track by $index">
+			<fp-prediction-list 
+				current-topic="topic.title"
+				show-add-prediction-form="true"
+				show-add-prediction-form-topic-link="true">
+			</fp-prediction-list>
+		</li>
 
 		<!--
-		<li class="browse-topics-page__topic" ng-repeat="topic in browseTopics.topics track by $index">
-			<div>
-				<div class="browse-topics-page__topic-title">{{topic}}</div>
-				<fp-add-new-prediction 
-					topic="topic"
-					hide-label="true">
-				</fp-add-new-prediction>
-			</div>
-		</li>
 		<form class="add-topic-form">
 			<div class="add-topic-form__title">What predictions would you like to read?</div>
 			<label>
@@ -22,7 +19,9 @@
 			</label>
 		</form>
 		-->
-
 		
 	</ul>
 </div>
+
+
+

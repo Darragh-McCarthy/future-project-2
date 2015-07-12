@@ -12,8 +12,15 @@ angular
 Header.$inject=['currentUser','$timeout'];
 function Header( currentUser,  $timeout ) {
 	var _this = this;
+
+	_this.logout = function() {
+		currentUser.logout();
+		window.location = '/';
+	};
+
+
 	_this.currentUser = currentUser;
-	_this.resetFeedbackText = resetFeedbackText;	
+	_this.resetFeedbackText = resetFeedbackText;
 	_this.submitFeedback = submitFeedback;
 	_this.topics = [
 		{'title': 'Technology'},

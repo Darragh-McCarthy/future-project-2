@@ -81,8 +81,8 @@ function FpPrediction( $timeout,  $scope,  $q,  $state,  PredictionService,  Lik
         _this.reason = _this.reasonInputText;
         _this.reasonInputText = '';
         _this.isFlashPredictionTitleActive = true;
-        $timeout(function(){ _this.isFlashPredictionTitleActive = false; }, 500);
-        toastr.success(null, 'Reason Added');
+        $timeout(function(){ _this.isFlashPredictionTitleActive = false; }, 1000);
+        //toastr.success(null, 'Reason Added');
     }
 
   updateSuggestedTopics();
