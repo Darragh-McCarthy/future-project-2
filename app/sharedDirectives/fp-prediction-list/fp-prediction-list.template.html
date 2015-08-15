@@ -1,96 +1,92 @@
-
-
-<!-- update class names -->
-
 <div class="fp-prediction-list">
 
-    <fp-add-new-prediction
-        ng-if="list.showAddPredictionForm"
-        autofocus="true"
-        topic="list.currentTopic"
-        on-add-new-prediction-success="list.onAddNewPredictionSuccess(newPrediction)"
-        on-saving-new-prediction="list.onSavingNewPrediction()"
-        show-add-prediction-form-topic-link="{{list.showAddPredictionFormTopicLink}}">
-    </fp-add-new-prediction>
 
-    <!--<div>Ideas for predictions</div>-->
+    <div class="fp-prediction-list__add-new-prediction-container">
+        <fp-add-new-prediction
+            ng-if="!ctrl.isAddNewPredictionHidden"
+            autofocus="{{ctrl.isAddNewPredictionAutofocused}}"
+            topic-title="{{ctrl.topicTitle}}"
+            on-save-new-prediction-success="ctrl.onSaveNewPredictionSuccess(newPrediction)"
+            on-save-new-prediction-request="ctrl.onSaveNewPredictionRequest()"
+            is-label-hidden="{{ctrl.isAddNewPredictionLabelHidden}}">
+        </fp-add-new-prediction>
+    </div>
 
 
-    <div>
-        <div class="fp-prediction-list__isloading-notice" 
-            ng-show="list.isLoading">
-            Loading {{list.currentTopic}} predictions...
+    <div class="fp-prediction-list__newly-added-predictions">
+        <div class="fp-prediction-list__newly-added-prediction-is-saving" 
+            ng-show="ctrl.isSavingNewPrediction">
+            Saving prediction...
         </div>
-
-        <div class="fp-prediction-list__newly-added-predictions">
-            <div class="fp-prediction-list__newly-added-prediction-is-saving" 
-                ng-show="list.isSavingNewPrediction">
-                Saving prediction...
-            </div>
-            <div class="fp-prediction-list__newly-added-prediction" 
-                ng-repeat="prediction in list.newlyAddedPredictions">
-                <!--<div class="fp-prediction-list__newly-added-prediction__successfully-added-notice">
-                    Successfully added 
-                    <span ng-if="list.currentTopic">
-                        to {{list.currentTopic}}
-                    </span>
-                    on {{prediction.createdAt}}
-                </div>-->
+        <div class="fp-prediction-list__newly-added-prediction">
+            <div ng-repeat="prediction in ctrl.newlySavedPredictions">
                 <fp-prediction
                 prediction="prediction"
                 show-topic-editing-by-default="true"
-                topic-to-hide="list.currentTopic" 
-                onexpand="list.expandPrediction(prediction)"
-                on-delete-prediction-success="list.removePredictionFromList(predictionId)">
+                topic-to-hide="ctrl.topicTitle" 
+                onexpand="ctrl.expandPrediction(prediction)"
+                on-delete-prediction-success="ctrl.onDeletePredictionSuccess(predictionId)">
                 </fp-prediction>
             </div>
         </div>
+    </div>
+
+    <div class="fp-prediction-list__isloading-notice" 
+        ng-show="ctrl.isLoadingPredictions">
+        Loading {{ctrl.topicTitle}} predictions...
+    </div>
 
 
-        <div class="fp-prediction-list__no-predictions-found"
-            ng-show="list.currentTopic && list.paginationObject.predictions.length === 0 && list.newlyAddedPredictions.length === 0">
-            Sorry there are no {{list.currentTopic}} predictions available at this time.
-        </div>
-        <div class="fp-prediction-list__loaded" 
-            ng-show="list.paginationObject.predictions.length">
-
-            <fp-prediction 
-                ng-repeat="prediction in list.paginationObject.predictions track by prediction.id"
-                prediction="prediction"
-                topic-to-hide="list.currentTopic" 
-                onexpand="list.expandPrediction(prediction)"
-                on-delete-prediction-success="list.removePredictionFromList(predictionId)">
-            </fp-prediction>
+    <div class="fp-prediction-list__predictions" 
+        ng-show="ctrl.predictions.length">
         
+        <div ng-repeat="prediction in ctrl.predictions track by prediction.id">
+            <fp-prediction 
+                prediction="prediction"
+                topic-to-hide="ctrl.currentTopic" 
+                onexpand="ctrl.expandPrediction(prediction)"
+                on-delete-prediction-success="ctrl.onDeletePredictionSuccess(predictionId)">
+            </fp-prediction>
+        </div>
+
+    </div>
+
+    <div class="fp-prediction-list__no-predictions-found"
+        ng-show="ctrl.predictions.length < ctrl.NUM_PREDICTIONS_PER_PAGE">
+        Sorry there are no more {{ctrl.topicTitle}} predictions available at this time.
+    </div>
+
+    <div ng-if="ctrl.predictions.length >= 3 && ctrl.predictions.length < ctrl.NUM_PREDICTIONS_PER_PAGE"
+        class="fp-prediction-list__second-add-new-prediction-container">
+        <fp-add-new-prediction
+            ng-if="!ctrl.isAddNewPredictionHidden"
+            topic-title="{{ctrl.topicTitle}}"
+            on-save-new-prediction-success="ctrl.onSaveNewPredictionSuccess(newPrediction)"
+            on-save-new-prediction-request="ctrl.onSaveNewPredictionRequest()"
+            is-label-hidden="{{ctrl.isAddNewPredictionLabelHidden}}">
+        </fp-add-new-prediction>
+    </div>
 
 
-            <div class="fp-prediction-list__end-of-list-notice" 
-                ng-if="list.paginationPages.length < 2 || list.paginationObject.currentPageIndex === list.paginationPages.length -1">
-                <div class="end-of-list-notice__fp-add-new-prediction-container">
-                    <fp-add-new-prediction
-                        ng-if="list.showAddPredictionForm && list.paginationObject.predictions.length > 2"
-                        autofocus="true"
-                        topic="list.currentTopic"
-                        on-add-new-prediction-success="list.onAddNewPredictionSuccess(newPrediction)"
-                        on-saving-new-prediction="list.onSavingNewPrediction()">
-                    </fp-add-new-prediction>
-                </div>
-            </div>
-
-            <div class="fp-prediction-list__pagination" 
-                ng-if="list.paginationPages.length > 1">
-                <button class="button--primary" 
-                    ng-show="list.paginationObject.previousPageIndex > -1" 
-                    ng-click="list.navigateToPage(list.paginationObject.previousPageIndex)">
-                    Previous
-                </button>
-                <button class="button--primary" 
-                    ng-show="list.paginationObject.nextPageIndex > -1"
-                    ng-click="list.navigateToPage(list.paginationObject.nextPageIndex)">
-                    Next
-                </button>
-            </div>
-        </div> 
+    <div class="fp-prediction-list__pagination"
+        ng-if="ctrl.isPaginationActive">
+        
+        <button class="fp-prediction-list__pagination-next-button"
+            ng-if="ctrl.nextPageNumber"
+            ui-sref="{page:ctrl.nextPageNumber}">
+            Next
+        </button>
+    
+        <ul class="fp-prediction-list__pagination-pages">
+            <li class="fp-prediction-list__pagination-page"
+                ng-repeat="page in ctrl.previousPages">
+                <a class="fp-prediction-list__pagination-link"
+                    ui-sref="{page:page.urlId}"
+                    ui-sref-active="fp-prediction-list__pagination-link--active">
+                    {{page.title}}
+                </a>
+            </li>
+        </ul>
     </div>
 
 </div>

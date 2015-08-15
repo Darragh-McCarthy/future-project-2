@@ -1,271 +1,976 @@
-var ReadOnlyPredictionData = Parse.Object.extend('ReadOnlyPredictionData');
-var LIKELIHOOD_ESTIMATE_OPTIONS = [0,10,20,30,40,50,60,70,80,90,100];
-var LikelihoodEstimate = Parse.Object.extend('LikelihoodEstimate');
-var Prediction = Parse.Object.extend('Prediction');
+'use strict';
+
+var JUDGEMENT_LIKELIHOOD_PERCENT_OPTIONS = [
+    0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100
+];
+var PrivateUserData = Parse.Object.extend('PrivateUserData');
+
+var Prediction = Parse.Object.extend('Prediction', {}, {
+    saveNew: function(author, predictionTitle) {
+        var prediction = new Prediction({
+            'author': author,
+            'title': predictionTitle
+        });
+        var acl = new Parse.ACL();
+        acl.setPublicReadAccess(true);
+        prediction.setACL(acl);
+        return prediction.save().then(function(savedPrediction) {
+            author.addUnique('authoredPredictions', prediction);
+            return author.save().then(function() {
+                return prediction;
+            });
+        });
+    }
+});
+
+var Judgement = Parse.Object.extend('Judgement');
+var JudgementUpdate = Parse.Object.extend('JudgementUpdate');
+
+var Topic = Parse.Object.extend('Topic', {}, {
+    saveNew: function(author, topicTitle) {
+        var promiseFindTopic =
+            new Parse.Query(Topic)
+            .equalTo('title', topicTitle)
+            .first();
+        return promiseFindTopic.then(function(topic) {
+            if (topic) {
+                return topic;
+            }
+            return new Topic({
+                'title': topicTitle,
+                'author': author
+            }).save();
+        });
+    }
+});
+
+Parse.Cloud.define('getUserById', function(request, response) {
+
+    if (!request.params.userId) {
+        return response.error('userId required');
+    }
+
+    return new Parse.Query(Parse.User).get(request.params.userId)
+    .then(function(user) {
+        response.success(
+            castUserAsPlainObject(user)
+        );
+    }, function() {
+        response.error('error retrieving user');
+    });
+});
+
+Parse.Cloud.define('saveNewPrediction', function(request, response) {
+
+    if (!request.user) {
+        return response.error('request.user required');
+    }
+    if (!request.params.predictionTitle) {
+        return response.error('predictionTitle required');
+    }
+    return Prediction.saveNew(request.user, request.params.predictionTitle).then(
+        function(prediction) {
+            response.success(
+                castPredictionAsPlainObject(prediction)
+            );
+        },
+        response.error.bind('Parse error while saving prediction')
+    );
+});
+
+Parse.Cloud.define('saveNewPredictionWithTopicTitle', function(request, response) {
+
+    if (!request.user) {
+        return response.error('request.user required');
+    }
+    if (!request.params.predictionTitle) {
+        return response.error('predictionTitle required');
+    }
+    if (!request.params.topicTitle) {
+        return response.error('topicTitle required');
+    }
+
+    var promisePrediction = Prediction.saveNew(request.user, request.params.predictionTitle)
+    .then(null, response.error.bind());
+
+    var promiseTopic = Topic.saveNew(request.user, request.params.topicTitle)
+    .then(null, response.error.bind());
+
+    var promiseAddTopicToPrediction = promisePrediction
+    .then(function(prediction) {
+        return promiseTopic.then(function(topic) {
+
+            prediction.addUnique('topics', topic);
+
+            return prediction.save(null, {useMasterKey: true}).then(null,
+                function onError() {
+                    response.error('error adding topic to prediction topics');
+                }
+            );
+        });
+    });
+
+    return promiseAddTopicToPrediction.then(function(updatedPrediction) {
+        return promiseTopic.then(function(topic) {
+            topic.addUnique('predictionsCount', updatedPrediction.id);
+            return topic.save().then(
+                function onSuccess() {
+                    response.success(
+                        castPredictionAsPlainObject(updatedPrediction)
+                    );
+                },
+                function onError() {
+                    response.error('error updating topic predictions count');
+                }
+            );
+        });
+    });
+});
+
+Parse.Cloud.define('deletePrediction', function(request, response) {
+
+    if (!request.user) {
+        return response.error('request.user required');
+    }
+    if (!request.params.predictionId) {
+        return response.error('predictionId required');
+    }
+
+    var promisePrediction =
+    new Parse.Query(Prediction)
+    .get(request.params.predictionId)
+    .then(null, function onError(errorMsg) {
+            console.error(errorMsg);
+            response.error('Invalid "predictionId"');
+        }
+    );
+
+    return promisePrediction.then(function(prediction) {
+
+        if (request.user.id !== prediction.get('author').id) {
+            return response.error('Unauthorised delete attempt by ' + request.user.id);
+        }
+
+        var acl = new Parse.ACL();
+        prediction.setACL(acl);
+        prediction.set('deleted', new Date());
+
+        return prediction.save(null, {
+            useMasterKey: true
+        }).then(
+            response.success.bind(),
+            function onSaveError(e) {
+                console.error(e);
+                response.error('error saving prediction');
+            }
+        );
+    });
+});
+
+Parse.Cloud.define('getReasonsForPrediction', function(request, response) {
+
+    if (!request.params.predictionId) {
+        return response.error('predictionId required');
+    }
+
+    var predictionQuery = new Parse.Query(Prediction);
+    var promiseJudgements = predictionQuery.get(request.params.predictionId).then(
+        function onSuccess(prediction) {
+            return new Parse.Query(Judgement)
+                .equalTo('prediction', prediction)
+                .include('author')
+                .find();
+        },
+        function onError(e) {
+            console.error(e);
+            response.error('Parse error retrieving prediction');
+        }
+    );
+
+    return promiseJudgements.then(
+        function onSuccess(judgements) {
+            response.success(
+                castJudgementsAsPlainObjects(judgements || [])
+            );
+        },
+        function onError(e) {
+            console.error(e);
+            response.error('Parse error retrieving judgements');
+        }
+    );
+});
+
+Parse.Cloud.define('addTopicByTitleToPrediction', function(request, response) {
+
+    var errorMsg;
+    if (!request.user) {
+        return response.error('request.user required');
+    }
+    if (!request.params.predictionId) {
+        errorMsg = 'predictionId required';
+        console.error('errorMsg');
+        response.error('errorMsg');
+        return;
+    }
+    if (!request.params.topicTitle) {
+        errorMsg = 'topicTitle required';
+        console.error(errorMsg);
+        response.error(errorMsg);
+        return;
+    }
+
+    var topicQuery = new Parse.Query(Topic);
+    topicQuery.equalTo('title', request.params.topicTitle);
+    var promiseTopic = topicQuery.first().then(
+        function onSuccess(topic) {
+            if (topic) {
+                return topic;
+            }
+            return new Topic({
+                'title': request.params.topicTitle
+            }).save();
+        },
+        function onError(errorMsg) {
+            console.error(errorMsg);
+            response.error('Parse error retrieving topic');
+        }
+    );
+
+    var predictionQuery = new Parse.Query(Prediction);
+    var promisePrediction = predictionQuery.get(request.params.predictionId)
+    .then(null, function onError(errorMsg) {
+        console.error(errorMsg);
+        response.error('Parse error retrieving prediction');
+    });
+
+    var promiseSavePrediction = promiseTopic.then(function(topic) {
+        return promisePrediction.then(function(prediction) {
+            return prediction
+            .addUnique('topics', topic)
+            .save(null, {
+                useMasterKey: true
+            }).then(null, function onError(e) {
+                console.error(e);
+                response.error('Parse error saving prediction');
+            });
+        });
+    });
+
+    return promiseTopic.then(function(topic) {
+        return promiseSavePrediction.then(function(prediction) {
+            topic.addUnique('predictionsCount', prediction.id);
+            return topic.save().then(
+                function onSuccess() {
+                    response.success(
+                        castTopicAsPlainObject(topic)
+                    );
+                },
+                function onError(e) {
+                    console.error(e);
+                    response.error('error updating topic predictionsCount');
+                }
+
+            );
+        });
+    });
+});
+
+Parse.Cloud.define('removeTopicFromPrediction', function(request, response) {
+
+    if (!request.user) {
+        return response.error('request.user required');
+    }
+    if (!request.params.predictionId) {
+        return response.error('predictionId required');
+    }
+    if (!request.params.topicId) {
+        return response.error('topicId required');
+    }
+
+    var predictionQuery = new Parse.Query(Prediction);
+    var promisePrediction = predictionQuery.get(request.params.predictionId)
+    .then(
+        function onGetSuccess(prediction) {
+            return prediction;
+        },
+        function onGetError(errorMsg) {
+            console.error(errorMsg);
+            response.error('Parse error getting prediction: possibly invalid "predictionId"');
+        }
+    );
+
+    return promisePrediction.then(function(prediction) {
+
+        var topicToRemove = new Topic({
+            'id': request.params.topicId
+        });
+
+        prediction.remove('topics', topicToRemove);
+
+        return prediction.save(null, {
+            useMasterKey: true
+        }).then(
+            function(savedPrediction) {
+                response.success(
+                    castPredictionAsPlainObject(savedPrediction)
+                );
+            },
+            function(e) {
+                console.error(e);
+                response.error('Parse error saving prediction');
+            }
+        );
+    });
+});
+
+Parse.Cloud.define('getRecentPredictions', function(request, response) {
+
+    if (!request.params.numPredictions) {
+        return response.error('numPredictions required');
+    }
+    if (!(request.params.numPredictionsToSkip || request.params.numPredictionsToSkip >= 0)) {
+        return response.error('numPredictionsToSkip required');
+    }
+
+    return new Parse.Query(Prediction)
+        .include('topics')
+        .skip(request.params.numPredictionsToSkip)
+        .limit(request.params.numPredictions)
+        .descending('createdAt')
+        .find()
+        .then(function(predictions) {
+                response.success(
+                    castPredictionsAsPlainObjects(
+                        predictions || []
+                    )
+                );
+            },
+            function(e) {
+                console.error(e);
+                response.error('Parse error finding predictions');
+            }
+        );
+});
+
+Parse.Cloud.define('getPredictionById', function(request, response) {
+
+    if (!request.params.predictionId) {
+        return response.error('predictionId required');
+    }
+
+    return new Parse.Query(Prediction)
+    .include('topics')
+    .get(request.params.predictionId)
+    .then(function onSuccess(prediction) {
+            response.success(
+                castPredictionAsPlainObject(prediction)
+            );
+        },
+        function onError(e) {
+            console.error(e);
+            response.error('error retrieving prediction');
+        }
+    );
+});
+
+Parse.Cloud.define('getAuthorOfPredictionById', function(request, response) {
+
+    if (!request.params.predictionId) {
+        return response.error('predictionId required');
+    }
+
+    return new Parse.Query(Prediction)
+    .get(request.params.predictionId)
+    .then(function(prediction) {
+        return prediction.get('author').fetch()
+        .then(function(author) {
+            response.success(
+                castUserAsPlainObject(author)
+            );
+        }, function(e) {
+            response.error('error retrieving author');
+        });
+    }, function(e) {
+        console.error(e);
+        response.error('error retrieving prediction');
+    });
+});
+
+Parse.Cloud.define('getPredictionsByAuthorId', function(request, response) {
+
+    if (!request.params.authorId) {
+        return response.error('authorId required');
+    }
+
+    var authorQuery = new Parse.Query(Parse.User)
+    .get(request.params.authorId).then(null, function() {
+        response.error('error retrieving author');
+    });
+
+    return authorQuery.then(function(author) {
+        return new Parse.Query(Prediction)
+            .equalTo('author', author)
+            .descending('createdAt')
+            .find().then(
+            function onSuccess(predictions) {
+                response.success(
+                    castPredictionsAsPlainObjects(predictions || [])
+                );
+            },
+            function onError(e) {
+                console.error(e);
+                response.error('Parse error retrieving predictions');
+            }
+        );
+    });
+});
+
+//Parse.Cloud.define('getJudgementsForPrediction', function(request, response) {});
+
+Parse.Cloud.define('updateFacebookDataCopy', function(request, response) {
+
+    if (!request.user) {
+        return response.error('request.user required');
+    }
+    if (!request.params.basicFacebookData) {
+        return response.error('basicFacebookData required');
+    }
+
+    var promisePrivateFacebookData = new Parse.Query(PrivateUserData)
+        .equalTo('user', request.user)
+        .equalTo('email', request.params.basicFacebookData.email)
+        .equalTo('gender', request.params.basicFacebookData.gender)
+        .descending('createdAt')
+        .first()
+        .then(null, function onError(e) {
+                console.error(e);
+                response.error('Parse error retrieving user data');
+            }
+        )
+    ;
+    return promisePrivateFacebookData.then(function(mostRecentPrivateData) {
+
+        if (mostRecentPrivateData) {
+            response.success();
+        }
+
+        var newPrivateUserData = new PrivateUserData({
+            'user': request.user,
+            'email': request.params.basicFacebookData.email,
+            'gender': request.params.basicFacebookData.gender
+        });
+
+        var acl = new Parse.ACL();
+        newPrivateUserData.setACL(acl);
+
+        return newPrivateUserData.save().then(
+            function onSuccess() {
+                response.success();
+            },
+            function onError(e) {
+                console.error(e);
+                response.error('Parse error saving user data');
+            }
+        );
+    });
+});
+
+Parse.Cloud.define('saveNewTopic', function(request, response) {
+
+    if (!request.user) {
+        return response.error('request.user required');
+    }
+    if (!request.params.topicTitle) {
+        return response.error('topicTitle required');
+    }
+
+    return Topic.saveNew(request.user, request.params.topicTitle)
+    .then(
+        function(savedTopic) {
+            response.success(castTopicAsPlainObject(savedTopic));
+        },
+        response.error.bind()
+    );
+});
+
+Parse.Cloud.define('getPredictionsByTopicTitle', function(request, response) {
+
+    if (!request.params.topicTitle) {
+        return response.error('topicTitle required');
+    }
+
+    var topicQuery = new Parse.Query(Topic);
+    topicQuery.equalTo('title', request.params.topicTitle);
+    var promiseTopic = topicQuery.first()
+    .then(function onSuccess(topic) {
+        if (!topic) {
+            response.success([]);
+            var promise = new Parse.Promise();
+            var rejectedPromise = promise.reject();
+            return rejectedPromise;
+        }
+        return topic;
+    }, function onError(e) {
+        response.error(e);
+    });
+
+    return promiseTopic.then(function(topic) {
+        return new Parse.Query(Prediction)
+        .include('topics')
+        .equalTo('topics', topic)
+        .find()
+        .then(function onSuccess(predictions) {
+                response.success(
+                    castPredictionsAsPlainObjects(predictions || [])
+                );
+            },
+            function onError(e) {
+                console.error(e);
+                response.error('Parse error finding predictions');
+            }
+        );
+    });
+});
+
+Parse.Cloud.define('setJudgementLikelihoodPercent', function(request, response) {
+
+    if (!request.user) {
+        return response.error('request.user required');
+    }
+    if (!request.params.predictionId) {
+        return response.error('predictionId required');
+    }
+    if (JUDGEMENT_LIKELIHOOD_PERCENT_OPTIONS.indexOf(request.params.likelihoodPercent) === -1) {
+        return response.error('likelihoodPercent required: ' +
+            JUDGEMENT_LIKELIHOOD_PERCENT_OPTIONS.join(', '));
+    }
+
+    var promiseFindFirstJudgement = new Parse.Query(Judgement)
+    .equalTo('author', request.user)
+    .equalTo('prediction', new Prediction({
+        'id': request.params.predictionId
+    }))
+    .first({
+        useMasterKey: true
+    })
+    .then(null, function onError(e) {
+        console.error(e);
+        response.error('judgement lookup error');
+    });
+
+    var promiseJudgement = promiseFindFirstJudgement
+    .then(function(judgement) {
+        if (judgement) {
+            return {
+                'judgement': judgement,
+                'isNewJudgement': false,
+                'previousLikelihoodPercent': judgement.get('likelihoodPercent')
+            };
+        }
+
+        var promisePrediction = new Parse.Query(Prediction)
+            .get(request.params.predictionId)
+            .then(function(prediction) {
+                if (!prediction) {
+                    response.error('prediction does not exist');
+                    var promise = new Parse.Promise();
+                    var rejectedPromise = promise.reject();
+                    return rejectedPromise;
+                }
+                return prediction;
+            }, function onError(e) {
+                console.error(e);
+                response.error('prediction lookup error');
+            });
+
+        return promisePrediction.then(function(prediction) {
+            return new Judgement({
+                'prediction': prediction,
+                'author': request.user,
+                'likelihoodPercent': request.params.likelihoodPercent
+            })
+            .save().then(
+                function onSuccess(newJudgement) {
+                return {
+                    'judgement': newJudgement,
+                    'isNewJudgement': true
+                };
+            }, function onError(e) {
+                console.error(e);
+                response.error('error saving new judgement');
+            });
+        });
+    });
+
+    var promiseUpdateJudgement = promiseJudgement
+    .then(function(promiseJudgementObject) {
+        if (promiseJudgementObject.isNewJudgement) {
+            return {
+                'judgement': promiseJudgementObject.judgement,
+                'previousLikelihoodPercent': promiseJudgementObject.previousLikelihoodPercent
+            };
+        }
+        if (request.user.id !== promiseJudgementObject.judgement.get('author').id) {
+            var errorMsg = 'Unauthorised update. User:' + request.user.id;
+            console.error(errorMsg);
+            response.error(errorMsg);
+            var promise = new Parse.Promise();
+            var rejectedPromise = promise.reject();
+            return rejectedPromise;
+        }
+
+        if (promiseJudgementObject.judgement.get('deleted')) {
+            promiseJudgementObject.judgement =
+                setJudgementAttributesToNotDeletedState(promiseJudgementObject.judgement);
+        }
+        return promiseJudgementObject.judgement.save(
+            {'likelihoodPercent': request.params.likelihoodPercent},
+            {useMasterKey: true}
+        )
+        .then(function(updatedJudgement) {
+            return {
+                'judgement': updatedJudgement,
+                'previousLikelihoodPercent': promiseJudgementObject.previousLikelihoodPercent
+            };
+        }, function onError(e) {
+            console.error(e);
+            response.error('error updating judgement');
+        });
+    });
+
+    var promiseLogJudgementUpdate = promiseUpdateJudgement
+    .then(function(updatedJudgementObject) {
+        var judgementUpdate = new JudgementUpdate({
+            'judgement': updatedJudgementObject.judgement,
+            'author': request.user,
+            'prediction': updatedJudgementObject.judgement.get('prediction'),
+            'likelihoodPercent': updatedJudgementObject.judgement.get('likelihoodPercent')
+        });
+
+        var acl = new Parse.ACL();
+        judgementUpdate.setACL(acl);
+
+        return judgementUpdate.save().then(
+            function onSuccess() {
+            return updatedJudgementObject;
+        }, function onError(e) {
+            console.error(e);
+            response.error('error logging update to judgement');
+        });
+    });
+
+    var promiseUpdatePercentCounters = promiseLogJudgementUpdate
+    .then(function(updatedJudgementObject) {
+
+        var prediction = updatedJudgementObject.judgement.get('prediction');
+
+        prediction.addUnique(
+            makeLikelihoodPercentCountPropName(request.params.likelihoodPercent),
+            request.user.id
+        );
+
+        if (request.params.likelihoodPercent !== updatedJudgementObject.previousLikelihoodPercent) {
+            if (updatedJudgementObject.previousLikelihoodPercent) {
+                prediction.remove(
+                    makeLikelihoodPercentCountPropName(
+                        updatedJudgementObject.previousLikelihoodPercent
+                    ),
+                    request.user.id
+                );
+            }
+        }
+
+        return prediction.save(null, {useMasterKey: true})
+        .then(function onSuccess() {
+            response.success(
+                castJudgementAsPlainObject(updatedJudgementObject.judgement)
+            );
+        }, function onError(errorMsg) {
+            response.error('Parse error incrementing percent count');
+            console.error(errorMsg);
+        });
+    });
+
+    return promiseUpdatePercentCounters;
+});
+
+Parse.Cloud.define('deleteJudgementLikelihoodPercent', function(request, response) {
+
+    if (!request.user) {
+        return response.error('request.user required');
+    }
+    if (!request.params.predictionId) {
+        return response.error('predictionId required');
+    }
+
+    var promiseJudgement =
+        new Parse.Query(Judgement)
+        .doesNotExist('deleted')
+        .equalTo('author', request.user)
+        .equalTo('prediction', new Prediction({
+            'id': request.params.predictionId
+        }))
+        .first(function(judgement) {
+            if (!judgement) {
+                var promise = new Parse.Promise();
+                var rejectedPromise = promise.reject();
+                return rejectedPromise;
+            }
+            return judgement;
+        }, function onError(e) {
+            console.error(e);
+            response.error('Parse error retrieving most recent judgement');
+        });
+
+    return promiseJudgement.then(function(judgement) {
+
+        var prediction = judgement.get('prediction');
+
+        prediction.remove(
+            makeLikelihoodPercentCountPropName(judgement.get('likelihoodPercent')),
+            request.user.id
+        );
+
+        judgement = setJudgementAttributesToDeletedState(judgement);
+
+        return Parse.Object.saveAll([prediction, judgement], {
+            useMasterKey:true
+        })
+        .then(
+            function onSaveAllSuccess() {
+                return response.success();
+            },
+            function onSaveAllError(errorMsg) {
+                console.error(errorMsg);
+                response.error(
+                    'Parse error saving judgement and prediction'
+                );
+            }
+        );
+    });
+});
+
+Parse.Cloud.define('setJudgementReason', function(request, response) {
+
+    if (!request.user) {
+        return response.error('request.user required');
+    }
+    if (!request.params.judgementId) {
+        return response.error('judgementId required');
+    }
+    if (!request.params.reasonText && request.params.reasonText !== '') {
+        return response.error('reasonText required');
+    }
+
+    var promiseJudgement = new Parse.Query(Judgement)
+    .get(request.params.judgementId)
+    .then(null, function(e) {
+        console.error(e);
+        response.error('Invalid "judgementId"');
+    });
+
+    var promiseUpdateJudgement = promiseJudgement
+    .then(function(currentJudgement) {
+        if (request.params.reasonText === '') {
+            currentJudgement.unset('reasonText');
+        } else {
+            currentJudgement.set('reasonText', request.params.reasonText);
+        }
+        return currentJudgement.save(null, {
+            useMasterKey:true
+        }).then(null, function onSaveError(errorMsg) {
+                console.error(errorMsg);
+                response.error('Parse error saving Judgement');
+            }
+        );
+    });
+
+    var promiseLogJudgementUpdate = promiseUpdateJudgement
+    .then(function(updatedJudgement) {
+        var judgementUpdate = new JudgementUpdate({
+            'judgement': updatedJudgement,
+            'author': request.user,
+            'prediction': updatedJudgement.get('prediction'),
+            'reasonText': updatedJudgement.get('reasonText')
+        });
+
+        var acl = new Parse.ACL();
+        judgementUpdate.setACL(acl);
+
+        return judgementUpdate.save().then(
+            function onSaveSuccess() {
+                return updatedJudgement;
+            }, function onError(e) {
+            console.error(e);
+            response.error('error logging update to judgement');
+        });
+    });
+
+    return promiseLogJudgementUpdate
+    .then(function(updatedJudgement) {
+        var prediction = updatedJudgement.get('prediction');
+        prediction.addUnique('reasonsCount', request.user.id);
+        return prediction.save(null, {
+            useMasterKey: true
+        }).then(
+            function onSuccess() {
+                response.success(
+                    castJudgementAsPlainObject(updatedJudgement)
+                );
+            },
+            function onError(e) {
+                response.error('error updating reasons count')
+            }
+        );
+    });
+});
+
+
 
 /*
-Parse.Cloud.define('deleteLikelihoodEstimate', function(request, response) {
-	var predictionId = request.params.predictionId;
-	var estimateId = request.params.estimateId;
+Parse.Cloud.define('deleteLikelihoodPercent', function(request, response) {
 
-	var promiseGetPrediction = null;
-	if (predictionId) {
-		promiseGetPrediction = new Prediction({'id':predictionId}).fetch();
-	}
+    if (!request.user) {
 
-	var promiseGetEstimate = null;
-	if (estimateId) {
-		promiseGetEstimate = new LikelihoodEstimate({'id':estimateId}).fetch();
-		if ( ! promiseGetPrediction ) {
-			promiseGetPrediction = promiseGetEstimate.then(function(estimate){
-				return estimate.get('prediction').fetch();
-			});
-		}
-	}
+    }
+    if (!request.params.judgement) {
 
-	var promiseGetEstimatesToDelete = (function(){
-		if (promiseGetEstimate) {
-			return promiseGetEstimate.then(function(estimate) {
-				if (estimate.author.id === request.user.id) {
-					return [estimate];
-				}
-			});
-		}
-		else if (promiseGetPrediction) {
-			return promiseGetPrediction.then(function(prediction){
-				return new Parse.Query(LikelihoodEstimate)
-					.equalTo('prediction', prediction)
-					.equalTo('author', request.user)
-					.find();
-			});
-		}
-	})();
+    }
 
-	var promiseDeleteEstimates = promiseGetEstimatesToDelete.then(function(estimatesToDelete){
-		var promiseDeletes = estimatesToDelete.map(function(estimate){
-			return estimate.save({'deleted':true});
-		});
-		return Parse.Promise.when(promiseDeletes);
-	});
-	
-	return promiseDeleteEstimates.then(function(deletedEstimates){
-		if ( ! deletedEstimates.length) {
-			deletedEstimates = [deletedEstimates];
-		}
-		return promiseGetPrediction.then(function(prediction) {
-			var readOnlyPredictionData = prediction.get('readOnlyPredictionData');
-			deletedEstimates.forEach(function(estimate) {
-				var propertyName = makeLikelihoodEstimatePercentCountPropertyName(estimate.get('percent'));
-				readOnlyPredictionData.increment(propertyName, -1);
-			});
-			Parse.Cloud.useMasterKey();
-			return readOnlyPredictionData.save().then(function(){
-				response.success();
-			});
-		});
-	});
 });
+
+
+
+Parse.Cloud.define('saveNewReason', function(request, response) {
+
+    if (!request.user) {
+
+    }
+    if (!request.params.predictionId) {
+
+    }
+    if (!request.params.judgementId) {
+
+    }
+
+});
+
 */
 
+Parse.Cloud.define('getAllJudgementsForCurrentUser', function(request, response) {
 
-Parse.Cloud.define('deleteLikelihoodEstimateByPredictionId', function(request, response) {
-	var predictionId = request.params.predictionId;
-	
-	var promiseGetPrediction = new Prediction({'id':predictionId}).fetch();
-	var promiseReadOnlyPredictionData = promiseGetPrediction.then(function(prediction){
-		return prediction.get('readOnlyPredictionData');
-	});
+    if (!request.user) {
+        return response.error('request.user required');
+    }
 
-	var promiseGetEstimatesToDelete = promiseGetPrediction.then(function(prediction){
-		return new Parse.Query(LikelihoodEstimate)
-			.equalTo('prediction', prediction)
-			.equalTo('author', request.user)
-			.doesNotExist('deleted')
-			.lessThanOrEqualTo('createdAt', new Date())
-			.find();
-	});
-
-	var promiseDeleteEstimates = promiseGetEstimatesToDelete.then(function(estimatesToDelete){
-		return Parse.Promise.when(
-			estimatesToDelete.map(function(estimate){
-				return estimate.save({'deleted':true});
-			})
-		);
-	});
-	
-	return promiseDeleteEstimates.then(function(deletedEstimates){
-		deletedEstimates = deletedEstimates || [];
-		if ( ! deletedEstimates.length) {
-			deletedEstimates = [deletedEstimates];
-		}
-		return promiseReadOnlyPredictionData.then(function(readOnlyPredictionData) {
-			deletedEstimates.forEach(function(estimate) {
-				var propertyName = makeLikelihoodEstimatePercentCountPropertyName(estimate.get('percent'));
-				readOnlyPredictionData.increment(propertyName, -1);
-			});
-			Parse.Cloud.useMasterKey();
-			return readOnlyPredictionData.save().then(function(){
-				response.success();
-			});
-		});
-	});
+    return new Parse.Query(Judgement)
+    .doesNotExist('deleted')
+    .equalTo('author', request.user)
+    .find()
+    .then(
+        function(judgements) {
+            response.success(
+                castJudgementsAsPlainObjects(judgements)
+            );
+        },
+        function(e) {
+            console.error(e);
+            response.error('Parse error retrieving judgements');
+        }
+    );
 });
 
-
-
-
-Parse.Cloud.beforeSave("Prediction", function(request, response) {
-	if ( ! request.object.existed()) {
-		return assignReadOnlyPredictionDataObject(request.object).then(function(){
-			response.success();
-		});
-	} else { return response.success(); }
-});
-
-Parse.Cloud.afterSave("Prediction", function(request) {
-	assignPredictionPointerToReadOnlyPredictionData(request.object);
-});
-
-Parse.Cloud.beforeSave('LikelihoodEstimate', function(request, response) {
-	if (LIKELIHOOD_ESTIMATE_OPTIONS.indexOf(request.object.get('percent')) === -1) {
-		return response.error('LikelihoodEstimate.percent should be one of the following: ' + LIKELIHOOD_ESTIMATE_OPTIONS.join(', '));
-	}
-	return response.success();
-});
-
-
-
-/*Parse.Cloud.afterSave('LikelihoodEstimate', function(request) {
-
-	if ( ! request.object.existed()) {
-
-		var promise = getActiveEstimatesForCurrentPrediction().then(function(estimates) {
-			var promises = [];
-			for (var i = 0; i < estimates.length; i++) {
-				if (estimates[i].id !== request.object.id) {
-					estimates[i].set('deleted', true);
-					promises.push(estimates[i].save());
-				}
-			}
-			return promises;
-		});
-
-		Parse.Cloud.useMasterKey();
-		
-		return promise.then(function(deletedEstimatePromises){
-			return Parse.Promise.when(deletedEstimatePromises).then(function(deletedEstimates){
-				console.log('deletedEstimates');
-				console.log(deletedEstimates);
-				if ( ! deletedEstimates ) {
-					deletedEstimates = [];
-				}
-				else if ( ! deletedEstimates.length) {
-					deletedEstimates = [deletedEstimates];
-				}
-				var prediction = request.object.get('prediction');
-				return prediction.fetch().then(function(prediction) {
-					var readOnlyPredictionData = prediction.get('readOnlyPredictionData');
-					deletedEstimates.forEach(function(deletedEstimate) {
-						var propertyName = 'likelihoodEstimateCountFor' + deletedEstimate.get('percent') + 'Percent';
-						readOnlyPredictionData.increment(propertyName, -1);
-					});
-					readOnlyPredictionData.increment('likelihoodEstimateCountFor' + request.object.get('percent') + 'Percent');	
-					return readOnlyPredictionData.save();
-				});
-			});
-		});
-	}
-
-	function getActiveEstimatesForCurrentPrediction() {
-		var query = new Parse.Query('LikelihoodEstimate');
-		query.equalTo('author', request.user);
-		query.equalTo('prediction', request.object.get('prediction'));
-		query.doesNotExist('deleted');
-		return query.find().then(function(estimates){
-			console.log('estimates.length');
-			console.log(estimates.length);
-			return estimates;
-		});
-	}
-
-});
-*/
-
-Parse.Cloud.afterSave('LikelihoodEstimate', function(request) {
-	if ( ! request.object.existed()) {
-
-		var promiseFindEstimatesToDelete = getActiveEstimatesForCurrentPrediction().then(function(estimates) {
-			var estimates = estimates || [];
-			return estimates.filter(function(estimate){
-				console.log('estimate ids:');
-				console.log(estimate.id);
-				console.log(request.object.id);
-				console.log(estimate.id !== request.object.id);
-				return estimate.id !== request.object.id;
-			});
-		});
-		return promiseFindEstimatesToDelete.then(function(estimatesToDelete) {
-			console.log(estimatesToDelete.length);
-			var promiseDeleteEstimates = estimatesToDelete.map(function(estimate){
-				return estimate.save({'deleted':true});
-			});
-			return Parse.Promise.when(promiseDeleteEstimates).then(function(){
-				return request.object.get('prediction').fetch().then(function(prediction) {
-					var readOnlyPredictionData = prediction.get('readOnlyPredictionData');
-					estimatesToDelete.forEach(function(estimate) {
-						var propertyName = makeLikelihoodEstimatePercentCountPropertyName(estimate.get('percent'));
-						readOnlyPredictionData.increment(propertyName, -1);
-					});
-					console.log('request.object.get("percent")');
-					console.log(request.object.get('percent'));
-					readOnlyPredictionData.increment(makeLikelihoodEstimatePercentCountPropertyName(request.object.get('percent')));
-					Parse.Cloud.useMasterKey();
-					return readOnlyPredictionData.save();
-				});
-			});
-		});
-	}
-
-
-	function getActiveEstimatesForCurrentPrediction() {
-		return new Parse.Query('LikelihoodEstimate')
-			.equalTo('author', request.user)
-			.equalTo('prediction', request.object.get('prediction'))
-			.doesNotExist('deleted')
-			.find();;
-	}
-
-});
-
-function makeLikelihoodEstimatePercentCountPropertyName(percent) {
-	return 'likelihoodEstimateCountFor' + percent + 'Percent';
+function makeLikelihoodPercentCountPropName(likelihoodPercent) {
+    return 'judgement' + likelihoodPercent + 'PercentCount';
 }
 
-
-
-
-
-
-
-
-function assignReadOnlyPredictionDataObject(prediction) {
-	if (prediction.get('readOnlyPredictionData')) {
-		return Parse.Promise.as();
-	}
-	var readOnlyPredictionData = new ReadOnlyPredictionData();
-	var acl = new Parse.ACL();
-	acl.setPublicReadAccess(true);
-	readOnlyPredictionData.setACL(acl);
-	return readOnlyPredictionData.save().then(function(readOnlyPredictionData){
-		prediction.set('readOnlyPredictionData', readOnlyPredictionData);
-		return;
-	});
+function setJudgementAttributesToDeletedState(judgement) {
+    var acl = new Parse.ACL();
+    judgement.setACL(acl);
+    judgement.set('deleted', new Date());
+    return judgement;
 }
-function assignPredictionPointerToReadOnlyPredictionData(prediction) {
-	//Add pointer to verify authenticity of relationship between ReadOnlyPredictionData object and author editable Prediction
-	Parse.Cloud.useMasterKey()
-	var readOnlyPredictionData = prediction.get("readOnlyPredictionData");
-	if ( ! readOnlyPredictionData.get('prediction')) {
-		readOnlyPredictionData.save({'prediction': prediction});
-	}
+
+function setJudgementAttributesToNotDeletedState(judgement) {
+    var acl = new Parse.ACL();
+    acl.setPublicReadAccess(true);
+    judgement.setACL(acl);
+    judgement.unset('deleted');
+    return judgement;
 }
+
+function castPredictionsAsPlainObjects(predictions) {
+    return predictions.map(function(prediction) {
+        return castPredictionAsPlainObject(prediction);
+    });
+}
+
+function castPredictionAsPlainObject(prediction) {
+
+    var topics = castTopicsAsPlainObjects(
+        prediction.get('topics') || []
+    );
+    var author = castUserAsPlainObject(
+        prediction.get('author')
+    );
+    var reasonsCount = 0;
+    if (prediction.get('reasonsCount')) {
+        reasonsCount = prediction.get('reasonsCount').length;
+    }
+
+    return {
+        'id': prediction.id,
+        'title': prediction.get('title'),
+        'topics': topics,
+        'author': author,
+        'createdAt': prediction.createdAt,
+        'reasonsCount': reasonsCount
+    };
+}
+
+function castTopicsAsPlainObjects(topics) {
+    return topics.map(function(topic) {
+        return castTopicAsPlainObject(topic);
+    });
+}
+
+function castTopicAsPlainObject(topic) {
+    return {
+        'id': topic.id,
+        'title': topic.get('title')
+    };
+}
+
+function castJudgementsAsPlainObjects(judgements) {
+    return judgements.map(function(judgement) {
+        return castJudgementAsPlainObject(judgement);
+    });
+}
+
+function castUserAsPlainObject(user) {
+    return {
+        'userId': user.id,
+        'publicFacebookData': user.get('publicFacebookData')
+    };
+}
+
+function castJudgementAsPlainObject(judgement) {
+
+    var parselessJudgement = {
+        'id': judgement.id,
+        'updatedAt': judgement.updatedAt,
+        'authorId': judgement.get('author').id,
+        'predictionId': judgement.get('prediction').id,
+        'likelihoodPercent': judgement.get('likelihoodPercent'),
+    };
+
+    if (judgement.get('reasonText')) {
+        parselessJudgement.reasonText = judgement.get('reasonText');
+    }
+    if (judgement.get('author')) {
+        parselessJudgement.author =
+            castUserAsPlainObject(judgement.get('author'));
+    }
+    return parselessJudgement;
+}
+

@@ -1,0 +1,41 @@
+
+<div class="user-estimate__add-reason"
+    ng-if="ctrl.currentJudgement.likelihoodPercent && ctrl.currentJudgement.likelihoodPercent > -1">
+
+    <label class="add-reason__label">
+        <div ng-hide="ctrl.hideLabel"
+            class="add-reason__label-text">
+            Why do you think this prediction is {{ctrl.currentJudgement.likelihoodPercent}}% likely?
+        </div>
+        <div class="add-reason__text-input-container">
+            <textarea type="text"
+                rows="2"
+                id="{{ctrl.addReasonTextInputId}}"
+                class="add-reason__text-input"
+                ng-model="ctrl.reasonInputText"
+                ng-blur="ctrl.updateReason()"
+                ng-focus="ctrl.showAddReasonLabel()"
+                focus-on-hover="{{ctrl.isFocusOnHoverEnabled}}">
+            </textarea>
+            <div class="user-estimate__is-saving-reason-notice" ng-if="ctrl.isSavingReason">Saving reason...</div>
+            <div class="user-estimate__is-reason-saved-notice" ng-if="ctrl.isReasonSavedNoticeActive">Reason saved!</div>
+        </div>
+    </label>
+</div>
+
+<div class="likelihood-user-estimate">
+    <div class="likelihood-user-estimate-options">
+        <div class="likelihood-user-estimate-option" 
+            ng-click="ctrl.toggleLikelihoodPercent(percent)" 
+            ng-repeat="percent in ctrl.percentOptions" 
+            ng-class="{'likelihood-user-estimate-option--active': percent === ctrl.currentJudgement.likelihoodPercent}">
+            <span class="test">
+                <span class="percent">{{percent}}</span>
+                <span class="show-on-active">%</span>
+            </span>
+        </div>
+    </div>
+</div>
+
+    
+    

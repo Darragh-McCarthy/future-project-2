@@ -1,0 +1,39 @@
+<div class="feedback-page">
+
+    <div class="feedback-page__header">
+        <div class="feedback-page__thank-you-title">Thank you for taking the time to provide feedback on your experience.</div>
+        <ul class="feedback-page__thank-you-message">
+            <li>This project is at an early stage, so everything is subject to change.
+            <li>Don't hesitate to report any further problems you may encounter.
+            <li>Suggestions for fixes and improvements are most welcome!
+        </ul>
+    </div>
+    
+    <div ng-show="ctrl.isFeedbackSubmittedNoticeVisible"
+        class="feedback-page__feedback-submitted-notice">
+        Feedback submitted.
+    </div>
+    <div ng-show="ctrl.isFeedbackErrorNoticeVisible"
+        class="feedback-page__feedback-error-notice">
+        Error submitting feedback, try again.
+    </div>
+
+    {{ctrl.something}}
+
+    <form class="feedback-page__feedback-form"
+        ng-submit="ctrl.submitFeedback()">
+        <label>
+            <div class="feedback-page__message-textarea-label">
+                <span ng-hide="ctrl.feedbackSubmitSuccessCount">What is your feedback?</span>
+                <span ng-show="ctrl.feedbackSubmitSuccessCount">Do you have any other feedback?</span>
+            </div>
+            <textarea
+                class="feedback-page__message-textarea"
+                rows="5"
+                ng-model="ctrl.feedback.feedbackText">
+            </textarea>
+        </label>
+        <button class="feedback-page__submit-button">Submit feedback</button>
+    </form>
+
+</div>

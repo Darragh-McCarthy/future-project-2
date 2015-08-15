@@ -2,7 +2,7 @@
 <!--[if lt IE 7]>      <html lang="en" ng-app="myApp" ng-strict-di ng-controller="MainCtrl" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html lang="en" ng-app="myApp" ng-strict-di ng-controller="MainCtrl" class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html lang="en" ng-app="myApp" ng-strict-di ng-controller="MainCtrl" class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html lang="en" ng-app="myApp" ng-strict-di ng-controller="MainController" class="no-js"> <!--<![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" ng-app="myApp" ng-strict-di class="no-js"> <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -28,9 +28,12 @@
 </head>
 <body>
   <!--[if lt IE 7]><p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p><![endif]-->
-<div class="sidebar"></div>
+
+
+<!--<div class="sidebar"></div>-->
 <div class="body__main-container">
   
+
 
   <header>
     <div ui-view="header"></div>
@@ -42,7 +45,12 @@
   </main>
 
   <footer>
-    <div ui-view="footer"></div>
+    <div ui-view="footer">
+      
+    </div>
+    <ul>
+      <li>Media</li>
+    </ul>
   </footer>
 
 <!--
@@ -83,42 +91,44 @@
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-route/angular-route.js"></script>
   <script src="bower_components/angular-resource/angular-resource.js"></script>
-  <script src="bower_components/angular-animate/angular-animate.js"></script>
+  <!--<script src="bower_components/angular-animate/angular-animate.js"></script>-->
   <script src="bower_components/parse-angular-patch/src/parse-angular.js"></script>
   <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
 
   <script src="main.module.js"></script>
   <script src="main.route.js"></script>  
-  <script src="main.controller.js"></script>
 
   <script src="sharedServices/sharedServices.module.js"></script>
-  <script src="sharedServices/currentUser.factory.js"></script>
+  <script src="sharedServices/UserAuth.factory.js"></script>
 
   <script src="sharedServices/Parse/Parse.factory.js"></script>
 
   <script src="sharedServices/PredictionService.factory.js"></script>
   <script src="sharedServices/TopicService.factory.js"></script>
-  <script src="sharedServices/LikelihoodEstimateService.factory.js"></script>
+  <script src="sharedServices/JudgementService.factory.js"></script>
   <script src="sharedServices/UserService.factory.js"></script>
-
+  <script src="sharedServices/StateDataCache.factory.js"></script>
   <script src="sharedServices/focusElementById.factory.js"></script>
   <script src="sharedServices/ExceptionHandler.factory.js"></script>
 
   <script src="sharedDirectives/fp-prediction-list/fp-prediction-list.directive.js"></script>
   <script src="sharedDirectives/fp-prediction/fp-prediction.directive.js"></script>
   <script src="sharedDirectives/fp-add-new-prediction/fp-add-new-prediction.directive.js"></script>
-  <script src="sharedDirectives/fp-likelihood-user-estimate/fp-likelihood-user-estimate.directive.js"></script>
-  <script src="sharedDirectives/fp-likelihood-community-estimate/fp-likelihood-community-estimate.directive.js"></script>
+  <script src="sharedDirectives/fp-user-judgement/fp-user-judgement.directive.js"></script>
+  <!--<script src="sharedDirectives/fp-community-estimate/fp-community-estimate.directive.js"></script>-->
+  <script src="sharedDirectives/fp-featured-topics-list/fp-featured-topics-list.directive.js"></script>
   <script src="sharedDirectives/focusTextInputOnMouseover.directive.js"></script>
 
+  <script src="feedback/feedback.controller.js"></script>
   <script src="login/login.controller.js"></script>
   <script src="header/header.controller.js"></script>
-  <script src="make-prediction/make-prediction.controller.js"></script>
+  <!--<script src="make-prediction/make-prediction.controller.js"></script>-->
   <script src="browseTopics/BrowseTopics.controller.js"></script>
   <script src="user-profile/UserProfile.controller.js"></script>
   <script src="prediction/prediction.controller.js"></script>
 
-  <script src="prediction-list/prediction-list.controller.js"></script>
+  <script src="list-recent-predictions/list-recent-predictions.controller.js"></script>
+  <script src="list-predictions-by-topic/list-predictions-by-topic.controller.js"></script>
   <!--<script src="sidebar/sidebar.controller.js"></script>-->
 
   <script src="bower_components/jquery/dist/jquery.js"></script>

@@ -1,82 +1,112 @@
 <div class="prediction-page">	
 
 	<div class="prediction-page-isloading"
-		ng-if=" ! prediction.prediction">
+		ng-if=" ! ctrl.prediction">
 		Loading prediction...
 	</div>
 
-	<div ng-if="prediction.prediction">
+	<div ng-if="ctrl.prediction">
+		
+		<img class="prediction-page__prediction-author-img"
+			ng-src="{{ctrl.predictionAuthor.publicFacebookData.profilePhotoUrl}}"
+			ui-sref="app.user-profile({userId:ctrl.predictionAuthor.userId})"
+		/>
+
 		<div class="prediction-page__topics">
 			<a class="prediction-page__topic" 
 	            ui-sref="app.topic({'topic':topic.title})"
-	            ng-repeat="topic in prediction.prediction.topics">
+	            ng-repeat="topic in ctrl.prediction.topics">
 	            {{topic.title}}
 	        </a>
 	    </div>
 
 		<h1 class="prediction-page__prediction-title">
-			{{prediction.prediction.title}}
+			{{ctrl.prediction.title}}
 		</h1>
 
-		<!--		
-		<div style="margin-bottom:50px;" 
-			ng-if="prediction.prediction.userEstimate.percent">
-			<label style="font-size:1.2rem;font-weight: normal;text-align:center;margin-top:3px;display:block;">
-				Why do you think this is {{prediction.prediction.userEstimate.percent}}% likely?
-				<div style="position:relative">
-					<input type="text" />
-				</div>
-			</label>
+		<div class="prediction-page-main-likelihood-estimate-container">
+			<fp-user-judgement
+                prediction-id="{{ctrl.prediction.id}}">
+            </fp-user-judgement>
 		</div>
-		-->
-		<div ng-if="prediction.prediction.communityEstimatesCount > 0">
-			<div class="likelihood__community-estimate__count">{{prediction.prediction.communityEstimatesCount}} votes</div>
+			
+
+			
+<!--		
+		<div ng-if="ctrl.prediction.communityEstimatesCount > 0">
+			<div class="likelihood__community-estimate__count">{{ctrl.prediction.communityEstimatesCount}} votes</div>
 			<div class="community-estimate-graph-container">
 
 				<fp-likelihood-community-estimate 
-			        community-estimates="prediction.prediction.communityEstimates"
-			        community-estimates-count="prediction.prediction.communityEstimatesCount"
-			        user-estimate="prediction.prediction.userEstimate">
-
+			        community-estimates="ctrl.prediction.communityEstimates"
+			        community-estimates-count="ctrl.prediction.communityEstimatesCount"
+			        user-estimate="ctrl.prediction.userEstimate">
 			    </fp-likelihood-community-estimate>
+
 				<fp-likelihood-user-estimate
-					on-select-option="prediction.toggleLikelihoodEstimate(percent)"
-			        user-estimate-percent="prediction.prediction.userEstimate.percent">
+					on-select-option="ctrl.toggleLikelihoodEstimate(percent)"
+			        user-estimate-percent="ctrl.prediction.userEstimate.percent">
 				</fp-likelihood-user-estimate>
 			</div>
 		</div>
-		
+-->
 
 
 
-		<div class="reasons">
+		<div class="prediction-page-reasons">
+			<div class="prediction-page__prediction-count">{{ctrl.prediction.reasonsCount}} Reasons</div>
+			<div class="prediction-page-reasons__no-reasons-notice"
+				ng-if="ctrl.judgementsWithReasons.length === 0">
+				No reasons available at this time.
+			</div>
 			<ul class="reasons-list">
-				<li class="reason" 
-					ng-repeat="reason in prediction.reasons">
-					<div class="reason-title">
-						<div class="reason-image"></div>
-						<div class="user-name-and-title">
-							<span class="likelihood-amount">100% likely,</span>
-							<span class="fullname">Darragh McCarthy,</span>
-							<span class="short-bio">Web Developer</span>
-						</div>
-					</div>
-					<p class="reason-text">{{reason.reasonText}}</p>
-
-					<div class="prediction-page__likelihood-selection">
-
-						<div class="likelihood-selection__prediction-title">
-							{{prediction.prediction.title}}
-						</div>
-
-						<fp-likelihood-user-estimate
-							on-select-option="prediction.toggleLikelihoodEstimate(percent)"
-					        user-estimate-percent="prediction.prediction.userEstimate.percent">
-						</fp-likelihood-user-estimate>
+				<li class="reasons-list__reason" 
+					ng-repeat="judgement in ctrl.judgementsWithReasons">
+					<p class="reasons-list__reason-content">
+						<img class="reasons-list__author-image" 
+							ng-src="{{judgement.author.publicFacebookData.profilePhotoUrl}}"
+							ui-sref="app.user-profile({userId:judgement.author.userId})"
+						/>
+						<span class="reasons-list__reason-text" 
+							ng-click="judgement.showActions = true">
+							<span class="reasons-list__likelihood">
+								<span class="reasons-list__likelihood-number">{{judgement.likelihoodPercent}}</span>% likely.
+							</span>
+							{{judgement.reasonText}}
+						</span>
+						<!--<span ng-show="judgement.showActions" style="display:block;font-weight:300;margin-top:5px;color:#777" class="votes">33 upvotes</span>-->
+					</p>
+					<div  ng-show="judgement.showActions">
+						<ul class="reasons-list__reason-actions">
+							<li class="reasons-list__reason-action reasons-list__reason-action--selected">Upvoted</li>
+							<li class="reasons-list__reason-action">Comment</li>
+							<li class="reasons-list__reason-action">Share</li>
+						</ul>
 					</div>
 				</li>
 			</ul>
 		</div>
+
+
+		<!--<div class="prediction-page__footer-repeated-header"
+			ng-if="ctrl.judgementsWithReasons">
+			<h1 class="prediction-page__prediction-title">
+				{{ctrl.prediction.title}}
+			</h1>
+			<div class="prediction-page-main-likelihood-estimate-container">
+				<fp-user-judgement
+	                prediction-id="{{ctrl.prediction.id}}">
+	            </fp-user-judgement>
+			</div>
+		</div>-->
+
+		
+		<div class="prediction-page__featured-topics-container" ng-if="ctrl.prediction && ctrl.judgementsWithReasons">
+			<fp-featured-topics-list></fp-featured-topics-list>
+		</div>
+
+
+
 	</div>
 
 </div>

@@ -1,73 +1,59 @@
+<form class="fp-add-new-prediction"
+    ng-submit="ctrl.saveNewPrediction()">
 
-<form class="fp-add-new-prediction">  
     <label>
-        <div class="fp-add-new-prediction__prediction-title-label" ng-if=" ! makePrediction.hideLabel">
-            <span>
-                <span ng-hide="::makePrediction.isAddingSecondPrediction">
-                    What is your
-                </span>
-                <span ng-show="::makePrediction.isAddingSecondPrediction">
-                    <b>Add another</b>
-                </span>        
-            </span>
-            <span class="fp-add-new-prediction__topic"
-                ng-if="makePrediction.topic">
-                    <a class="fp-add-new-prediction__topic-link"
-                      ui-sref="app.topic({topic:makePrediction.topic})">
-                      {{makePrediction.topic}}
-                    </a>
+        <div ng-if="!ctrl.isLabelHidden"
+            class="fp-add-new-prediction__prediction-title-label">
+            <span ng-hide="ctrl.newPredictionsCount">What is your</span>
+            <span ng-show="ctrl.newPredictionsCount">Add another</b></span>       
+            <span ng-if="ctrl.topicTitle"
+                class="fp-add-new-prediction__topic">
+                <a class="fp-add-new-prediction__topic-link"
+                      ui-sref="app.topic({topic:ctrl.topicTitle})" 
+                      ui-sref-active="active">
+                      {{ctrl.topicTitle}}
+                </a>
                 <span class="fp-add-new-prediction__delete-topic" 
-                    ng-click="makePrediction.removeDefaultTopic()">
+                    ng-click="ctrl.removeDefaultTopic()">
                     ×
                 </span>
             </span>
-            <span>
-                <span ng-hide="::makePrediction.isAddingSecondPrediction">prediction?</span>
-                <span ng-show="::makePrediction.isAddingSecondPrediction"><b>prediction</b></span>        
-            </span>
+            <span ng-hide="ctrl.newPredictionsCount">prediction?</span>
+            <span ng-show="ctrl.newPredictionsCount">prediction</span>        
         </div>
-<!--
-Better predictions include a timescale
-Maybe better predictions specify date ranges, rather than relative years
--->
-        <ul class="fp-add-new-prediction__title-error-messages">
-            <li ng-repeat="errorMessage in makePrediction.predictionValidationErrors.predictionTitleLengthErrors" 
-                ng-if="makePrediction.areTitleLengthErrorsVisible">
-                {{errorMessage}}
-            </li>
-            <li ng-repeat="errorMessage in makePrediction.predictionValidationErrors.predictionTitleContentErrors">
-                {{errorMessage}}
-            </li>
-        </ul>
 
-      <div class="fp-add-new-prediction__questions-not-allowed-explanation" 
-        ng-if="makePrediction.predictionValidationErrors.predictionTitleContentErrors">
-        <a class="fp-add-new-prediction__how-to-make-prediction-link" 
-          ui-sref="app.prediction-guidelines" 
-          target="_blank">
-          View Prediction Guidelines
-        </a>
-      </div>
-    
-      <div class="fp-add-new-prediction__input">
-        <input
-          type="text"
-          id="{{makePrediction.predictionTextInputElementId}}" 
-          ng-model="makePrediction.newPredictionTitle" 
-          autocomplete="off"
-          class="fp-add-new-prediction__prediction-title-input"
+        <div class="fp-add-new-prediction__questions-not-allowed-explanation" 
+            ng-if="ctrl.predictionValidationErrors.predictionTitleContentErrors">
+            <a class="fp-add-new-prediction__how-to-make-prediction-link" 
+                ui-sref="app.prediction-guidelines" 
+                target="_blank">
+                View Prediction Guidelines
+            </a>
+        </div>
+
+        <input type="text"
+            class="fp-add-new-prediction__prediction-title-input"
+            id="{{ctrl.predictionTextInputElementId}}" 
+            ng-model="ctrl.newPredictionTitle"
+            ng-keyup="ctrl.validateNewPrediction($event)"
+            autocomplete="off"
+            placeholder="{{ctrl.placeholderText}}"
         />
-      </div>
-        <a class="fp-add-new-prediction__textfield-sublink"
-          ui-sref="app.topic({topic:makePrediction.topic})"
-          ng-if="makePrediction.showAddPredictionFormTopicLink">
-          {{makePrediction.topic}}
-        </a>
     </label>
 
+    <ul ng-if="ctrl.displayedValidationErrors.length" 
+        class="fp-add-new-prediction__errors">
+        <li class="fp-add-new-prediction__error" 
+            ng-repeat="errorMsg in ctrl.displayedValidationErrors">
+            {{errorMsg}}
+        </li>
+    </ul>
+
+    <fp-login ng-if="ctrl.isFpLoginActive" title="{{ctrl.fpLoginMessage}}"></fp-login>
+
     <button class="fp-add-new-prediction__add-prediction-button" 
-      ng-class="{enabled: (makePrediction.newPredictionTitle.length >= makePrediction.newPredictionDataConstraints.predictionTitleCharacters.min.value && !makePrediction.predictionValidationErrors) }"  
-      ng-click="makePrediction.addNewPrediction(makePrediction.newPredictionTitle, makePrediction.topic)">
-      Add prediction
+        ng-show="ctrl.isValidPrediction">
+        {{ctrl.addPredictionButtonText}}
     </button>
+
 </form>

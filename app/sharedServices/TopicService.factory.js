@@ -1,140 +1,109 @@
-(function(){
+(function() {
 'use strict';
 
 angular.module('myApp')
-	.factory('TopicService', TopicService);
+    .factory('TopicService', TopicService);
 
-TopicService.$inject=['$q','Parse'];
-function TopicService( $q,  Parse ) {
-  var ParseTopicModel = Parse.Object.extend('Topic');
-  var minTopicCharacterLength = 2;
-  var maxTopicCharacterLength = 100;
-  var featuredTopicTitles = [
-    {'title':'Technology'},
-    {'title':'Artificial intelligence'},
-    {'title':'Robotics'},
-    {'title':'Internet of things'},
-    {'title':'Human enhancement'},
-    {'title':'Gaming'},
-    {'title':'Biotechnology'},
-    {'title':'Nanotechnology'},
-    {'title':'Virtual reality'},
-    {'title':'Augmented reality'},
-    {'title':'Space travel'},
-    {'title':'Social networks'},
-    {'title':'Environment'},
-    {'title':'Synthetic biology'},
-    {'title':'Mobile devices'},
-    {'title':'Design'},
-    {'title':'Health'},
-    {'title':'Medicine'},
-    {'title':'Fashion'},
-    {'title':'Politics'},
-    {'title':'Sports'},
-    {'title':'Science'},
-    {'title':'Culture'},
-    {'title':'Physics'},
-    {'title':'Economics'},
-    {'title':'Startups'},
-    {'title':'Business'},
-    {'title':'Education'},
-    {'title':'Entertainment'}
-  ];
+TopicService.$inject = ['$q', 'Parse'];
+function TopicService($q,  Parse) {
 
-  var newPredictionTopicSuggestions = [
-    {'title':'Technology'},
-    {'title':'Design'},
-    {'title':'Health'},
-    {'title':'Medicine'},
-    {'title':'Fashion'},
-    {'title':'Politics'},
-    {'title':'Sports'},
-    {'title':'Science'},
-    {'title':'Culture'},
-    {'title':'Startups'},
-    {'title':'Business'},
-    {'title':'Education'},
-    {'title':'Entertainment'}
-  ];
-
-	return {
-		'castParseTopicsAsPlainObjects':castParseTopicsAsPlainObjects,
-		'castParseTopicAsPlainObject':castParseTopicAsPlainObject,
-		'getOrCreateNewTopicsByTitle': getOrCreateNewTopicsByTitle,
-    'getTopicsById':getTopicsById,
-    'getTopicByTitle':getTopicByTitle,
-    'getEmptyTopicReferenceById':getEmptyTopicReferenceById,
-    'featuredTopicTitles': featuredTopicTitles,
-    'newPredictionTopicSuggestions': newPredictionTopicSuggestions
-	};
-
-
-
-	function getEmptyTopicReferenceById(topicId) {
-		var topic = new ParseTopicModel();
-		topic.id = topicId;
-		return topic;
-	}
-
-
-	function castParseTopicsAsPlainObjects(parseTopics) {
-		var topics = [];
-		angular.forEach(parseTopics, function(parseTopic) {
-      topics.push(castParseTopicAsPlainObject(parseTopic));
-    });
-    return topics;
-	}
-	function castParseTopicAsPlainObject(parseTopic) {
-    return {
-    	'id': parseTopic.id,
-      'title': parseTopic.get('title'),
-      'url': parseTopic.get('url')
+    var MIN_TOPIC_CHARACTER_LENGTH = {
+        'val': 2,
+        'makeErrorMsg': function() {
+            return 'Topics must be at least ' +
+                this.val +
+                ' characters long';
+        }
     };
-  }
+    var MAX_TOPIC_CHARACTER_LENGTH = {
+        'val': 100,
+        'makeErrorMsg': function() {
+            return 'Topics cannot be greater than ' +
+                this.val +
+                ' characters long';
+        }
+    };
+    var FEATURED_TOPIC_TITLES = [
+        'Technology',
+        'Artificial intelligence',
+        'Robotics',
+        'Internet of things',
+        'Human enhancement',
+        'Gaming',
+        'Biotechnology',
+        'Nanotechnology',
+        'Virtual reality',
+        'Augmented reality',
+        'Space travel',
+        'Social networks',
+        'Environment',
+        'Synthetic biology',
+        'Mobile devices',
+        'Design',
+        'Health',
+        'Medicine',
+        'Fashion',
+        'Politics',
+        'Sports',
+        'Science',
+        'Culture',
+        'Physics',
+        'Economics',
+        'Startups',
+        'Business',
+        'Education',
+        'Entertainment'
+    ];
 
-  function getOrCreateNewTopicsByTitle(topicTitles) {
-    var promises = [];
-    angular.forEach(topicTitles, function(eachTitle) {
-      eachTitle = eachTitle.trim();
-      promises.push(getOrCreateNewTopicByTitle(eachTitle));
-    });
-    return $q.all(promises);
-  }
-  function getOrCreateNewTopicByTitle(topicTitle) {
-    return getTopicByTitle(topicTitle).then(function(existingTopic) { 
-      if (existingTopic) {
-        return existingTopic; 
-      } else {
-        return createNewTopic(topicTitle);
-      }
-    });
-  }
-	function getTopicByTitle(title) {
-    var topicQuery = new Parse.Query(ParseTopicModel);
-    topicQuery.equalTo('title', title);
-    return topicQuery.first();
-	}
-	function createNewTopic(title) {
-    return $q(function(resolve, reject) {
-      if (title.length >= minTopicCharacterLength && title.length <= maxTopicCharacterLength) {
-        var newTopic = new ParseTopicModel();
-        newTopic.set('title', title);
-        newTopic.save().then(function(topic){
-          resolve(topic);
+    var NEW_PREDICTION_TOPIC_TITLE_SUGGESTIONS = [
+        'Technology',
+        'Design',
+        'Health',
+        'Medicine',
+        'Fashion',
+        'Politics',
+        'Sports',
+        'Science',
+        'Culture',
+        'Startups',
+        'Business',
+        'Education',
+        'Entertainment'
+    ];
+
+    return {
+        'validateNewTopicTitle': validateNewTopicTitle,
+        'saveNewTopic': saveNewTopic,
+        'getFeaturedTopicTitles': getFeaturedTopicTitles,
+        'getNewPredictionTopicTitleSuggestions': getNewPredictionTopicTitleSuggestions
+    };
+
+    function saveNewTopic(topicTitle) {
+        return Parse.Cloud.run('saveNewTopic', {
+            'topicTitle': topicTitle
         });
-      }
-      else {
-        reject();
-      }
-    });
-	}
-  function getTopicsById(ids) {
-    var query = new Parse.Query(ParseTopicModel);
-    return query.get(ids);
-  }
+    }
 
+    function validateNewTopicTitle(topicTitle) {
+        var errorMessages = [];
+        if (topicTitle.length < MIN_TOPIC_CHARACTER_LENGTH.val) {
+            errorMessages.push(MIN_TOPIC_CHARACTER_LENGTH.makeErrorMsg());
+        }
+        if (topicTitle.length > MAX_TOPIC_CHARACTER_LENGTH.val) {
+            errorMessages.push(MAX_TOPIC_CHARACTER_LENGTH.makeErrorMsg());
+        }
+        return {
+            'errors': errorMessages
+        };
+    }
 
+    function getFeaturedTopicTitles() {
+        return $q.when(FEATURED_TOPIC_TITLES);
+    }
+
+    function getNewPredictionTopicTitleSuggestions() {
+        return $q.when(NEW_PREDICTION_TOPIC_TITLE_SUGGESTIONS);
+    }
 }
-
 
 })();

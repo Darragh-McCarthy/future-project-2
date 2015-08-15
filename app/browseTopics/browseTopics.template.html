@@ -1,25 +1,30 @@
 
 
 <div class="browse-topics-page">
+
+	<div class="browse-topics-page__topicless-add-new-prediction-container" style="margin-bottom:100px;">
+		<fp-prediction-list 
+			is-add-new-prediction-autofocused="true">
+		</fp-prediction-list>
+	</div>	
+
 	<ul class="browse-topics-page__topics-list">
-		<li class="browse-topics-page__topic" ng-repeat="topic in browseTopics.topics track by $index">
+		<li ng-repeat="topicTitle in ctrl.featuredTopicTitles track by $index"
+			class="browse-topics-page__topic">
+
+			<a class="browse-topics-page__topic-title" 
+				ui-sref="app.topic({topic:topicTitle})">
+				{{topicTitle}}
+			</a>
+
+
 			<fp-prediction-list 
-				current-topic="topic.title"
-				show-add-prediction-form="true"
-				show-add-prediction-form-topic-link="true">
+				topic-title="{{topicTitle}}"
+				is-add-new-prediction-label-hidden="true">
 			</fp-prediction-list>
+
 		</li>
 
-		<!--
-		<form class="add-topic-form">
-			<div class="add-topic-form__title">What predictions would you like to read?</div>
-			<label>
-				Add topic
-				<input type="text" >
-			</label>
-		</form>
-		-->
-		
 	</ul>
 </div>
 

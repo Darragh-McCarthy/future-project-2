@@ -1,61 +1,41 @@
-(function(){
+(function() {
 'use strict';
 
+angular.module('myApp')
+    .controller('Header', Header);
 
+Header.$inject = ['UserAuth', '$timeout', '$state'];
+function Header(UserAuth,  $timeout, $state) {
+    var _this = this;
+    _this.logout = logout;
+    _this.loginWithFacebook = loginWithFacebook;
 
+    if (UserAuth.isLoggedIn()) {
+        _this.userId = UserAuth.getUserId();
+        UserAuth.promiseUserThumbnailUrl().then(function(url) {
+            _this.userThumbnailUrl = url;
+        });
+    }
 
+    _this.isLoginOptionActive = !UserAuth.isLoggedIn();
+    _this.isLogoutOptionActive = UserAuth.isLoggedIn();
+    _this.isUserProfileOptionActive = UserAuth.isLoggedIn();
 
-angular
-	.module('myApp')
-	.controller('Header', Header);
+    function logout() {
+        UserAuth.logout();
+        $state.go($state.current, {}, {
+            reload: true
+        });
+    }
 
-Header.$inject=['currentUser','$timeout'];
-function Header( currentUser,  $timeout ) {
-	var _this = this;
+    function loginWithFacebook() {
+        UserAuth.loginWithFacebook().then(function() {
+            $state.go($state.current, {}, {
+                reload: true
+            });
+        });
+    }
 
-	_this.logout = function() {
-		currentUser.logout();
-		window.location = '/';
-	};
-
-
-	_this.currentUser = currentUser;
-	_this.resetFeedbackText = resetFeedbackText;
-	_this.submitFeedback = submitFeedback;
-	_this.topics = [
-		{'title': 'Technology'},
-		{'title': 'Science'},
-		{'title': 'Space travel'},
-		{'title': 'TV and Film'},
-		{'title': 'Medicine'},
-		{'title': 'Robotics'},
-		{'title': 'Artificial Intelligence'},
-		{'title': 'Music'},
-		{'title': 'Celebrities'},
-		{'title': 'Politics'},
-		{'title': 'Startups'},
-		{'title': 'Entertainment'}
-	];
-
-	function resetFeedbackText() {
-		_this.feedbackText = '';
-	}
-	function submitFeedback($event) {
-		$event.target.blur();
-		$event.target.setAttribute('placeholder', 'Thank You!');
-		_this.feedbackText = '';
-		console.log(_this.feedbackText);
-		$timeout(function(){
-			$event.target.setAttribute('placeholder', 'Feedback');
-		}, 2000);
-	}
-
-	
 }
-
-
-
-
-
 
 })();

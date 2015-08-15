@@ -1,0 +1,17 @@
+<div class="fp-featured-topics-list">
+
+    <div class="fp-featured-topics-list__title">
+        Featured topics
+    </div>
+
+    <ul class="fp-featured-topics-list__topics">
+        <li class="fp-featured-topics-list__topic" 
+            ng-repeat="topicTitle in ctrl.topicTitles">
+
+            <a class="fp-featured-topics-list__topic-link" 
+                ui-sref="app.topic({'topic':topicTitle})">
+                {{topicTitle}}
+            </a>
+        </li>
+    </ul>
+</div>

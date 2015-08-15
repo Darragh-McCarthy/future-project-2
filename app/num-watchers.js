@@ -27,6 +27,6 @@ function countWatchers () {
         }
     });
 
-    console.log('Watchers:'+watchersWithoutDuplicates.length+' (without duplicated)');
+    console.log('Watchers:' + watchersWithoutDuplicates.length + ' (without duplicated)');
 }
 

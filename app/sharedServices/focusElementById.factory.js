@@ -6,7 +6,8 @@ angular.module('myApp')
 
 focusElementById.$inject = ['$timeout'];
 function focusElementById($timeout) {
-    return function(id, minScreenSize) {
+    return function(elementId, minScreenSize) {
+
         var MIN_AUTOFOCUS_SCREEN_WIDTH = 600;
 
         //prevent keyboard popups on small screens
@@ -14,13 +15,13 @@ function focusElementById($timeout) {
         if (minScreenSize && window.innerWidth <= minScreenSize) {
             return;
         }
+
         $timeout(function() {
-            var element = document.getElementById(id);
-            if (element) {
-                element.focus();
-            } else {
-                console.log('focus element failed: ' + id + 'does not exist');
+            var el = document.getElementById(elementId);
+            if (!el) {
+                return console.log('#' + elementId + ' does not exist');
             }
+            el.focus();
         });
     };
 }

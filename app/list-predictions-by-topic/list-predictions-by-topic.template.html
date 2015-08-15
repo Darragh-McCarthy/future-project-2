@@ -1,0 +1,16 @@
+<div class="prediction-list-page">
+
+    <fp-prediction-list 
+        topic-title="{{ctrl.topic}}"
+        page="ctrl.page"
+        is-prediction-loading-enabled="true"
+        is-add-new-prediction-label-visible="true"
+        is-add-new-prediction-autofocused="true"
+        get-predictions="ctrl.getPredictions(numPredictions, numPredictionsToSkip)">
+    </fp-prediction-list>
+
+    <div class="prediction-list-page__featured-topics-container">
+        <fp-featured-topics-list></fp-featured-topics-list>
+    </div>
+
+</div>

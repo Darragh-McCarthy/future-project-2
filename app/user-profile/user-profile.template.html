@@ -3,20 +3,27 @@
 <div class="user-profile-page">
 	<div class="user-profile-page__centered-box">
 		<div class="user-profile-page__user-overview">
-			<img class="user-profile-page__user-photo-big" ng-src="{{userProfile.userToDisplay.userBigPictureUrl}}"/>
+			<img class="user-profile-page__user-photo-big"
+				ng-src="{{ctrl.userToDisplay.publicFacebookData.profilePhotoUrl}}"
+			/>
 			<div class="user-profile-page__user-text">
-				<div class="user-profile-page__fullname">{{userProfile.userToDisplay.copyOfBasicFacebookUserData.name}}</div>
+				<div class="user-profile-page__fullname">
+					{{ctrl.userToDisplay.publicFacebookData.fullName}}
+				</div>
 				<button class="user-profile-page__logout-button" 
-					ng-click="userProfile.logout()"
-					ng-if="userProfile.currentUser.userId === userProfile.userToDisplay.id">
+					ng-click="ctrl.logout()"
+					ng-if="ctrl.userProfileUserId === ctrl.loggedInUserId">
 					Logout
 				</button>
 			</div>
 		</div>
-		<div class="user-profile-page__fp-add-new-prediction-container">
+
+		<div class="user-profile-page__prediction-list-container">
 			<fp-prediction-list 
-				pagination-object="userProfile.paginationObject"
-				show-add-prediction-form="userProfile.currentUser.userId === userProfile.userToDisplay.id">
+				title="Recent predictions"
+				is-add-new-prediction-autofocused="true"
+				get-predictions="ctrl.getPredictions(numPredictions, numPredictionsToSkip)"
+				is-prediction-loading-enabled="true">
 			</fp-prediction-list>
 		</div>
 	</div>

@@ -2,93 +2,115 @@
 'use strict';
 
 angular.module('myApp')
+    .controller('FpPredictionList', FpPredictionList)
     .directive('fpPredictionList', function() {
         return {
             templateUrl: 'sharedDirectives/fp-prediction-list/fp-prediction-list.template.html',
             bindToController:true,
-            controller:'FpPredictionList as list',
+            controller:'FpPredictionList as ctrl',
             scope: {
-                predictions: '=',
-                currentTopic: '=',
-                onClickNextPage: '&',
-                onClickPreviousPage: '&',
-                showAddPredictionForm: '@',
-                paginationObject: '=',
-                showAddPredictionFormTopicLink:'@'
-            },
+                'currentPageNumber': '@',
+                'title':'@',
+                'topicTitle': '@',
+                'isAddNewPredictionHidden': '@',
+                'isAddNewPredictionLabelHidden':'@',
+                'isAddNewPredictionAutofocused': '@',
+                'isPredictionLoadingEnabled': '@',
+                'getPredictions': '&'
+            }
         };
-    })
-    .controller('FpPredictionList', FpPredictionList);
+    });
 
-FpPredictionList.$inject = ['$scope', '$state', '$window'];
-function FpPredictionList($scope,  $state,  $window) {
+FpPredictionList.$inject = ['$scope', '$state', '$window', 'PredictionService', 'JudgementService'];
+function FpPredictionList($scope,  $state,  $window,  PredictionService, JudgementService) {
+
+    var NUM_PREDICTIONS_PER_PAGE = 30;
+
     $window.scroll(0, 0);
 
     var _this = this;
-    _this.newlyAddedPredictions = [];
-    _this.onAddNewPredictionSuccess = onAddNewPredictionSuccess;
-    _this.onSavingNewPrediction = onSavingNewPrediction;
-    _this.expandPrediction = expandPrediction;
-    _this.removePredictionFromList = removePredictionFromList;
-    _this.navigateToPage = navigateToPage;
+    _this.NUM_PREDICTIONS_PER_PAGE = NUM_PREDICTIONS_PER_PAGE;
+    _this.currentPageNumber = Number(_this.currentPageNumber) || 1;
+    _this.goToPageNumber = goToPageNumber;
+    _this.onSaveNewPredictionRequest = onSaveNewPredictionRequest;
+    _this.onSaveNewPredictionSuccess = onSaveNewPredictionSuccess;
+    _this.onDeletePredictionSuccess = onDeletePredictionSuccess;
+    _this.newlySavedPredictions =
+        PredictionService.getNewlySavedPredictions(_this.topicTitle);
 
-    if (_this.paginationObject === null) {
-        _this.isLoading = true;
-        var endScopeWatch = $scope.$watch('list.paginationObject', function(newPaginationObject) {
-            if (newPaginationObject) {
-                _this.isLoading = false;
-                _this.paginationPages = [];
-                for (var i = 0; i <= newPaginationObject.currentPageIndex; i++) {
-                    _this.paginationPages.push({
-                        'index': i,
-                        'title': (i + 1)
-                    });
+
+    (function loadPredictions() {
+        console.log(typeof _this.currentPageNumber);
+        if (_this.isPredictionLoadingEnabled) {
+            _this.isLoadingPredictions = true;
+            _this.getPredictions({
+                numPredictions: NUM_PREDICTIONS_PER_PAGE,
+                numPredictionsToSkip: NUM_PREDICTIONS_PER_PAGE * (_this.currentPageNumber - 1)
+            })
+            .then(function(predictions) {
+                _this.predictions = predictions;
+                _this.isLoadingPredictions = false;
+                if (predictions.length === NUM_PREDICTIONS_PER_PAGE) {
+                    _this.nextPageNumber = Number(_this.currentPageNumber) + 1;
+                    _this.previousPages = getPageNumbers(_this.nextPageNumber);
+                } else {
+                    _this.previousPages = getPageNumbers(Number(_this.currentPageNumber));
                 }
-                if (newPaginationObject.nextPageIndex > -1) {
-                    _this.paginationPages.push({
-                        'index': _this.paginationPages.length,
-                        'title': _this.paginationPages.length + 1
-                    });
-                }
-                endScopeWatch();
-            }
-        });
+
+                _this.isPaginationActive =
+                    _this.currentPageNumber && _this.currentPageNumber > 1 ||
+                    !!predictions.length &&
+                    predictions.length >= NUM_PREDICTIONS_PER_PAGE;
+            });
+        }
+    })();
+
+    function getPageNumbers(numPages) {
+        var pages = [{
+            'title': 1,
+            'urlId': ''
+        }];
+        for (var i = 2; i < numPages + 1; i++) {
+            pages.push({
+                'title': i,
+                'urlId': i
+            });
+        }
+        return pages;
     }
 
-    function onAddNewPredictionSuccess(prediction) {
-        _this.newlyAddedPredictions.unshift(prediction);
-        _this.isSavingNewPrediction = false;
+    function goToPageNumber(pageNumber) {
+        $state.go(
+            $state.$current.name,
+            {page: pageNumber}
+        );
     }
-    function onSavingNewPrediction() {
+
+    function onSaveNewPredictionRequest() {
         _this.isSavingNewPrediction = true;
     }
-    function expandPrediction(expandedPrediction) {
-        console.log('FpPredictionList expandPrediction disabled');
-        /*_this.paginationObject.predictions.forEach(function(eachPrediction){
-            eachPrediction.isExpanded = false;
-        });*/
+    function onSaveNewPredictionSuccess(newlySavedPrediction) {
+        _this.newlySavedPredictions.unshift(newlySavedPrediction);
+        _this.isSavingNewPrediction = false;
     }
-    function removePredictionFromList(predictionId) {
-        removePredictionFromArrayByPredictionId(_this.paginationObject.predictions, predictionId);
-        removePredictionFromArrayByPredictionId(_this.newlyAddedPredictions, predictionId);
-        function removePredictionFromArrayByPredictionId(arrayToSearch, id) {
-            var indexToRemove = -1;
-            for (var i = 0; i < arrayToSearch.length; i++) {
-                if (arrayToSearch[i].id === predictionId) {
-                    indexToRemove = i;
-                }
-            }
-            if (indexToRemove > -1) {
-                arrayToSearch.splice(indexToRemove, 1);
+
+    function onDeletePredictionRequest(predictionId) {}
+    function onDeletePredictionSuccess(predictionId) {
+        console.log('inside onDelete...()', predictionId);
+        var i;
+        var indexToRemove;
+        for (i = 0; i < _this.newlySavedPredictions.length; i++) {
+            if (_this.newlySavedPredictions[i].id === predictionId) {
+                indexToRemove = _this.newlySavedPredictions.indexOf(_this.newlySavedPredictions[i]);
+                _this.newlySavedPredictions.splice(indexToRemove, 1);
             }
         }
-    }
-    function navigateToPage(index) {
-        $state.go($state.$current.name, {
-            page:index
-        }, {
-            reload:true
-        });
+        for (i = 0; i < _this.predictions.length; i++) {
+            if (_this.predictions[i].id === predictionId) {
+                indexToRemove = _this.predictions.indexOf(_this.predictions[i]);
+                _this.predictions.splice(indexToRemove, 1);
+            }
+        }
     }
 }
 

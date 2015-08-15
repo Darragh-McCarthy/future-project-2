@@ -1,43 +1,48 @@
-(function(){
+(function() {
 'use strict';
 
 angular.module('myApp')
-	.controller('UserProfile', UserProfile);
+    .controller('UserProfile', UserProfile);
 
-UserProfile.$inject=['$state','$stateParams','currentUser','PredictionService','UserService'];
-function UserProfile( $state,  $stateParams,  currentUser,  PredictionService,  UserService ) {
-	scroll(0, 0);
+UserProfile.$inject = ['$state', '$stateParams', 'UserAuth', 'PredictionService'];
+function UserProfile($state,  $stateParams,  UserAuth,  PredictionService ) {
+    scroll(0, 0);
 
-	var _this = this;
-	_this.predictions = [];
-	_this.userPhotoUrl = '';
-	_this.userId = $stateParams.userId;
-	_this.logout = logout;
-	_this.expandPrediction = expandPrediction;
-	_this.currentUser = currentUser;
-	_this.userToDisplay = undefined;
-	var pageIndex = $stateParams.page || 0;
+    var _this = this;
+    _this.userPhotoUrl = '';
+    _this.userId = $stateParams.userId;
+    _this.logout = logout;
+    _this.expandPrediction = expandPrediction;
+    _this.UserAuth = UserAuth;
+    _this.userToDisplay = undefined;
+    _this.userProfileUserId = $stateParams.userId;
+    _this.loggedInUserId = UserAuth.getUserId();
+    _this.getPredictions = getPredictions;
 
-	UserService.getUserById($stateParams.userId).then(function(user){
-		_this.userToDisplay = user;
-	});
+    //var pageIndex = $stateParams.page || 0;
 
-	PredictionService.getPredictionsByAuthorId($stateParams.userId, pageIndex).then(function(paginationObject){
-		_this.paginationObject = paginationObject;
-	});
+    UserAuth.getUserById($stateParams.userId).then(function(user) {
+        _this.userToDisplay = user;
+    });
 
-	function logout() {
-		currentUser.logout();
-		$state.go('app.login');
-	}
-	function expandPrediction(expandedPrediction) {
-		angular.forEach(_this.predictions, function(eachPrediction){
-			eachPrediction.isExpanded = false;
-		});
-		expandedPrediction.isExpanded = true;
-	}
+    function getPredictions(numPredictions, numPredictionsToSkip) {
+        console.log(numPredictions, numPredictionsToSkip);
+        return PredictionService.getPredictionsByAuthorId($stateParams.userId);
+    }
+
+    function logout() {
+        UserAuth.logout();
+        $state.go($state.current, {}, {
+            reload: true
+        });
+    }
+    function expandPrediction(expandedPrediction) {
+        angular.forEach(_this.predictions, function(eachPrediction) {
+            eachPrediction.isExpanded = false;
+        });
+        expandedPrediction.isExpanded = true;
+    }
 
 }
-
 
 })();
