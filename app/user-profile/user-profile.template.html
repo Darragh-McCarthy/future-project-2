@@ -1,31 +1,64 @@
-
-
 <div class="user-profile-page">
-	<div class="user-profile-page__centered-box">
-		<div class="user-profile-page__user-overview">
-			<img class="user-profile-page__user-photo-big"
-				ng-src="{{ctrl.userToDisplay.publicFacebookData.profilePhotoUrl}}"
-			/>
-			<div class="user-profile-page__user-text">
-				<div class="user-profile-page__fullname">
-					{{ctrl.userToDisplay.publicFacebookData.fullName}}
-				</div>
-				<button class="user-profile-page__logout-button" 
-					ng-click="ctrl.logout()"
-					ng-if="ctrl.userProfileUserId === ctrl.loggedInUserId">
-					Logout
-				</button>
+	
+	<div class="user-profile-page__user-overview">
+		<img class="user-profile-page__user-photo-big"
+			ng-src="{{ctrl.userToDisplay.publicFacebookData.profilePhotoUrl}}"
+		/>
+		<div class="user-profile-page__user-text">
+			<div class="user-profile-page__fullname">
+				{{ctrl.userToDisplay.publicFacebookData.fullName}}
 			</div>
+			<button class="user-profile-page__logout-button" 
+				ng-click="ctrl.logout()"
+				ng-if="ctrl.userProfileUserId === ctrl.loggedInUserId">
+				Logout
+			</button>
 		</div>
+	</div>
 
-		<div class="user-profile-page__prediction-list-container">
-			<fp-prediction-list 
-				title="Recent predictions"
-				is-add-new-prediction-autofocused="true"
-				get-predictions="ctrl.getPredictions(numPredictions, numPredictionsToSkip)"
-				is-prediction-loading-enabled="true">
-			</fp-prediction-list>
-		</div>
+<!--	<ul class="user-profile-page__tab-selection">
+		<li class="user-profile-page__tab">
+			<a class="user-profile-page__tab-link"
+				ng-hide="ctrl.selectedTab === 'notifications'"
+				ng-click="ctrl.selectedTab = 'notifications'"
+			>Notifications</a>
+		</li>
+		<li class="user-profile-page__tab">
+			<a class="user-profile-page__tab-link"
+				ng-hide="ctrl.selectedTab === 'predictions'"
+				ng-click="ctrl.selectedTab = 'predictions'"
+			>Predictions</a>
+		</li>
+		<li class="user-profile-page__tab">
+			<a class="user-profile-page__tab-link"
+				ng-hide="ctrl.selectedTab === 'settings'"
+				ng-click="ctrl.selectedTab = 'settings'"
+			>Settings</a>
+		</li>
+		<li class="user-profile-page__tab">
+			<a class="user-profile-page__tab-link"
+				ng-click="ctrl.logout()"
+				ng-if="ctrl.userProfileUserId === ctrl.loggedInUserId"
+			>Logout</a>
+		</li>
+	</ul>-->
+
+	<div class="user-profile-page__prediction-list-container">
+<!--		<div ng-if="ctrl.selectedTab === 'notifications'">ntoifications</div>
+		<div ng-if="ctrl.selectedTab === 'settings'">settings</div>
+            ng-if="ctrl.selectedTab === 'predictions'"-->
+
+        <fp-prediction-list
+            title="Recent predictions"
+            is-add-new-prediction-hidden="true" 
+            is-add-new-prediction-autofocused="true" 
+            get-predictions="ctrl.getPredictions(numPredictions, numPredictionsToSkip)"
+            is-prediction-loading-enabled="true"> 
+        </fp-prediction-list>
+    </div>
+
+	<div class="prediction-page__featured-topics-container">
+		<fp-featured-topics-list></fp-featured-topics-list>
 	</div>
 </div>
 

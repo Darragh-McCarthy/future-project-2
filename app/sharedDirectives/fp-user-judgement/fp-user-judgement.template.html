@@ -1,6 +1,6 @@
 
 <div class="user-estimate__add-reason"
-    ng-if="ctrl.currentJudgement.likelihoodPercent && ctrl.currentJudgement.likelihoodPercent > -1">
+    ng-if="ctrl.currentJudgement.likelihoodPercent !== null && ctrl.currentJudgement.likelihoodPercent > -1 && ctrl.isReasonVisible">
 
     <label class="add-reason__label">
         <div ng-hide="ctrl.hideLabel"
@@ -9,16 +9,26 @@
         </div>
         <div class="add-reason__text-input-container">
             <textarea type="text"
-                rows="2"
+                rows="3"
                 id="{{ctrl.addReasonTextInputId}}"
-                class="add-reason__text-input"
+                class="add-reason__text-input stretchy-textarea"
                 ng-model="ctrl.reasonInputText"
                 ng-blur="ctrl.updateReason()"
                 ng-focus="ctrl.showAddReasonLabel()"
                 focus-on-hover="{{ctrl.isFocusOnHoverEnabled}}">
             </textarea>
-            <div class="user-estimate__is-saving-reason-notice" ng-if="ctrl.isSavingReason">Saving reason...</div>
-            <div class="user-estimate__is-reason-saved-notice" ng-if="ctrl.isReasonSavedNoticeActive">Reason saved!</div>
+
+            <div>
+                <div class="user-estimate__is-saving-reason-notice"
+                    ng-if="ctrl.isSavingReason">
+                    Saving reason...
+                </div>
+                <div class="user-estimate__is-reason-saved-notice" 
+                    ng-if="ctrl.isReasonSavedNoticeActive">
+                    Reason saved!
+                </div>
+            </div>
+
         </div>
     </label>
 </div>

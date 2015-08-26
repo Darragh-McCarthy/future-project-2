@@ -9,10 +9,10 @@ angular.module('myApp')
         scope: {
             prediction: '=',
             topicToHide: '=',
-            onexpand: '&onexpand',
             onDeletePredictionSuccess: '&',
             showTopicEditingByDefault: '@',
             showLikelihoodEstimateByDefault: '@',
+            isExpanded: '@'
         },
         bindToController: true,
         controller: 'FpPrediction as ctrl'
@@ -38,6 +38,9 @@ function FpPrediction($timeout,  $scope,  $q,  $state,  PredictionService,  User
     _this.toggleShowDeletionConfirmation = toggleShowDeletionConfirmation;
     _this.flashPredictionTitle = flashPredictionTitle;
     _this.setTopicsToVisible = setTopicsToVisible;
+    _this.topicInputId = 'fp-prediction__topic-title-input-' +
+        _this.prediction.id;
+    _this.showSuggestedTopics = showSuggestedTopics;
 
     TopicService.getNewPredictionTopicTitleSuggestions().then(
         function onSuccess(topicTitles) {
@@ -45,7 +48,7 @@ function FpPrediction($timeout,  $scope,  $q,  $state,  PredictionService,  User
         }
     );
 
-    if (_this.prediction.authorId === UserAuth.userId) {
+    if (_this.prediction.authorId === UserAuth.getUserId()) {
         _this.currentUserIsAuthor = true;
     }
 
@@ -54,6 +57,13 @@ function FpPrediction($timeout,  $scope,  $q,  $state,  PredictionService,  User
         _this.isLikelihoodSelectionVisible = _this.showLikelihoodEstimateByDefault;
     } else {
         _this.isLikelihoodSelectionVisible = true;
+    }
+
+    if (_this.isExpanded) {
+        PredictionService.getAuthorOfPredictionById(_this.prediction.id)
+        .then(function(author) {
+            _this.predictionAuthor = author;
+        });
     }
 
     (function placeTopicToHideFirstInTopicsList() {
@@ -132,6 +142,9 @@ function FpPrediction($timeout,  $scope,  $q,  $state,  PredictionService,  User
     function toggleEditing() {
         _this.isEditingTopics =              !_this.isEditingTopics;
         _this.isLikelihoodSelectionVisible = !_this.isEditingTopics;
+        if (_this.isEditingTopics) {
+            focusElementById(_this.topicInputId);
+        }
     }
 
     function toggleShowDeletionConfirmation() {
@@ -144,6 +157,7 @@ function FpPrediction($timeout,  $scope,  $q,  $state,  PredictionService,  User
         PredictionService
         .deletePredictionById(_this.prediction.id)
         .then(function() {
+            _this.isDeleted = true;
             _this.isDeletingPrediction = false;
             _this.onDeletePredictionSuccess({predictionId:_this.prediction.id});
         });
@@ -164,7 +178,10 @@ function FpPrediction($timeout,  $scope,  $q,  $state,  PredictionService,  User
             _this.isFlashPredictionTitleActive = false;
         }, 1000);
     }
-
+    function showSuggestedTopics() {
+        _this.isSuggestedTopicsVisible = !_this.isSuggestedTopicsVisible;
+        focusElementById(_this.topicInputId);
+    }
 }
 
 })();

@@ -43,6 +43,7 @@ gulp.task('images', function() {
         interlaced: true
     })))
     .pipe(gulp.dest('dist/images'))
+    .pipe(gulp.dest('.tmp/images'))
     .pipe($.size({title: 'images'}));
 });
 
@@ -129,7 +130,7 @@ gulp.task('html', function () {
 
 gulp.task('clean', del.bind(null, ['.tmp', 'dist/*', '!dist/.git'], {dot: true}));
 
-gulp.task('serve', ['styles'], function () {
+gulp.task('serve', ['styles', 'images'], function() {
     browserSync({
         notify: false,
         logPrefix: 'WSK',
@@ -140,9 +141,9 @@ gulp.task('serve', ['styles'], function () {
     });
 
     gulp.watch([
-    'app/**/*.html',
-    'app/images/**/*'
-    ], reload
+        'app/**/*.html',
+        'app/images/**/*'
+        ], reload
     );
     gulp.watch(['app/**/*.scss'], ['styles', reload]);
     gulp.watch(['app/**/*.js'], ['jshint']);

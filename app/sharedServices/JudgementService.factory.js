@@ -14,6 +14,7 @@ function JudgementService(UserAuth, $q) {
     var allJudgementsForCurrentUserDeferred = $q.defer();
     var allJudgementsForCurrentUser;
 
+
     UserAuth.promiseLoginSuccessful.then(function() {
         Parse.Cloud.run('getAllJudgementsForCurrentUser')
         .then(function onSuccess(judgements) {
@@ -30,7 +31,9 @@ function JudgementService(UserAuth, $q) {
         'setLikelihoodPercent': setLikelihoodPercent,
         'setReason': setReason,
         'getReasonsForPrediction':getReasonsForPrediction,
-        'getLikelihoodPercentOptions': getLikelihoodPercentOptions
+        'getLikelihoodPercentOptions': getLikelihoodPercentOptions,
+        'saveNewReasonComment': saveNewReasonComment,
+        'deleteReasonComment': deleteReasonComment
     };
 
     function getUserJudgementForPrediction(predictionId) {
@@ -76,6 +79,7 @@ function JudgementService(UserAuth, $q) {
             if (!isExistingJudgementFound) {
                 allJudgementsForCurrentUser.push(newJudgement);
             }
+            newJudgement.author = UserAuth.getCurrentUser();
             return angular.copy(newJudgement);
         }, function(e) { console.error(e); });
     }
@@ -86,6 +90,7 @@ function JudgementService(UserAuth, $q) {
             'reasonText': reasonText
         })
         .then(function(newJudgement) {
+            newJudgement.author = UserAuth.getCurrentUser();
             for (var i = 0; i < allJudgementsForCurrentUser.length; i++) {
                 if (allJudgementsForCurrentUser[i].id === judgementId) {
                     allJudgementsForCurrentUser[i].reasonText = newJudgement.reasonText;
@@ -104,6 +109,19 @@ function JudgementService(UserAuth, $q) {
 
     function getLikelihoodPercentOptions() {
         return LIKELIHOOD_PERCENT_OPTIONS;
+    }
+
+    function saveNewReasonComment(judgementWithReasonId, commentText) {
+        return Parse.Cloud.run('saveNewReasonComment', {
+            'judgementWithReasonId': judgementWithReasonId,
+            'commentText': commentText
+        }).then(null, function(e) { console.error(e); });
+    }
+
+    function deleteReasonComment(reasonCommentId) {
+        return Parse.Cloud.run('deleteReasonComment', {
+            'reasonCommentId': reasonCommentId
+        }).then(null, function(e) { console.error(e); });
     }
 
 }

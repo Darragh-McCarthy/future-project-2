@@ -110,7 +110,6 @@ function FpAddNewPrediction($scope,  $state,  PredictionService,  focusElementBy
                 });
 
                 _this.onSaveNewPredictionRequest({TESTING:'TESTING'});
-
             },
             function onError() {
                 _this.newPredictionTitle = predictionTitleToSave;
@@ -122,7 +121,8 @@ function FpAddNewPrediction($scope,  $state,  PredictionService,  focusElementBy
     }
 
     function removeDefaultTopic() {
-        _this.topicTitle = null;
+        //_this.topicTitle = null;
+        $state.go('app.recent');
     }
 
     function updateAddNewPredictionButtonText() {

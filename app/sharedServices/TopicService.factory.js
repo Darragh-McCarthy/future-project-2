@@ -47,7 +47,6 @@ function TopicService($q,  Parse) {
         'Sports',
         'Science',
         'Culture',
-        'Physics',
         'Economics',
         'Startups',
         'Business',

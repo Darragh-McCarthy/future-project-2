@@ -1,0 +1,16 @@
+<div class="notifications-page">
+    <h1>Notifications</h1>
+
+    <ul>
+        <li ng-repeat="notification in ctrl.reasonCommentNotifications">
+            {{notification.reasonComment.commentText}}
+        </li>
+    </ul>
+
+    <ul>
+        <li ng-repeat="notification in ctrl.predictionJudgementNotifications">
+            {{notification.likelihoodPercent}}
+        </li>
+    </ul>
+
+</div>

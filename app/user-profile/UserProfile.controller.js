@@ -9,10 +9,10 @@ function UserProfile($state,  $stateParams,  UserAuth,  PredictionService ) {
     scroll(0, 0);
 
     var _this = this;
+    _this.selectedTab = 'notifications';
     _this.userPhotoUrl = '';
     _this.userId = $stateParams.userId;
     _this.logout = logout;
-    _this.expandPrediction = expandPrediction;
     _this.UserAuth = UserAuth;
     _this.userToDisplay = undefined;
     _this.userProfileUserId = $stateParams.userId;
@@ -36,13 +36,6 @@ function UserProfile($state,  $stateParams,  UserAuth,  PredictionService ) {
             reload: true
         });
     }
-    function expandPrediction(expandedPrediction) {
-        angular.forEach(_this.predictions, function(eachPrediction) {
-            eachPrediction.isExpanded = false;
-        });
-        expandedPrediction.isExpanded = true;
-    }
-
 }
 
 })();

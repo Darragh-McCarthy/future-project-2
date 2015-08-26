@@ -17,8 +17,7 @@ function ListPredictionsByTopic(PredictionService,  $stateParams) {
     _this.page = Number($stateParams.page) || 0;
 
     function getPredictions(numPredictions, numPredictionsToSkip) {
-        console.log(numPredictions, numPredictionsToSkip);
-        console.warn('numPredictionsPerPage and numPages not implemented');
+        console.warn('pagination not implemented');
         return PredictionService.getPredictionsByTopicTitle(_this.topic);
     }
 }

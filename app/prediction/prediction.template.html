@@ -6,106 +6,24 @@
 	</div>
 
 	<div ng-if="ctrl.prediction">
+
+		<fp-prediction 
+			is-expanded="true"
+            prediction="ctrl.prediction"
+            on-delete-prediction-success="ctrl.onDeletePredictionSuccess(predictionId)">
+        </fp-prediction>
+
+		<fp-user-judgement-reasons-list
+			ng-show="ctrl.isReasonsListVisible"
+			prediction-id="ctrl.prediction.id"
+			prediction-title="{{ctrl.prediction.title}}">
+		</fp-user-judgement-reasons-list>
 		
-		<img class="prediction-page__prediction-author-img"
-			ng-src="{{ctrl.predictionAuthor.publicFacebookData.profilePhotoUrl}}"
-			ui-sref="app.user-profile({userId:ctrl.predictionAuthor.userId})"
-		/>
-
-		<div class="prediction-page__topics">
-			<a class="prediction-page__topic" 
-	            ui-sref="app.topic({'topic':topic.title})"
-	            ng-repeat="topic in ctrl.prediction.topics">
-	            {{topic.title}}
-	        </a>
-	    </div>
-
-		<h1 class="prediction-page__prediction-title">
-			{{ctrl.prediction.title}}
-		</h1>
-
-		<div class="prediction-page-main-likelihood-estimate-container">
-			<fp-user-judgement
-                prediction-id="{{ctrl.prediction.id}}">
-            </fp-user-judgement>
+		<div class="prediction-page__featured-topics-container"
+			ng-if="ctrl.prediction && ctrl.judgementsWithReasons.length">
+			<fp-featured-topics-list>
+			</fp-featured-topics-list>
 		</div>
-			
-
-			
-<!--		
-		<div ng-if="ctrl.prediction.communityEstimatesCount > 0">
-			<div class="likelihood__community-estimate__count">{{ctrl.prediction.communityEstimatesCount}} votes</div>
-			<div class="community-estimate-graph-container">
-
-				<fp-likelihood-community-estimate 
-			        community-estimates="ctrl.prediction.communityEstimates"
-			        community-estimates-count="ctrl.prediction.communityEstimatesCount"
-			        user-estimate="ctrl.prediction.userEstimate">
-			    </fp-likelihood-community-estimate>
-
-				<fp-likelihood-user-estimate
-					on-select-option="ctrl.toggleLikelihoodEstimate(percent)"
-			        user-estimate-percent="ctrl.prediction.userEstimate.percent">
-				</fp-likelihood-user-estimate>
-			</div>
-		</div>
--->
-
-
-
-		<div class="prediction-page-reasons">
-			<div class="prediction-page__prediction-count">{{ctrl.prediction.reasonsCount}} Reasons</div>
-			<div class="prediction-page-reasons__no-reasons-notice"
-				ng-if="ctrl.judgementsWithReasons.length === 0">
-				No reasons available at this time.
-			</div>
-			<ul class="reasons-list">
-				<li class="reasons-list__reason" 
-					ng-repeat="judgement in ctrl.judgementsWithReasons">
-					<p class="reasons-list__reason-content">
-						<img class="reasons-list__author-image" 
-							ng-src="{{judgement.author.publicFacebookData.profilePhotoUrl}}"
-							ui-sref="app.user-profile({userId:judgement.author.userId})"
-						/>
-						<span class="reasons-list__reason-text" 
-							ng-click="judgement.showActions = true">
-							<span class="reasons-list__likelihood">
-								<span class="reasons-list__likelihood-number">{{judgement.likelihoodPercent}}</span>% likely.
-							</span>
-							{{judgement.reasonText}}
-						</span>
-						<!--<span ng-show="judgement.showActions" style="display:block;font-weight:300;margin-top:5px;color:#777" class="votes">33 upvotes</span>-->
-					</p>
-					<div  ng-show="judgement.showActions">
-						<ul class="reasons-list__reason-actions">
-							<li class="reasons-list__reason-action reasons-list__reason-action--selected">Upvoted</li>
-							<li class="reasons-list__reason-action">Comment</li>
-							<li class="reasons-list__reason-action">Share</li>
-						</ul>
-					</div>
-				</li>
-			</ul>
-		</div>
-
-
-		<!--<div class="prediction-page__footer-repeated-header"
-			ng-if="ctrl.judgementsWithReasons">
-			<h1 class="prediction-page__prediction-title">
-				{{ctrl.prediction.title}}
-			</h1>
-			<div class="prediction-page-main-likelihood-estimate-container">
-				<fp-user-judgement
-	                prediction-id="{{ctrl.prediction.id}}">
-	            </fp-user-judgement>
-			</div>
-		</div>-->
-
-		
-		<div class="prediction-page__featured-topics-container" ng-if="ctrl.prediction && ctrl.judgementsWithReasons">
-			<fp-featured-topics-list></fp-featured-topics-list>
-		</div>
-
-
 
 	</div>
 

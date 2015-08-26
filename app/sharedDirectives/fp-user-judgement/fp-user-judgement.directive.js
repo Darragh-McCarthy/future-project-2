@@ -11,7 +11,10 @@ angular.module('myApp')
             scope: {
                 predictionId: '@',
                 onAddReason: '&',
-                onAlreadyHasReason: '&'
+                onSetLikelihoodPercent: '&',
+                onDeleteLikelihoodPercent: '&',
+                onAlreadyHasReason: '&',
+                predictionHtmlId: '@'
             }
         };
     });
@@ -19,10 +22,14 @@ angular.module('myApp')
 FpUserJudgement.$inject = ['focusElementById', 'JudgementService', '$timeout', 'UserAuth', '$state'];
 function FpUserJudgement(focusElementById, JudgementService, $timeout, UserAuth, $state) {
 
+
+    console.warn('if updateReason() fails, need to display a save button and error message');
+
     var RECOMMENDED_MIN_REASON_CHARACTER_LENGTH = 15;
     var REASON_SAVED_NOTIFICATION_VISIBILITY_MILLISECONDS = 3000;
 
     var _this = this;
+    _this.isReasonVisible = true;
     _this.addReasonTextInputId = 'prediction-' + _this.predictionId + '__add-reason-text-input';
     _this.percentOptions = JudgementService.getLikelihoodPercentOptions();
     _this.toggleLikelihoodPercent = toggleLikelihoodPercent;
@@ -39,12 +46,16 @@ function FpUserJudgement(focusElementById, JudgementService, $timeout, UserAuth,
 
             if (judgement.reasonText) {
                 _this.onAlreadyHasReason();
+                _this.isReasonVisible = false;
             }
         }
     });
+
     updateAddReasonLabelVisibility();
 
     function toggleLikelihoodPercent(percent) {
+        _this.isReasonVisible = true;
+
         return UserAuth.loginWithFacebook().then(
             function onSuccess(isNewLogin) {
 
@@ -54,6 +65,8 @@ function FpUserJudgement(focusElementById, JudgementService, $timeout, UserAuth,
 
                 percent = parseInt(percent, 10);
 
+                var copyOfCurrentJudgement = angular.copy(_this.currentJudgement);
+
                 if (_this.currentJudgement && _this.currentJudgement.likelihoodPercent === percent) {
                     JudgementService.deleteLikelihoodPercent(_this.predictionId, percent).then(
                         function onSuccess() {
@@ -61,9 +74,11 @@ function FpUserJudgement(focusElementById, JudgementService, $timeout, UserAuth,
                                 $state.go($state.current, {}, {
                                     'reload':true
                                 });
-                                console.log('isNewLogin, reloading');
                                 return;
                             }
+                            _this.onDeleteLikelihoodPercent({
+                                judgement:copyOfCurrentJudgement
+                            });
                         },
                         function onError() {
 
@@ -83,12 +98,15 @@ function FpUserJudgement(focusElementById, JudgementService, $timeout, UserAuth,
                                 _this.currentJudgement.reasonText = savedJudgement.reasonText;
                                 _this.reasonInputText = savedJudgement.reasonText;
                             }
+                            console.log(savedJudgement);
+                            _this.onSetLikelihoodPercent({
+                                'judgement':savedJudgement
+                            });
+
                             if (isNewLogin) {
                                 $state.go($state.current, {}, {
                                     'reload':true
                                 });
-                                console.log('isNewLogin, reloading');
-                                return;
                             }
                         },
                         function onError() {
@@ -116,10 +134,12 @@ function FpUserJudgement(focusElementById, JudgementService, $timeout, UserAuth,
             _this.isSavingReason = true;
             updateAddReasonLabelVisibility();
             _this.currentJudgement.reasonText = _this.reasonInputText;
-            _this.onAddReason();
             updateIsFocusOnHoverEnabled();
             JudgementService.setReason(_this.currentJudgement.id, _this.reasonInputText).then(
                 function onSuccess(savedJudgement) {
+                    _this.onAddReason({
+                        'judgement':savedJudgement
+                    });
                     _this.currentJudgement.reasonText = savedJudgement.reasonText;
                     _this.isSavingReason = false;
                     _this.isReasonSavedNoticeActive = true;

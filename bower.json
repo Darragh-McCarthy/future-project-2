@@ -16,7 +16,9 @@
     "lodash": "~3.7.0",
     "angular-animate": "*",
     "angular-localforage": "~1.2.2",
-    "localforage": "~1.2.3"
+    "localforage": "~1.2.3",
+    "slick-carousel": "~1.5.8",
+    "jquery": "~2.1.4"
   },
   "authors": [
     "Darragh McCarthy <darraghjames@gmail.com>"

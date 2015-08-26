@@ -25,6 +25,8 @@
   <meta name="msapplication-TileColor" content="#3372DF">
 
   <link rel="stylesheet" href="styles/main.css">
+
+
 </head>
 <body>
   <!--[if lt IE 7]><p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p><![endif]-->
@@ -40,36 +42,24 @@
     <div ui-view="logo"></div>
   </header>
 
+<!--
+  <aside>
+    <div ui-view="sidebar"></div>
+  </aside>
+-->
+
   <main>
     <div ui-view="content"></div>
+    <!--<div ui-view="floating-add-prediction-button">
+      <input class="floating-add-prediction-button" type="button" value="+" />
+    </div>-->
   </main>
 
   <footer>
     <div ui-view="footer">
       
     </div>
-    <ul>
-      <li>Media</li>
-    </ul>
   </footer>
-
-<!--
-  <div class="scroll-to-top-button" 
-    onclick="scroll(0,0)">
-    Back to Top
-  </div>
--->
-
-
-  <!--
-  <aside>
-    <div ui-view="sidebar"></div>
-  </aside>
-  <footer class="footer">
-    <p class="footer__made-by">Developed by Darragh McCarthy</p>
-  </footer>
-  -->
-
 
 
   <div id="fb-root"></div>
@@ -110,30 +100,44 @@
   <script src="sharedServices/StateDataCache.factory.js"></script>
   <script src="sharedServices/focusElementById.factory.js"></script>
   <script src="sharedServices/ExceptionHandler.factory.js"></script>
+  <script src="sharedServices/NotificationService.factory.js"></script>
 
+  <script src="sharedDirectives/fp-user-judgement-reasons-list/fp-user-judgement-reasons-list.directive.js"></script>
   <script src="sharedDirectives/fp-prediction-list/fp-prediction-list.directive.js"></script>
   <script src="sharedDirectives/fp-prediction/fp-prediction.directive.js"></script>
   <script src="sharedDirectives/fp-add-new-prediction/fp-add-new-prediction.directive.js"></script>
   <script src="sharedDirectives/fp-user-judgement/fp-user-judgement.directive.js"></script>
-  <!--<script src="sharedDirectives/fp-community-estimate/fp-community-estimate.directive.js"></script>-->
   <script src="sharedDirectives/fp-featured-topics-list/fp-featured-topics-list.directive.js"></script>
   <script src="sharedDirectives/focusTextInputOnMouseover.directive.js"></script>
 
+  <script src="follow/follow.controller.js"></script>
+  <script src="notifications/notifications.controller.js"></script>
   <script src="feedback/feedback.controller.js"></script>
+  <script src="welcome/welcome.controller.js"></script>
   <script src="login/login.controller.js"></script>
   <script src="header/header.controller.js"></script>
-  <!--<script src="make-prediction/make-prediction.controller.js"></script>-->
   <script src="browseTopics/BrowseTopics.controller.js"></script>
   <script src="user-profile/UserProfile.controller.js"></script>
   <script src="prediction/prediction.controller.js"></script>
 
   <script src="list-recent-predictions/list-recent-predictions.controller.js"></script>
   <script src="list-predictions-by-topic/list-predictions-by-topic.controller.js"></script>
-  <!--<script src="sidebar/sidebar.controller.js"></script>-->
-
+  
   <script src="bower_components/jquery/dist/jquery.js"></script>
   <script src="bower_components/toastr/toastr.js"></script>
+
+
   <!-- endbuild -->
+
+
+  <!-- can't include stretchy in build as it needs data-stretchy-filter attribute on script tag -->
+  <script
+    src="stretchy.min.js"
+    data-stretchy-filter=".stretchy-textarea"
+    async
+  ></script>
+
+
   <link rel="stylesheet" type="text/css" href="bower_components/toastr/toastr.css">
   <script src="bower_components/angular-localforage/dist/angular-localForage.min.js"></script>
 
@@ -187,6 +191,13 @@ function countWatchers() {
 
     return watchersWithoutDuplicates.length + ' watchers';
 }
+
+</script>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
 
 </script>
 </div>

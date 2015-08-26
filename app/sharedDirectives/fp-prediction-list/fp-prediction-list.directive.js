@@ -40,7 +40,6 @@ function FpPredictionList($scope,  $state,  $window,  PredictionService, Judgeme
 
 
     (function loadPredictions() {
-        console.log(typeof _this.currentPageNumber);
         if (_this.isPredictionLoadingEnabled) {
             _this.isLoadingPredictions = true;
             _this.getPredictions({
@@ -89,14 +88,18 @@ function FpPredictionList($scope,  $state,  $window,  PredictionService, Judgeme
     function onSaveNewPredictionRequest() {
         _this.isSavingNewPrediction = true;
     }
+
     function onSaveNewPredictionSuccess(newlySavedPrediction) {
         _this.newlySavedPredictions.unshift(newlySavedPrediction);
         _this.isSavingNewPrediction = false;
     }
 
-    function onDeletePredictionRequest(predictionId) {}
+    function onDeletePredictionRequest(predictionId) {
+
+    }
+
     function onDeletePredictionSuccess(predictionId) {
-        console.log('inside onDelete...()', predictionId);
+        /*console.log('inside onDelete...()', predictionId);
         var i;
         var indexToRemove;
         for (i = 0; i < _this.newlySavedPredictions.length; i++) {
@@ -110,7 +113,7 @@ function FpPredictionList($scope,  $state,  $window,  PredictionService, Judgeme
                 indexToRemove = _this.predictions.indexOf(_this.predictions[i]);
                 _this.predictions.splice(indexToRemove, 1);
             }
-        }
+        }*/
     }
 }
 

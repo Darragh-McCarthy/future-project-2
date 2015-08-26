@@ -4,22 +4,30 @@
 angular.module('myApp')
     .controller('Header', Header);
 
-Header.$inject = ['UserAuth', '$timeout', '$state'];
-function Header(UserAuth,  $timeout, $state) {
+Header.$inject = ['UserAuth', '$timeout', '$state', 'NotificationService'];
+function Header(UserAuth,  $timeout, $state, NotificationService) {
+
     var _this = this;
     _this.logout = logout;
     _this.loginWithFacebook = loginWithFacebook;
+    _this.isLoginOptionActive = !UserAuth.isLoggedIn();
 
     if (UserAuth.isLoggedIn()) {
         _this.userId = UserAuth.getUserId();
-        UserAuth.promiseUserThumbnailUrl().then(function(url) {
+        _this.isNotificationsOptionActive = true;
+        _this.isLogoutOptionActive = true;
+        _this.isUserProfileOptionActive = true;
+
+        UserAuth.promiseUserThumbnailUrl()
+        .then(function(url) {
             _this.userThumbnailUrl = url;
         });
-    }
 
-    _this.isLoginOptionActive = !UserAuth.isLoggedIn();
-    _this.isLogoutOptionActive = UserAuth.isLoggedIn();
-    _this.isUserProfileOptionActive = UserAuth.isLoggedIn();
+        /*NotificationService.getUnreadNotificationsCount()
+        .then(function(notifications) {
+            _this.numUnreadNotifications = notifications;
+        });*/
+    }
 
     function logout() {
         UserAuth.logout();
@@ -35,7 +43,6 @@ function Header(UserAuth,  $timeout, $state) {
             });
         });
     }
-
 }
 
 })();

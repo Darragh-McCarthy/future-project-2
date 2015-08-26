@@ -9,7 +9,7 @@ angular
   .module('myApp', [
     'ngResource',
     'myApp.sharedServices',
-    'ngAnimate',
+    //'ngAnimate',
     'parse-angular',
     'LocalForageModule',
     'ui.router'

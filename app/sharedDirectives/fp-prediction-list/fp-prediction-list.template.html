@@ -24,7 +24,6 @@
                 prediction="prediction"
                 show-topic-editing-by-default="true"
                 topic-to-hide="ctrl.topicTitle" 
-                onexpand="ctrl.expandPrediction(prediction)"
                 on-delete-prediction-success="ctrl.onDeletePredictionSuccess(predictionId)">
                 </fp-prediction>
             </div>
@@ -43,7 +42,7 @@
         <div ng-repeat="prediction in ctrl.predictions track by prediction.id">
             <fp-prediction 
                 prediction="prediction"
-                topic-to-hide="ctrl.currentTopic" 
+                topic-to-hide="ctrl.topicTitle" 
                 onexpand="ctrl.expandPrediction(prediction)"
                 on-delete-prediction-success="ctrl.onDeletePredictionSuccess(predictionId)">
             </fp-prediction>
@@ -53,9 +52,12 @@
 
     <div class="fp-prediction-list__no-predictions-found"
         ng-show="ctrl.predictions.length < ctrl.NUM_PREDICTIONS_PER_PAGE">
-        Sorry there are no more {{ctrl.topicTitle}} predictions available at this time.
+        No more
+        <b ng-show="ctrl.topicTitle">{{ctrl.topicTitle}}</b>
+        predictions available at this time.
     </div>
 
+    <!--
     <div ng-if="ctrl.predictions.length >= 3 && ctrl.predictions.length < ctrl.NUM_PREDICTIONS_PER_PAGE"
         class="fp-prediction-list__second-add-new-prediction-container">
         <fp-add-new-prediction
@@ -66,6 +68,7 @@
             is-label-hidden="{{ctrl.isAddNewPredictionLabelHidden}}">
         </fp-add-new-prediction>
     </div>
+    -->
 
 
     <div class="fp-prediction-list__pagination"

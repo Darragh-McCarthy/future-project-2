@@ -5,14 +5,23 @@
 <!--
 <img style="display:inline-block;width:50px;height:50px;border-radius:50px;position:absolute;top:10px;left:-50px;" src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xat1/v/t1.0-1/p200x200/10410095_10204571738670575_5638321658802120076_n.jpg?oh=58a86fedc0ef7299bfd8fb805ba9b044&oe=560E6791&__gda__=1444015358_32a96d0b8e5967438dcb66d9885881b9"/>
 -->
-        <div class="fp-prediction__container">
+        <div class="fp-prediction__is-deleted-notice"
+            ng-show="ctrl.isDeleted">
+            <b>Deleted</b> {{ctrl.prediction.title}}
+        </div>
+
+        <div ng-if="!ctrl.isDeleted"
+            class="fp-prediction__container">
 
             <div ng-if="!ctrl.isEditingTopics"
                 class="fp-prediction__most-common-view">
 
-                <!--<img style="width:40px;height:40px;border-radius:40px;display:table;margin:0 auto 10px;" 
-                    ng-show="ctrl.prediction.userEstimate.reasonText"
-                    src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xat1/v/t1.0-1/p200x200/10410095_10204571738670575_5638321658802120076_n.jpg?oh=58a86fedc0ef7299bfd8fb805ba9b044&oe=560E6791&__gda__=1444015358_32a96d0b8e5967438dcb66d9885881b9"/>-->
+                <div ng-if="ctrl.predictionAuthor">
+                    <img class="fp-prediction__author-img"
+                        ng-src="{{ctrl.predictionAuthor.publicFacebookData.profilePhotoUrl}}"
+                        ui-sref="app.user-profile({userId:ctrl.predictionAuthor.userId})"
+                    />
+                </div>
 
                 <div class="fp-prediction__topics" 
                     ng-if="ctrl.areTopicsVisible"
@@ -22,12 +31,14 @@
                         ng-if="topic.title != ctrl.topicToHide"
                         ng-repeat="topic in ctrl.prediction.topics">
                         {{topic.title}}
-                    </a>
+                    </a><span class="fp-prediction__inline-add-topic-button"
+                        ng-click="ctrl.toggleEditing()">+</span>
                 </div>
 
-                <div class="fp-prediction__title-container">
-                    <a class="fp-prediction__title"
-                        ng-class="{'prediction__title--flash':ctrl.isFlashPredictionTitleActive}"
+                <div class="fp-prediction__title"
+                    ng-class="{'fp-prediction__title--large':ctrl.isExpanded}">
+                    <a class="fp-prediction__title-link"
+                        ng-class="{'prediction__title-link--flash': ctrl.isFlashPredictionTitleActive}"
                         ui-sref="app.prediction({predictionId:ctrl.prediction.id})">
                         {{::ctrl.prediction.title}}
                     </a>
@@ -45,11 +56,12 @@
                 <span class="fp-prediction__toggle-topics-button"
                     ng-if="!ctrl.isEditingTopics"
                     ng-click="ctrl.toggleEditing()">
-                    Report . Edit
+                    Edit
                 </span>
+
                 <a class="fp-prediction__num-votes-num-reasons"
                     ui-sref="app.prediction({predictionId:ctrl.prediction.id})" 
-                    ng-show="ctrl.areTopicsVisible">
+                    ng-show="ctrl.areTopicsVisible && !ctrl.isExpanded">
                     {{ctrl.prediction.reasonsCount}} perspectives
                 </a>
             </div>
@@ -62,7 +74,12 @@
 
                 <form class="edit-prediction__add-topics-form" >
 
-                    <div class="edit-prediction__topics">
+                    <div class="fp-prediction-editing__prediction-title">
+                        {{::ctrl.prediction.title}}
+                    </div>
+
+                    <div class="edit-prediction__topics" 
+                        ng-if="ctrl.prediction.topics.length">
                         <span class="edit-prediction__topic" 
                             ng-repeat="topic in ctrl.prediction.topics">
                             {{topic.title}} 
@@ -77,60 +94,66 @@
                             {{ctrl.topicIsSavingMessage}}
                         </span>
                     </div>
-                    <div class="edit-prediction__prediction-title">
-                        {{::ctrl.prediction.title}}
-                    </div>
                    
-                    <span class="prediction__topics-not-set-notice" 
-                        ng-hide="ctrl.prediction.topics.length > 1">
-                        This prediction appears in 
-                        <b>{{ctrl.prediction.topics.length}} topics</b>. 
-                        Add some relevant topics
-                    </span>
+                    <div class="prediction__topics-not-set-notice">
+                        <span ng-hide="ctrl.prediction.topics.length > 0">
+                            This prediction is featured in 
+                            <b>{{ctrl.prediction.topics.length}} topics</b>                    
+                        </span>
+                    </div>
+
                     <label ng-if="ctrl.prediction.topics.length < ctrl.maxTopicsPerPrediction"
-                        class="edit-prediction__add-topics-label">
-                        Add Topic
+                        class="fp-prediction-editing__add-topic">
+                        <div class="fp-prediction-editing__add-topic-label">
+                            <span ng-hide="ctrl.prediction.topics.length > 0">Add topic</span>
+                            <span ng-hide="ctrl.prediction.topics.length === 0">Add another topic</span>
+                        </div>
                         <input type="text" 
-                        id="edit-prediction__topic-title-input" 
+                        id="{{ctrl.topicInputId}}" 
                         ng-model="ctrl.newTopicTitle" />
                     </label>
-                    <button class="edit-prediction__add-topic-button" 
+
+                    <button class="text-input-popup-button" 
                         ng-show="ctrl.newTopicTitle.length >= 2" 
                         ng-click="ctrl.addTopicFromInputToPrediction()">
                         Add topic
                     </button>
-                    <!--
+
+                    <input class="fp-prediction-editing__view-topic-suggestions-button"
+                        type="button"
+                        ng-hide="ctrl.isSuggestedTopicsVisible || ctrl.newTopicTitle.length"
+                        value="View example topics"
+                        ng-click="ctrl.showSuggestedTopics()"
+                    />
+
                     <div class="edit-prediction__suggested-topics" 
-                        ng-if="ctrl.prediction.topics.length === 0">
-                        <span class="edit-prediction__suggested-topics-title">
-                            Suggestions:
-                        </span>
+                        ng-show="ctrl.isSuggestedTopicsVisible">
                         <ul class="edit-prediction__suggested-topics-list">
                             <li class="edit-prediction__suggested-topics-topic" 
-                            ng-repeat="suggestedTopicTitle in ctrl.suggestedTopicTitles" 
-                            ng-click="ctrl.addTopicFromSuggestedTopics($index)">
-                            {{suggestedTopicTitle}}
+                                ng-repeat="suggestedTopicTitle in ctrl.suggestedTopicTitles" 
+                                ng-click="ctrl.addTopicFromSuggestedTopics($index)">
+                                {{suggestedTopicTitle}}
                             </li>
                         </ul>
                     </div>
-                    -->
                 </form>
 
 
                 <div class="edit-prediction__next-step-container">
                     <input type="button" 
-                        class="edit-prediction__next-step-container__next-button" 
-                        value="Done"  
+                        class="fp-prediction-editing__is-finished-editing-button" 
+                        value="Done"
+                        ng-class="{'fp-prediction-editing__is-finished-editing-button--deemphasised':ctrl.prediction.topics.length === 0}"
                         ng-show="!ctrl.showDeletionConfirmation && ctrl.prediction.topics.length"
                         ng-click="ctrl.toggleEditing()"
                     />                
 
-                    <button class="edit-prediction__report-prediction-button" 
+                    <!--<button class="edit-prediction__report-prediction-button" 
                         ng-show="{{!ctrl.currentUserIsAuthor}}">
                         Report
-                    </button>        
+                    </button>-->
 
-                    <button class="edit-prediction__delete-prediction-button" 
+                    <button class="fp-prediction-editing__delete-prediction-button" 
                         ng-show="ctrl.currentUserIsAuthor && ! ctrl.showDeletionConfirmation"
                         ng-click="ctrl.toggleShowDeletionConfirmation()">
                         Delete prediction
@@ -139,8 +162,14 @@
                     <div class="edit-prediction_delete-prediction-confirmation" 
                         ng-show="ctrl.showDeletionConfirmation">
                         Are you sure you want to delete this prediction?
-                        <button ng-click="ctrl.toggleShowDeletionConfirmation()">Cancel</button>
-                        <button ng-click="ctrl.deletePrediction()">Delete</button>
+                        <button
+                            ng-click="ctrl.toggleShowDeletionConfirmation()">
+                            Cancel
+                        </button>
+                        <button
+                            ng-click="ctrl.deletePrediction()">
+                            Delete
+                        </button>
                     </div>
                 </div>
 

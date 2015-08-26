@@ -2,23 +2,30 @@
     <div class="header__fill-fixed-position-space"></div>
     <div class="header__fixed-to-top">
 
+        <div class="private-alpha-notice">
+            <span ui-sref="app.feedback">[No name yet]</span> Project still in development. This is a test version. Things will break!
+        </div>
+
         <div class="header__center-aligned-container">
             <nav class="header__navigation">
-                <!--<div class="header__transparent-background"></div>-->
                 <ul class="header__navigation__list"><!--
                     --><!--
-                 --><li class="header__navigation-item"
+                 --><li class="header__navigation-item header__navigation-item--notifications"
                         ng-if="ctrl.isUserProfileOptionActive">
-                        <a class="header__profile-photo-container" 
+                        <a class="header__profile-link" 
                             ui-sref="app.user-profile({userId:ctrl.userId})" 
                             ui-sref-active="active">
                             <img class="header__profile-photo" 
                                 ng-src="{{ctrl.userThumbnailUrl}}" 
                             />
+                            <span class="header__notification-count"
+                                ng-show="ctrl.numUnreadNotifications">
+                                {{ctrl.numUnreadNotifications}}
+                            </span>
                         </a>
                     </li><!--
                 --><!--<li class="header__navigation-item">
-                        <a class="header__navigation-item__link header__navigation-item__link--feedback" 
+                        <a class="header__navigation-item-link header__navigation-item-link--feedback" 
                             href="mailto:darraghjames@gmail.com?Subject=App%20Feedback%20">
 
                             <svg class="header__feedback-face-svg" 
@@ -40,37 +47,59 @@
                             </svg>
                         </a>
                     </li>--><!--
-                --><li class="header__navigation-item">
-                        <a class="header__navigation-item__link header__topics-link" 
+                --><!--<li class="header__navigation-item">
+                        <a class="header__navigation-item-link header__navigation-item--notifications"
+                            ui-sref="app.notifications"
+                            ui-sref-active="active"
+                            >Notifs
+                            <span class="header__notification-count"
+                                ng-show="ctrl.numUnreadNotifications">
+                                {{ctrl.numUnreadNotifications}}
+                            </span>
+                        </a>
+                    </li>--><li class="header__navigation-item">
+                        <a class="header__navigation-item-link header__topics-link" 
                             ui-sref="app.browse-topics" 
-                            ui-sref-active="active">
-                            Topics
+                            ui-sref-active="active"
+                            >Topics
                         </a>
                     </li><li class="header__navigation-item">
-                        <a class="header__navigation-item__link"
+                        <a class="header__navigation-item-link" 
                             ui-sref="app.browse-topics" 
-                            ui-sref-active="active">
-                            Add prediction
+                            ui-sref-active="active"
+                            >Add Prediction
                         </a>
-                    </li><li class="header__navigation-item">
-                        <a class="header__navigation-item__link" 
+                    </li><!--<li class="header__navigation-item">
+                        <a class="header__navigation-item-link"
+                            ui-sref="app.browse-topics" 
+                            ui-sref-active="active"
+                            >
+                        </a>
+                    </li>--><li class="header__navigation-item">
+                        <a class="header__navigation-item-link" 
                             ui-sref="app.recent" 
-                            ui-sref-active="active">
-                            Recent
+                            ui-sref-active="active"
+                            >Recent
                         </a>
                     </li><li class="header__navigation-item">
-                        <a class="header__navigation-item__link" 
+                        <a class="header__navigation-item-link" 
                             ui-sref="app.feedback" 
-                            ui-sref-active="active">
-                            Feedback
+                            ui-sref-active="active"
+                            >Feedback
                         </a>
                     </li><li class="header__navigation-item">
-                        <a class="header__navigation-item__link"
+                        <a class="header__navigation-item-link"
                             ng-click="ctrl.loginWithFacebook()"
-                            ng-show="ctrl.isLoginOptionActive">
-                            Login
+                            ng-show="ctrl.isLoginOptionActive"
+                            >Login
                         </a>
-                    </li>
+                    </li><!--<li class="header__navigation-item">
+                        <a class="header__navigation-item-link"
+                            ui-sref="app.follow"
+                            ui-sref-active="active"
+                            >Follow
+                        </a>
+                    </li>-->
                 </ul>
             </nav>
 

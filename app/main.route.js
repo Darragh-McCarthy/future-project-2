@@ -3,22 +3,22 @@
 
 angular.module('myApp')
     .config(configureRoutes)
-    .run(logStateChangeErrors);
-//    .run(conditionalRedirectToLogin);
+    .run(logStateChangeErrors)
+    .run(redirectFromWelcomeIfIsLoggedIn)
+
+redirectFromWelcomeIfIsLoggedIn.$inject = ['$rootScope', '$state', 'UserAuth'];
+function redirectFromWelcomeIfIsLoggedIn($rootScope, $state, UserAuth) {
+    $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
+        if (UserAuth.isLoggedIn() && toState.name === 'app.welcome') {
+            $state.go('app.recent');
+            e.preventDefault();
+        }
+    });
+}
 
 logStateChangeErrors.$inject = ['$rootScope'];
 function logStateChangeErrors($rootScope) {
     $rootScope.$on('$stateChangeError', console.log.bind(console));
-}
-
-conditionalRedirectToLogin.$inject = ['$rootScope', '$location', '$state', 'UserAuth'];
-function conditionalRedirectToLogin($rootScope, $location, $state, UserAuth) {
-    $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
-        if (!UserAuth.isLoggedIn() && toState.name !== 'app.login') {
-            $state.go('app.login');
-            e.preventDefault();
-        }
-    });
 }
 
 getPreviousState.$inject = ['$state'];
@@ -49,6 +49,16 @@ function configureRoutes($stateProvider,  $urlRouterProvider) {
             }
         }
     })
+    .state('app.welcome', {
+        url: '/welcome',
+        views: {
+            'header@': {},
+            'content@': {
+                templateUrl: '/welcome/welcome.template.html',
+                controller: 'Welcome as ctrl'
+            }
+        }
+    })
     .state('app.recent', {
         url: '/recent?page=',
         views: {
@@ -58,15 +68,30 @@ function configureRoutes($stateProvider,  $urlRouterProvider) {
             }
         }
     })
+    .state('app.follow', {
+        url: '/follow',
+        views: {
+            'content@': {
+                templateUrl: '/follow/follow.template.html',
+                controller: 'FollowOffSite as ctrl'
+            }
+        }
+    })
+    /*.state('app.notifications', {
+        url: '/notifications',
+        views: {
+            'content@': {
+                templateUrl: '/notifications/notifications.template.html',
+                controller: 'Notifications as ctrl'
+            }
+        }
+    })*/
     .state('app.feedback', {
         url: '/feedback',
         views: {
             'content@': {
                 templateUrl: '/feedback/feedback.template.html',
                 controller: 'Feedback as ctrl'
-            },
-            resolve: {
-                'previousState': getPreviousState
             }
         }
     })
@@ -97,6 +122,7 @@ function configureRoutes($stateProvider,  $urlRouterProvider) {
             }
         }
     })
+    /*
     .state('app.make-prediction', {
         url: '/make-prediction?topic=',
         views: {
@@ -109,7 +135,8 @@ function configureRoutes($stateProvider,  $urlRouterProvider) {
                 },
             }
         }
-    })
+    })*/
+    /*
     .state('app.login', {
         url: '/login',
         views: {
@@ -120,16 +147,55 @@ function configureRoutes($stateProvider,  $urlRouterProvider) {
                 controller: 'Login as ctrl'
             }
         }
-    })
+    })*/
     .state('app.user-profile', {
         url: '/user-profile/:userId',
         views: {
             'content@': {
                 templateUrl:'/user-profile/user-profile.template.html',
                 controller: 'UserProfile as ctrl'
+
+                /*controller: ['$state', function($state) {
+                   $state.go('app.user-profile.notifications');
+                }]*/
+            },
+//            'userprofiletab@app.user-profile': {}
+        }
+    })
+    /*
+    .state('app.user-profile.notifications', {
+        url: '/notifications',
+        views: {
+            'userprofiletab@app.user-profile': {
+                template:'notifications template here',
             },
         },
     })
+    .state('app.user-profile.predictions', {
+        url: '/predictions',
+        views: {
+            'userprofiletab@app.user-profile': {
+                controller: 'UserProfile as ctrl',
+                template:'<div class="user-profile-page__prediction-list-container">' +
+                            '<fp-prediction-list ' +
+                                'title="Recent predictions"' +
+                                'is-add-new-prediction-hidden="true" ' +
+                                'is-add-new-prediction-autofocused="true" ' +
+                                'get-predictions="ctrl.getPredictions(numPredictions, numPredictionsToSkip)" '+
+                                'is-prediction-loading-enabled="true"> ' +
+                            '</fp-prediction-list>' +
+                        '</div>'
+            },
+        },
+    })
+    .state('app.user-profile.settings', {
+        url: '/settings',
+        views: {
+            'userprofiletab@app.user-profile': {
+                template:'settings'
+            },
+        },
+    })*/
     .state('app.prediction-guidelines', {
         url: '/prediction-guidelines',
         views: {
@@ -141,7 +207,7 @@ function configureRoutes($stateProvider,  $urlRouterProvider) {
 
     $urlRouterProvider.otherwise(function($injector, $location) {
         var $state = $injector.get('$state');
-        $state.go('app.recent');
+        $state.go('app.welcome');
     });
 }
 

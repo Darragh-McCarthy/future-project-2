@@ -10,7 +10,7 @@ angular.module('myApp')
 function FocusTextInputOnMouseover() {
     return function(scope, element, attrs) {
         angular.forEach(attrs, function(a, key) {
-            if (key === 'type' && attrs[key] === 'text') {
+            if (key === 'type' && attrs[key] === 'text' || attrs[key] === 'email') {
                 element.on('mouseover', function() {
                     var isFocusOnHoverDisabled = false;
                     angular.forEach(attrs, function(a, key) {

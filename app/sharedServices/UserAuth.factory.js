@@ -119,9 +119,11 @@ function UserAuth($q, $window, $timeout, Parse) {
                                         'facebookUserId': basicFacebookData.id,
                                         'facebookProfileUrl': basicFacebookData.link,
                                         'fullName': basicFacebookData.name,
+                                        /* jshint ignore:start */
                                         'firstName': basicFacebookData.first_name,
                                         'lastName': basicFacebookData.last_name,
                                         'updatedTime': basicFacebookData.updated_time,
+                                        /* jshint ignore:end */
                                         'locale': basicFacebookData.locale,
                                         'timezone': basicFacebookData.timezone,
                                         'verified': basicFacebookData.verified,
@@ -170,7 +172,6 @@ function UserAuth($q, $window, $timeout, Parse) {
     function logout() {
         Parse.User.logOut();
         $window.location = '/';
-
         //return $window.FB.logout();
     }
 
@@ -181,7 +182,7 @@ function UserAuth($q, $window, $timeout, Parse) {
                     'public_profile, email, user_friends', {
                         success: resolve.bind(),
                         error: function(errorMsg) {
-                            console.error(errorMsg);
+                            console.error('Facebook error message: ',errorMsg);
                             reject();
                         }
                     }
@@ -193,7 +194,7 @@ function UserAuth($q, $window, $timeout, Parse) {
     function verifyFacebookUserMatchesLoggedInUser() {
         return promiseLoadFacebookSdk.then(function(fbSdk) {
             var facebookStatusDeferred = $q.defer();
-            FB.getLoginStatus(function(response) {
+            $window.FB.getLoginStatus(function(response) {
                 facebookStatusDeferred.resolve(response);
             });
             return facebookStatusDeferred.promise.then(function(status) {
@@ -210,10 +211,10 @@ function UserAuth($q, $window, $timeout, Parse) {
             $window.fbAsyncInit = function() {
                 Parse.FacebookUtils.init({
                     //localhost appId
-                    appId          : '900144096737151',
+                    //appId          : '900144096737151',
 
                     //futureprojectdev.parseapp.com
-                    //appId: 910868352331392,
+                    appId: 910868352331392,
 
                     //futureproject.parseapp.com appId
                     //appId      : '867899246628303',

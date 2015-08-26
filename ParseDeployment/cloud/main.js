@@ -3,45 +3,311 @@
 var JUDGEMENT_LIKELIHOOD_PERCENT_OPTIONS = [
     0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100
 ];
+
+var Mailgun = require('mailgun');
+Mailgun.initialize('sandboxd5e0f918a26f489aaab13df5438f9db7.mailgun.org', 'key-e355f088775a5a0798bb7ec93b72b8c6');
+
+
 var PrivateUserData = Parse.Object.extend('PrivateUserData');
+var UserFeedback = Parse.Object.extend('UserFeedback');
+var Judgement = Parse.Object.extend('Judgement');
+var JudgementUpdate = Parse.Object.extend('JudgementUpdate');
+var ReasonComment = Parse.Object.extend('ReasonComment');
+
+var NOTIFICATION_TYPES = {
+    'newCommentAddedToReason': 'newCommentAddedToReason',
+    'newJudgementAddedToPrediction': 'newJudgementAddedToPrediction'
+};
+
+var Notification = Parse.Object.extend('Notification', {}, {
+    newReasonCommentAdded: function(reasonComment, userToNotify) {
+        return new Notification().save({
+            'notificationType': NOTIFICATION_TYPES.newCommentAddedToReason,
+            'reasonComment': reasonComment,
+            'judgement': reasonComment.get('judgement'),
+            'userToNotify': userToNotify
+        })
+        .then(null, function(e) {
+            console.error(e);
+        });
+    },
+    newJudgementAddedToPrediction: function(judgement, userToNotify) {
+        return new Notification().save({
+            'notificationType': NOTIFICATION_TYPES.newJudgementAddedToPrediction,
+            'judgement': judgement,
+            'userToNotify': userToNotify
+        })
+        .then(null, function(e) {
+            console.error(e);
+        });
+    },
+    getUnreadNotificationsForUser: function(user) {
+        return new Parse.Query(Notification)
+            .equalTo('userToNotify', user)
+            .include('reasonComment')
+            .include('judgement')
+            .descending('createdAt')
+            .descending('dateMarkedAsRead')
+            .find()
+            .then(function onSuccess(notifications) {
+                if (notifications) {
+                    return notifications;
+                }
+                return [];
+            });
+    },
+    markNotificationAsRead: function(notificationId) {
+        return new Parse.Query(Notification)
+        .get(notificationId)
+        .then(function onGetNotificationSuccess(notification) {
+            return notification.save({
+                'dateMarkedAsRead': new Date()
+            });
+        }, function onGetNotificationError(e) {
+            console.error(e);
+        });
+    },
+    castNotificationAsPlainObject: function(notification) {
+
+        var parselessNotification = {
+            'notificationType': notification.get('notificationType')
+        };
+
+        var reasonComment = notification.get('reasonComment');
+        if (reasonComment) {
+            var parselessComment = castReasonCommentAsPlainObject(reasonComment);
+            parselessNotification.reasonComment = parselessComment;
+        }
+
+        var judgement = notification.get('notification');
+        if (judgement) {
+            var parselessJudgement = castJudgementAsPlainObject(judgement);
+            parselessNotification.judgement = parselessJudgement;
+        }
+
+        return parselessNotification;
+    }
+});
 
 var Prediction = Parse.Object.extend('Prediction', {}, {
     saveNew: function(author, predictionTitle) {
-        var prediction = new Prediction({
+
+        var newPrediction = new Prediction({
             'author': author,
             'title': predictionTitle
         });
+
         var acl = new Parse.ACL();
         acl.setPublicReadAccess(true);
-        prediction.setACL(acl);
-        return prediction.save().then(function(savedPrediction) {
-            author.addUnique('authoredPredictions', prediction);
+        newPrediction.setACL(acl);
+
+        return newPrediction.save().then(function(savedPrediction) {
+            author.addUnique('authoredPredictions', savedPrediction);
             return author.save().then(function() {
-                return prediction;
+                return savedPrediction;
             });
         });
     }
 });
 
-var Judgement = Parse.Object.extend('Judgement');
-var JudgementUpdate = Parse.Object.extend('JudgementUpdate');
-
 var Topic = Parse.Object.extend('Topic', {}, {
     saveNew: function(author, topicTitle) {
-        var promiseFindTopic =
-            new Parse.Query(Topic)
+
+        return new Parse.Query(Topic)
             .equalTo('title', topicTitle)
-            .first();
-        return promiseFindTopic.then(function(topic) {
-            if (topic) {
-                return topic;
-            }
-            return new Topic({
-                'title': topicTitle,
-                'author': author
-            }).save();
-        });
+            .first()
+            .then(function(topic) {
+
+                if (topic) {
+                    return topic;
+                }
+
+                return new Topic({
+                    'title': topicTitle,
+                    'author': author
+                })
+                .save(null, function(e) {
+                    console.error(e);
+                });
+            })
+        ;
     }
+});
+
+Parse.Cloud.define('getUnreadNotifications', function(request, response) {
+
+    if (!request.user) {
+        return response.error('request.user required');
+    }
+
+    return Notification.getUnreadNotificationsForUser(request.user)
+    .then(function(notifications) {
+        var parselessNotifications = notifications.map(function(notification) {
+            return Notification.castNotificationAsPlainObject(notification);
+        });
+        response.success(parselessNotifications);
+    }, function onError(e) {
+        console.error(e);
+        response.error('error getting unread notifications');
+    });
+});
+
+Parse.Cloud.define('saveNewReasonComment', function(request, response) {
+
+    if (!request.user) {
+        return response.error('request.user required');
+    }
+    if (!request.params.judgementWithReasonId) {
+        return response.error('request.judgementWithReasonId required');
+    }
+    if (!request.params.commentText) {
+        return response.error('request.commentText required');
+    }
+
+    var promiseJudgement = new Parse.Query(Judgement)
+        .get(request.params.judgementWithReasonId)
+        .then(null, function(e) {
+            console.error(e);
+            response.error('Error retrieving judgement');
+        });
+
+    var promiseSaveComment = promiseJudgement
+    .then(function(judgement) {
+
+        var reasonComment = new ReasonComment({
+            'author': request.user,
+            'commentText': request.params.commentText,
+            'judgement': judgement,
+            'prediction': judgement.get('prediction')
+        });
+
+        var acl = new Parse.ACL();
+        acl.setPublicReadAccess(true);
+        reasonComment.setACL(acl);
+
+        return reasonComment.save().then(null, function(e) {
+            console.error(e);
+            response.error('Error saving reason comment');
+        });
+    });
+
+    return promiseJudgement.then(function(judgement) {
+        return promiseSaveComment.then(function(comment) {
+            var userToNotify = judgement.get('author');
+            return Notification.newReasonCommentAdded(comment, userToNotify)
+            .then(
+                callResponseSuccess.bind(),
+                callResponseSuccess.bind()
+            );
+            function callResponseSuccess() {
+                response.success(
+                    castReasonCommentAsPlainObject(comment)
+                );
+            }
+        }, function(e) {
+            console.error(e);
+            response.error('Error casting comment as plain object');
+        });
+    });
+});
+
+/*
+Parse.Cloud.define('deleteReasonComment', function(request, response) {
+
+    if (!request.user) {
+        return response.error('request.user required');
+    }
+    if (!request.params.reasonCommentId) {
+        return response.error('request.params.reasonCommentId required');
+    }
+
+    var promiseReasonComment = new Parse.Query(ReasonComment)
+    .get(request.params.reasonCommentId)
+    .then(function(reasonComment) {
+        if (request.user.id !== reasonComment.get('author').id) {
+            response.error(
+                'not authorised to delete this comment.' +
+                'user.id:' + request.user.id
+            );
+            var promise = new Parse.Promise();
+            var rejectedPromise = promise.reject();
+            return rejectedPromise;
+        }
+        return reasonComment;
+    }, function(e) {
+        response.error('error retrieving reason comment');
+    });
+
+    return promiseReasonComment.then(function(reasonComment) {
+        reasonComment.set('deleted', true);
+        var acl = new Parse.ACL();
+        reasonComment.setACL(acl);
+        return reasonComment.save({
+            useMasterKey: true
+        }).then(
+            response.error.bind(),
+            function(e) {
+                console.error(e);
+                response.error('error updating comment');
+            }
+        );
+    });
+});
+*/
+
+Parse.Cloud.define('saveUserFeedback', function(request, response) {
+
+    if (!request.params.feedbackText) {
+        return response.error('feedbackText required');
+    }
+/*
+    if (!request.params.email) {
+        return response.error('email required');
+    }
+*/
+    
+
+    var promiseEmail = new Parse.Query(PrivateUserData)
+    .equalTo('user', request.user)
+    .first({
+        useMasterKey:true
+    })
+    .then(function(PrivateUserData) {
+        if (PrivateUserData) {
+            return PrivateUserData.get('email');
+        }
+        return null;
+    }, function onError(e) {
+        console.log(e);
+        response.error('Error retrieving email');
+    });
+    return promiseEmail.then(function(email) {
+        var from = request.params.email || email || 'could\'t find user email';
+
+        return Mailgun.sendEmail({
+            'from': 'FutureProject <mailgun@sandboxd5e0f918a26f489aaab13df5438f9db7.mailgun.org>',
+            'to': 'darraghjames@gmail.com',
+            'subject': 'Feedback',
+            'text': from + ': ' + request.params.feedbackText
+        })
+        .then(function onSuccess() {
+            response.success();
+        }, function onError(e) {
+            console.error('Failed to send email. Response:');
+            console.error(e);
+            return new UserFeedback().save({
+                'author': request.user,
+                'email': from,
+                'feedbackText': request.params.feedbackText
+            }).then(
+                response.success.bind(),
+                function onError(e) {
+                    console.error(e);
+                    response.error('Failed to send email and failed to store feedback');
+                }
+            );
+        });
+    });
 });
 
 Parse.Cloud.define('getUserById', function(request, response) {
@@ -69,9 +335,9 @@ Parse.Cloud.define('saveNewPrediction', function(request, response) {
         return response.error('predictionTitle required');
     }
     return Prediction.saveNew(request.user, request.params.predictionTitle).then(
-        function(prediction) {
+        function(newlySavedPrediction) {
             response.success(
-                castPredictionAsPlainObject(prediction)
+                castPredictionAsPlainObject(newlySavedPrediction)
             );
         },
         response.error.bind('Parse error while saving prediction')
@@ -110,21 +376,24 @@ Parse.Cloud.define('saveNewPredictionWithTopicTitle', function(request, response
         });
     });
 
-    return promiseAddTopicToPrediction.then(function(updatedPrediction) {
+    var promiseIncrementTopicPredictionsCount = promiseAddTopicToPrediction
+    .then(function(updatedPrediction) {
         return promiseTopic.then(function(topic) {
-            topic.addUnique('predictionsCount', updatedPrediction.id);
-            return topic.save().then(
-                function onSuccess() {
+            topic.addUnique('predictionCountAsPredictionIDs', updatedPrediction.id);
+            return topic.save().then(function() {
                     response.success(
                         castPredictionAsPlainObject(updatedPrediction)
                     );
                 },
-                function onError() {
+                function onError(e) {
+                    console.error(e);
                     response.error('error updating topic predictions count');
                 }
             );
         });
     });
+
+    return promiseIncrementTopicPredictionsCount;
 });
 
 Parse.Cloud.define('deletePrediction', function(request, response) {
@@ -157,8 +426,19 @@ Parse.Cloud.define('deletePrediction', function(request, response) {
 
         return prediction.save(null, {
             useMasterKey: true
-        }).then(
-            response.success.bind(),
+        }).then(function() {
+                var topics = prediction.get('topics');
+                if (topics) {
+                    topics.forEach(function(topic) {
+                        topic.remove('predictionCountAsPredictionIDs', prediction.id);
+                    });
+                    return Parse.Object.saveAll(topics).then(
+                        response.success.bind(),
+                        response.success.bind()
+                    );
+                }
+                response.success();
+            },
             function onSaveError(e) {
                 console.error(e);
                 response.error('error saving prediction');
@@ -173,31 +453,69 @@ Parse.Cloud.define('getReasonsForPrediction', function(request, response) {
         return response.error('predictionId required');
     }
 
-    var predictionQuery = new Parse.Query(Prediction);
-    var promiseJudgements = predictionQuery.get(request.params.predictionId).then(
-        function onSuccess(prediction) {
-            return new Parse.Query(Judgement)
-                .equalTo('prediction', prediction)
-                .include('author')
-                .find();
-        },
-        function onError(e) {
+    var promisePrediction = new Parse.Query(Prediction)
+    .get(request.params.predictionId).then(null, function(e) {
             console.error(e);
             response.error('Parse error retrieving prediction');
         }
     );
 
-    return promiseJudgements.then(
-        function onSuccess(judgements) {
-            response.success(
-                castJudgementsAsPlainObjects(judgements || [])
-            );
-        },
-        function onError(e) {
-            console.error(e);
-            response.error('Parse error retrieving judgements');
+    var promiseJudgements = promisePrediction.then(
+        function(prediction) {
+            return new Parse.Query(Judgement)
+                .equalTo('prediction', prediction)
+                .exists('reasonText')
+                .include('author')
+                .find()
+                .then(function(judgements) {
+                    if (!judgements) {
+                        return [];
+                    }
+                    return judgements;
+                }, function(e) {
+                    console.error(e);
+                    response.error('error retrieving judgements');
+                });
         }
     );
+
+    var promiseComments = promisePrediction.then(
+        function(prediction) {
+            return new Parse.Query(ReasonComment)
+                .equalTo('prediction', prediction)
+                .doesNotExist('deleted')
+                .include('author')
+                .descending('createdAt')
+                .find()
+                .then(function(comments) {
+                    if (!comments) {
+                        return [];
+                    }
+                    return comments;
+                }, function(e) {
+                    console.error(e);
+                    response.error('error retrieving comments');
+                });
+        }
+    );
+
+    return promiseJudgements.then(function(judgements) {
+        return promiseComments.then(function(comments) {
+
+            var parselessComments = castReasonCommentsAsPlainObjects(comments);
+            var parselessJudgements = castJudgementsAsPlainObjects(judgements);
+
+            parselessJudgements.forEach(function(parselessJudgement) {
+                parselessJudgement.comments = [];
+                parselessComments.forEach(function(comment) {
+                    if (parselessJudgement.id === comment.judgementId) {
+                        parselessJudgement.comments.push(comment);
+                    }
+                });
+            });
+            response.success(parselessJudgements);
+        });
+    });
 });
 
 Parse.Cloud.define('addTopicByTitleToPrediction', function(request, response) {
@@ -219,10 +537,10 @@ Parse.Cloud.define('addTopicByTitleToPrediction', function(request, response) {
         return;
     }
 
-    var topicQuery = new Parse.Query(Topic);
-    topicQuery.equalTo('title', request.params.topicTitle);
-    var promiseTopic = topicQuery.first().then(
-        function onSuccess(topic) {
+    var promiseTopic = new Parse.Query(Topic)
+    .equalTo('title', request.params.topicTitle)
+    .first()
+    .then(function(topic) {
             if (topic) {
                 return topic;
             }
@@ -295,7 +613,7 @@ Parse.Cloud.define('removeTopicFromPrediction', function(request, response) {
         },
         function onGetError(errorMsg) {
             console.error(errorMsg);
-            response.error('Parse error getting prediction: possibly invalid "predictionId"');
+            response.error('Parse error retrieving prediction');
         }
     );
 
@@ -328,7 +646,8 @@ Parse.Cloud.define('getRecentPredictions', function(request, response) {
     if (!request.params.numPredictions) {
         return response.error('numPredictions required');
     }
-    if (!(request.params.numPredictionsToSkip || request.params.numPredictionsToSkip >= 0)) {
+    if (!(request.params.numPredictionsToSkip ||
+        request.params.numPredictionsToSkip >= 0)) {
         return response.error('numPredictionsToSkip required');
     }
 
@@ -410,6 +729,7 @@ Parse.Cloud.define('getPredictionsByAuthorId', function(request, response) {
     return authorQuery.then(function(author) {
         return new Parse.Query(Prediction)
             .equalTo('author', author)
+            .include('topics')
             .descending('createdAt')
             .find().then(
             function onSuccess(predictions) {
@@ -690,8 +1010,6 @@ Parse.Cloud.define('setJudgementLikelihoodPercent', function(request, response) 
             console.error(errorMsg);
         });
     });
-
-    return promiseUpdatePercentCounters;
 });
 
 Parse.Cloud.define('deleteJudgementLikelihoodPercent', function(request, response) {
@@ -809,7 +1127,11 @@ Parse.Cloud.define('setJudgementReason', function(request, response) {
     return promiseLogJudgementUpdate
     .then(function(updatedJudgement) {
         var prediction = updatedJudgement.get('prediction');
-        prediction.addUnique('reasonsCount', request.user.id);
+        if (updatedJudgement.get('reasonText')) {
+            prediction.addUnique('reasonsCountAsUserIDs', request.user.id);
+        } else {
+            prediction.remove('reasonsCountAsUserIDs', request.user.id);
+        }
         return prediction.save(null, {
             useMasterKey: true
         }).then(
@@ -824,38 +1146,6 @@ Parse.Cloud.define('setJudgementReason', function(request, response) {
         );
     });
 });
-
-
-
-/*
-Parse.Cloud.define('deleteLikelihoodPercent', function(request, response) {
-
-    if (!request.user) {
-
-    }
-    if (!request.params.judgement) {
-
-    }
-
-});
-
-
-
-Parse.Cloud.define('saveNewReason', function(request, response) {
-
-    if (!request.user) {
-
-    }
-    if (!request.params.predictionId) {
-
-    }
-    if (!request.params.judgementId) {
-
-    }
-
-});
-
-*/
 
 Parse.Cloud.define('getAllJudgementsForCurrentUser', function(request, response) {
 
@@ -881,7 +1171,7 @@ Parse.Cloud.define('getAllJudgementsForCurrentUser', function(request, response)
 });
 
 function makeLikelihoodPercentCountPropName(likelihoodPercent) {
-    return 'judgement' + likelihoodPercent + 'PercentCount';
+    return 'judgement' + likelihoodPercent + 'PercentCountAsUserIDs';
 }
 
 function setJudgementAttributesToDeletedState(judgement) {
@@ -914,8 +1204,8 @@ function castPredictionAsPlainObject(prediction) {
         prediction.get('author')
     );
     var reasonsCount = 0;
-    if (prediction.get('reasonsCount')) {
-        reasonsCount = prediction.get('reasonsCount').length;
+    if (prediction.get('reasonsCountAsUserIDs')) {
+        reasonsCount = prediction.get('reasonsCountAsUserIDs').length;
     }
 
     return {
@@ -941,12 +1231,6 @@ function castTopicAsPlainObject(topic) {
     };
 }
 
-function castJudgementsAsPlainObjects(judgements) {
-    return judgements.map(function(judgement) {
-        return castJudgementAsPlainObject(judgement);
-    });
-}
-
 function castUserAsPlainObject(user) {
     return {
         'userId': user.id,
@@ -954,14 +1238,19 @@ function castUserAsPlainObject(user) {
     };
 }
 
-function castJudgementAsPlainObject(judgement) {
+function castJudgementsAsPlainObjects(judgements) {
+    return judgements.map(function(judgement) {
+        return castJudgementAsPlainObject(judgement);
+    });
+}
 
+function castJudgementAsPlainObject(judgement) {
     var parselessJudgement = {
         'id': judgement.id,
         'updatedAt': judgement.updatedAt,
         'authorId': judgement.get('author').id,
         'predictionId': judgement.get('prediction').id,
-        'likelihoodPercent': judgement.get('likelihoodPercent'),
+        'likelihoodPercent': judgement.get('likelihoodPercent')
     };
 
     if (judgement.get('reasonText')) {
@@ -972,5 +1261,24 @@ function castJudgementAsPlainObject(judgement) {
             castUserAsPlainObject(judgement.get('author'));
     }
     return parselessJudgement;
+}
+
+function castReasonCommentsAsPlainObjects(comments) {
+    return comments
+    .map(function(comment) {
+        return castReasonCommentAsPlainObject(comment);
+    })
+    .filter(function(comment) {
+        return !!comment;
+    });
+}
+
+function castReasonCommentAsPlainObject(comment) {
+    return {
+        'author': castUserAsPlainObject(comment.get('author')),
+        'commentText': comment.get('commentText'),
+        'predictionId': comment.get('prediction').id,
+        'judgementId': comment.get('judgement').id,
+    };
 }
 

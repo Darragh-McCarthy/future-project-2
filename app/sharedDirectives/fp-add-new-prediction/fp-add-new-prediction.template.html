@@ -4,7 +4,7 @@
     <label>
         <div ng-if="!ctrl.isLabelHidden"
             class="fp-add-new-prediction__prediction-title-label">
-            <span ng-hide="ctrl.newPredictionsCount">What is your</span>
+            <span ng-hide="ctrl.newPredictionsCount">What's your</span>
             <span ng-show="ctrl.newPredictionsCount">Add another</b></span>       
             <span ng-if="ctrl.topicTitle"
                 class="fp-add-new-prediction__topic">
@@ -49,9 +49,7 @@
         </li>
     </ul>
 
-    <fp-login ng-if="ctrl.isFpLoginActive" title="{{ctrl.fpLoginMessage}}"></fp-login>
-
-    <button class="fp-add-new-prediction__add-prediction-button" 
+    <button class="text-input-popup-button" 
         ng-show="ctrl.isValidPrediction">
         {{ctrl.addPredictionButtonText}}
     </button>
