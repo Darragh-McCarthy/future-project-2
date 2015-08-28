@@ -1,10 +1,18 @@
 <div class="fp-featured-topics-list">
 
-    <div class="fp-featured-topics-list__title">
-        Featured topics
+    <div ng-hide="ctrl.isTitleHidden"
+        class="fp-featured-topics-list__title">
+        What's the future of
     </div>
 
     <ul class="fp-featured-topics-list__topics">
+        <li class="fp-featured-topics-list__topic">
+            <a class="fp-featured-topics-list__topic-link fp-featured-topics-list__topic-link--view-everything" 
+                ui-sref="app.recent"
+                ng-hide="ctrl.topicTitleToHide === 'Everything'">
+                Everything
+            </a>
+        </li>
         <li class="fp-featured-topics-list__topic" 
             ng-repeat="topicTitle in ctrl.topicTitles">
 
@@ -13,5 +21,25 @@
                 {{topicTitle}}
             </a>
         </li>
+        <!--<li class="fp-featured-topics-list__topic">
+            <a class="fp-featured-topics-list__add-topic"
+                ng-hide="isAddTopicsFormVisible"
+                ng-click="isAddTopicsFormVisible = true"   
+            >What topics are you interested in?
+            </a>
+        </li>-->
     </ul>
+
+    <!--<form class="fp-featured-topics-list__add-topic-form" 
+        ng-show="isAddTopicsFormVisible" 
+        ng-submit="ctrl.addTopic">
+        <label class="fp-featured-topics-list__add-topics-label">
+            Add topic
+            <input autofocus type="text" />
+            <button class="text-input-popup-button">
+                Add topic
+            </button>
+        </label>
+    </form>-->
+
 </div>

@@ -1,14 +1,14 @@
 {
   "global": {
-    "parseVersion": "1.4.2"
+    "parseVersion": "1.5.0"
   },
   "applications": {
-    "FutureProjectDev": {
-      "applicationId": "tkoete7doYZNLOPCt3rL251l69WBSNlbwk4PAJ3L",
-      "masterKey": "q1kFktI6ePZQCiAN2hjWR0ZzyRutOp5aZylhKaUz"
+    "FutureProject": {
+      "applicationId": "0nGBcRg8yPjDYH8KzitgIYauoF4ZT6CV369pWPZu",
+      "masterKey": "X7FStwTM6XCrsYFuyAHI7RGrJRz24LlKOdeU3CCW"
     },
     "_default": {
-      "link": "FutureProjectDev"
+      "link": "FutureProject"
     }
   }
 }

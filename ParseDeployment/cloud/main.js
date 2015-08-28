@@ -518,6 +518,76 @@ Parse.Cloud.define('getReasonsForPrediction', function(request, response) {
     });
 });
 
+Parse.Cloud.define('getJudgementsForPrediction', function(request, response) {
+
+    if (!request.params.predictionId) {
+        return response.error('predictionId required');
+    }
+
+    var promisePrediction = new Parse.Query(Prediction)
+    .get(request.params.predictionId).then(null, function(e) {
+            console.error(e);
+            response.error('Parse error retrieving prediction');
+        }
+    );
+
+    var promiseJudgements = promisePrediction.then(
+        function(prediction) {
+            return new Parse.Query(Judgement)
+                .equalTo('prediction', prediction)
+                .include('author')
+                .find()
+                .then(function(judgements) {
+                    if (judgements) {
+                        return judgements;
+                    }
+                    return [];
+                }, function(e) {
+                    console.error(e);
+                    response.error('error retrieving judgements');
+                });
+        }
+    );
+
+    var promiseComments = promisePrediction.then(
+        function(prediction) {
+            return new Parse.Query(ReasonComment)
+                .equalTo('prediction', prediction)
+                .doesNotExist('deleted')
+                .include('author')
+                .descending('createdAt')
+                .find()
+                .then(function(comments) {
+                    if (!comments) {
+                        return [];
+                    }
+                    return comments;
+                }, function(e) {
+                    console.error(e);
+                    response.error('error retrieving comments');
+                });
+        }
+    );
+
+    return promiseJudgements.then(function(judgements) {
+        return promiseComments.then(function(comments) {
+
+            var parselessComments = castReasonCommentsAsPlainObjects(comments);
+            var parselessJudgements = castJudgementsAsPlainObjects(judgements);
+
+            parselessJudgements.forEach(function(parselessJudgement) {
+                parselessJudgement.comments = [];
+                parselessComments.forEach(function(comment) {
+                    if (parselessJudgement.id === comment.judgementId) {
+                        parselessJudgement.comments.push(comment);
+                    }
+                });
+            });
+            response.success(parselessJudgements);
+        });
+    });
+});
+
 Parse.Cloud.define('addTopicByTitleToPrediction', function(request, response) {
 
     var errorMsg;

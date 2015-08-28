@@ -3,7 +3,7 @@
     <div class="header__fixed-to-top">
 
         <div class="private-alpha-notice">
-            <span ui-sref="app.feedback">[No name yet]</span> Project still in development. This is a test version. Things will break!
+            <b>Unnamed project</b> - still in development. This is a test version. Data loss is likely and things will break!
         </div>
 
         <div class="header__center-aligned-container">
@@ -23,41 +23,7 @@
                                 {{ctrl.numUnreadNotifications}}
                             </span>
                         </a>
-                    </li><!--
-                --><!--<li class="header__navigation-item">
-                        <a class="header__navigation-item-link header__navigation-item-link--feedback" 
-                            href="mailto:darraghjames@gmail.com?Subject=App%20Feedback%20">
-
-                            <svg class="header__feedback-face-svg" 
-                                xmlns="http://www.w3.org/2000/svg" 
-                                viewBox="0 0 1000 857" 
-                                height="1000" 
-                                width="857.143">
-
-                                <path fill="#444" d="M632.772 685.846q4.464 13.95 -2.232 27.063t-20.646 17.577 -27.342 -2.232 -17.856 -21.204q-13.95 -44.64 -51.615 -72.261t-84.537 -27.621 -84.537 27.621 -51.615 72.261q-4.464 14.508 -17.577 21.204t-27.063 2.232q-14.508 -4.464 -21.204 -17.577t-2.232 -27.063q20.646 -67.518 77.004 -108.81t127.224 -41.292 127.224 41.292 77.004 108.81zm-275.652 -328.662q0 29.574 -20.925 50.499t-50.499 20.925 -50.499 -20.925 -20.925 -50.499 20.925 -50.499 50.499 -20.925 50.499 20.925 20.925 50.499zm285.696 0q0 29.574 -20.925 50.499t-50.499 20.925 -50.499 -20.925 -20.925 -50.499 20.925 -50.499 50.499 -20.925 50.499 20.925 20.925 50.499zm142.848 142.848q0 -72.54 -28.458 -138.663t-76.167 -113.832 -113.832 -76.167 -138.663 -28.458 -138.663 28.458 -113.832 76.167 -76.167 113.832 -28.458 138.663 28.458 138.663 76.167 113.832 113.832 76.167 138.663 28.458 138.663 -28.458 113.832 -76.167 76.167 -113.832 28.458 -138.663zm71.424 0q0 116.622 -57.474 215.109t-155.961 155.961 -215.109 57.474 -215.109 -57.474 -155.961 -155.961 -57.474 -215.109 57.474 -215.109 155.961 -155.961 215.109 -57.474 215.109 57.474 155.961 155.961 57.474 215.109z"
-                                />
-                            </svg><svg  class="header__feedback-face-svg header__feedback-face-svg--smile"
-                                xmlns="http://www.w3.org/2000/svg" 
-                                viewBox="-50 0 1000 857"
-                                height="1000" 
-                                width="857.143">
-
-                                <path fill="#444" d="M632.772 599.914q-20.646 67.518 -77.004 108.81t-127.224 41.292 -127.224 -41.292 -77.004 -108.81q-4.464 -13.95 2.232 -27.063t21.204 -17.577q13.95 -4.464 27.063 2.232t17.577 21.204q13.95 44.64 51.615 72.261t84.537 27.621 84.537 -27.621 51.615 -72.261q4.464 -14.508 17.856 -21.204t27.342 -2.232 20.646 17.577 2.232 27.063zm-275.652 -242.73q0 29.574 -20.925 50.499t-50.499 20.925 -50.499 -20.925 -20.925 -50.499 20.925 -50.499 50.499 -20.925 50.499 20.925 20.925 50.499zm285.696 0q0 29.574 -20.925 50.499t-50.499 20.925 -50.499 -20.925 -20.925 -50.499 20.925 -50.499 50.499 -20.925 50.499 20.925 20.925 50.499zm142.848 142.848q0 -72.54 -28.458 -138.663t-76.167 -113.832 -113.832 -76.167 -138.663 -28.458 -138.663 28.458 -113.832 76.167 -76.167 113.832 -28.458 138.663 28.458 138.663 76.167 113.832 113.832 76.167 138.663 28.458 138.663 -28.458 113.832 -76.167 76.167 -113.832 28.458 -138.663zm71.424 0q0 116.622 -57.474 215.109t-155.961 155.961 -215.109 57.474 -215.109 -57.474 -155.961 -155.961 -57.474 -215.109 57.474 -215.109 155.961 -155.961 215.109 -57.474 215.109 57.474 155.961 155.961 57.474 215.109z" 
-                                />
-                            </svg>
-                        </a>
-                    </li>--><!--
-                --><!--<li class="header__navigation-item">
-                        <a class="header__navigation-item-link header__navigation-item--notifications"
-                            ui-sref="app.notifications"
-                            ui-sref-active="active"
-                            >Notifs
-                            <span class="header__notification-count"
-                                ng-show="ctrl.numUnreadNotifications">
-                                {{ctrl.numUnreadNotifications}}
-                            </span>
-                        </a>
-                    </li>--><li class="header__navigation-item">
+                    </li><li class="header__navigation-item">
                         <a class="header__navigation-item-link header__topics-link" 
                             ui-sref="app.browse-topics" 
                             ui-sref-active="active"
@@ -69,20 +35,8 @@
                             ui-sref-active="active"
                             >Add Prediction
                         </a>
-                    </li><!--<li class="header__navigation-item">
-                        <a class="header__navigation-item-link"
-                            ui-sref="app.browse-topics" 
-                            ui-sref-active="active"
-                            >
-                        </a>
-                    </li>--><li class="header__navigation-item">
-                        <a class="header__navigation-item-link" 
-                            ui-sref="app.recent" 
-                            ui-sref-active="active"
-                            >Recent
-                        </a>
                     </li><li class="header__navigation-item">
-                        <a class="header__navigation-item-link" 
+                        <a class="header__navigation-item-link header__navigation-item-link--feedback" 
                             ui-sref="app.feedback" 
                             ui-sref-active="active"
                             >Feedback

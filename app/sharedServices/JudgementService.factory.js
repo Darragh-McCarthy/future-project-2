@@ -14,7 +14,6 @@ function JudgementService(UserAuth, $q) {
     var allJudgementsForCurrentUserDeferred = $q.defer();
     var allJudgementsForCurrentUser;
 
-
     UserAuth.promiseLoginSuccessful.then(function() {
         Parse.Cloud.run('getAllJudgementsForCurrentUser')
         .then(function onSuccess(judgements) {
@@ -31,6 +30,7 @@ function JudgementService(UserAuth, $q) {
         'setLikelihoodPercent': setLikelihoodPercent,
         'setReason': setReason,
         'getReasonsForPrediction':getReasonsForPrediction,
+        'getJudgementsForPrediction':getJudgementsForPrediction,
         'getLikelihoodPercentOptions': getLikelihoodPercentOptions,
         'saveNewReasonComment': saveNewReasonComment,
         'deleteReasonComment': deleteReasonComment
@@ -102,6 +102,13 @@ function JudgementService(UserAuth, $q) {
 
     function getReasonsForPrediction(predictionId) {
         return Parse.Cloud.run('getReasonsForPrediction', {
+            'predictionId': predictionId
+        })
+        .then(null, function(e) { console.error(e); });
+    }
+
+    function getJudgementsForPrediction(predictionId) {
+        return Parse.Cloud.run('getJudgementsForPrediction', {
             'predictionId': predictionId
         })
         .then(null, function(e) { console.error(e); });

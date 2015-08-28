@@ -48,7 +48,7 @@ function FpPrediction($timeout,  $scope,  $q,  $state,  PredictionService,  User
         }
     );
 
-    if (_this.prediction.authorId === UserAuth.getUserId()) {
+    if (_this.prediction.author.userId === UserAuth.getUserId()) {
         _this.currentUserIsAuthor = true;
     }
 

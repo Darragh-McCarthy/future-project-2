@@ -9,7 +9,7 @@ angular.module('myApp')
         templateUrl:'sharedDirectives/fp-add-new-prediction/fp-add-new-prediction.template.html',
         scope: {
             topicTitle: '@',
-            autofocus: '@',
+            autofocusTextInput: '@',
             isLabelHidden: '@',
             onSaveNewPredictionSuccess: '&',
             onSaveNewPredictionRequest: '&'
@@ -22,18 +22,20 @@ angular.module('myApp')
 angular.module('myApp')
     .controller('FpAddNewPrediction', FpAddNewPrediction);
 
-FpAddNewPrediction.$inject = ['$scope', '$state', 'PredictionService', 'focusElementById', 'UserAuth'];
-function FpAddNewPrediction($scope,  $state,  PredictionService,  focusElementById, UserAuth) {
+FpAddNewPrediction.$inject = ['$timeout', '$scope', '$state', 'PredictionService', 'focusElementById', 'UserAuth'];
+function FpAddNewPrediction($timeout, $scope,  $state,  PredictionService,  focusElementById, UserAuth) {
+
+    fpAddNewPredictionInstanceCount++;
 
     var _this = this;
 
-    fpAddNewPredictionInstanceCount++;
-    if (_this.autofocus) {
+    if (_this.autofocusTextInput) {
         _this.predictionTextInputElementId =
             'fp-add-new-prediction__prediction-input-' +
             fpAddNewPredictionInstanceCount;
         focusElementById(_this.predictionTextInputElementId);
     }
+
     _this.newPredictionsCount = 0;
     _this.saveNewPrediction = saveNewPrediction;
     _this.removeDefaultTopic = removeDefaultTopic;
@@ -67,9 +69,9 @@ function FpAddNewPrediction($scope,  $state,  PredictionService,  focusElementBy
     _this.placeholderText = '';
     if (_this.isLabelHidden !== '') {
         if (_this.topicTitle) {
-            _this.placeholderText = 'What is your ' + _this.topicTitle + ' prediction?';
+            _this.placeholderText = 'What\'s your ' + _this.topicTitle + ' prediction?';
         } else {
-            _this.placeholderText = 'What is your prediction?';
+            _this.placeholderText = 'What\'s your prediction?';
         }
     }
 
@@ -121,8 +123,8 @@ function FpAddNewPrediction($scope,  $state,  PredictionService,  focusElementBy
     }
 
     function removeDefaultTopic() {
-        //_this.topicTitle = null;
-        $state.go('app.recent');
+        _this.topicTitle = null;
+        //$state.go('app.recent');
     }
 
     function updateAddNewPredictionButtonText() {

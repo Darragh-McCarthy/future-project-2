@@ -214,10 +214,10 @@ function UserAuth($q, $window, $timeout, Parse) {
                     //appId          : '900144096737151',
 
                     //futureprojectdev.parseapp.com
-                    appId: 910868352331392,
+                    //appId: 910868352331392,
 
                     //futureproject.parseapp.com appId
-                    //appId      : '867899246628303',
+                    appId      : '867899246628303',
 
                     cookie     : true,  // enable cookies to allow Parse to access the session
                     version    : 'v2.2',

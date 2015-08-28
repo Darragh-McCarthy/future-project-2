@@ -23,7 +23,7 @@
 
                 <div class="fp-user-judgement-reasons-list__reason-author-fullName-bio"
                     ng-class="{'fp-user-judgement-reasons-list__reason-author-fullName-bio--is-visible': judgement.isAuthorNameVisible}">
-                    <span class="fp-user-judgement-reasons-list__reason-author-fullName">Darragh McCarthy</span>
+                    <span class="fp-user-judgement-reasons-list__reason-author-fullName">{{judgement.author.publicFacebookData.fullName}}</span>
                     <!--<span class="fp-user-judgement-reasons-list__reason-author-bio">, Web developer</span>-->
                 </div>
 
@@ -66,5 +66,28 @@
                 </li>
             </ul>
         </li>
+
+        <li class="fp-user-judgement-reasons-list__reasons-list-reason"
+            ng-repeat="judgement in ctrl.judgementsWithoutReasons">
+            <div class="fp-user-judgement-reasons-list__reason-text clearfix">
+
+                <img class="fp-user-judgement-reasons-list__reason-author-img" 
+                    ng-src="{{judgement.author.publicFacebookData.profilePhotoUrl}}"
+                    ng-click="ctrl.onClickReasonAuthorImg(judgement)"
+                />
+
+                <div class="fp-user-judgement-reasons-list__reason-author-fullName-bio"
+                    ng-class="{'fp-user-judgement-reasons-list__reason-author-fullName-bio--is-visible': judgement.isAuthorNameVisible}">
+                    <span class="fp-user-judgement-reasons-list__reason-author-fullName">{{judgement.author.publicFacebookData.fullName}}</span>
+                    <!--<span class="fp-user-judgement-reasons-list__reason-author-bio">, Web developer</span>-->
+                </div>
+                <span class="fp-user-judgement-reasons-list__likelihood-percent-number">{{judgement.likelihoodPercent}}</span>% likely
+            </div>
+        </li>
     </ul>
+
+
 </div>
+
+
+

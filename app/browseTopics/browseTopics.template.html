@@ -1,32 +1,27 @@
 
 
-<div class="browse-topics-page">
+<!--<div class="browse-topics-page">
 
-	<div class="browse-topics-page__topicless-add-new-prediction-container" style="margin-bottom:100px;">
-		<fp-prediction-list 
-			is-add-new-prediction-autofocused="true">
-		</fp-prediction-list>
-	</div>	
-
+	<h1 class="browse-topics-page__title">What's the future of</h1>
 	<ul class="browse-topics-page__topics-list">
+		<li class="browse-topics-page__topic">
+			<a class="browse-topics-page__topic-title browse-topics-page__topic-title--view-everything" 
+				ui-sref="app.recent">
+				Everything
+			</a>
+		</li>
 		<li ng-repeat="topicTitle in ctrl.featuredTopicTitles track by $index"
 			class="browse-topics-page__topic">
-
 			<a class="browse-topics-page__topic-title" 
 				ui-sref="app.topic({topic:topicTitle})">
 				{{topicTitle}}
 			</a>
-
-
-			<fp-prediction-list 
-				topic-title="{{topicTitle}}"
-				is-add-new-prediction-label-hidden="true">
-			</fp-prediction-list>
-
 		</li>
-
 	</ul>
-</div>
 
-
-
+	<div class="browse-topics-page__add-new-prediction-container">
+		<fp-prediction-list 
+			is-add-new-prediction-autofocused="true">
+		</fp-prediction-list>
+	</div>	
+</div>-->

@@ -1,17 +1,16 @@
 <div class="fp-prediction-list">
 
 
-    <div class="fp-prediction-list__add-new-prediction-container">
+    <div class="fp-prediction-list__add-new-prediction-container"
+        ng-if="!ctrl.isAddNewPredictionHidden">
         <fp-add-new-prediction
-            ng-if="!ctrl.isAddNewPredictionHidden"
-            autofocus="{{ctrl.isAddNewPredictionAutofocused}}"
+            autofocus-text-input="{{ctrl.isAddNewPredictionAutofocused}}"
             topic-title="{{ctrl.topicTitle}}"
             on-save-new-prediction-success="ctrl.onSaveNewPredictionSuccess(newPrediction)"
             on-save-new-prediction-request="ctrl.onSaveNewPredictionRequest()"
             is-label-hidden="{{ctrl.isAddNewPredictionLabelHidden}}">
         </fp-add-new-prediction>
     </div>
-
 
     <div class="fp-prediction-list__newly-added-predictions">
         <div class="fp-prediction-list__newly-added-prediction-is-saving" 
@@ -21,10 +20,10 @@
         <div class="fp-prediction-list__newly-added-prediction">
             <div ng-repeat="prediction in ctrl.newlySavedPredictions">
                 <fp-prediction
-                prediction="prediction"
-                show-topic-editing-by-default="true"
-                topic-to-hide="ctrl.topicTitle" 
-                on-delete-prediction-success="ctrl.onDeletePredictionSuccess(predictionId)">
+                    prediction="prediction"
+                    show-topic-editing-by-default="true"
+                    topic-to-hide="ctrl.topicTitle" 
+                    on-delete-prediction-success="ctrl.onDeletePredictionSuccess(predictionId)">
                 </fp-prediction>
             </div>
         </div>
@@ -34,7 +33,6 @@
         ng-show="ctrl.isLoadingPredictions">
         Loading {{ctrl.topicTitle}} predictions...
     </div>
-
 
     <div class="fp-prediction-list__predictions" 
         ng-show="ctrl.predictions.length">
@@ -47,18 +45,10 @@
                 on-delete-prediction-success="ctrl.onDeletePredictionSuccess(predictionId)">
             </fp-prediction>
         </div>
-
     </div>
 
-    <div class="fp-prediction-list__no-predictions-found"
-        ng-show="ctrl.predictions.length < ctrl.NUM_PREDICTIONS_PER_PAGE">
-        No more
-        <b ng-show="ctrl.topicTitle">{{ctrl.topicTitle}}</b>
-        predictions available at this time.
-    </div>
 
-    <!--
-    <div ng-if="ctrl.predictions.length >= 3 && ctrl.predictions.length < ctrl.NUM_PREDICTIONS_PER_PAGE"
+    <div ng-if="ctrl.predictions.length >= 3"
         class="fp-prediction-list__second-add-new-prediction-container">
         <fp-add-new-prediction
             ng-if="!ctrl.isAddNewPredictionHidden"
@@ -68,18 +58,24 @@
             is-label-hidden="{{ctrl.isAddNewPredictionLabelHidden}}">
         </fp-add-new-prediction>
     </div>
-    -->
 
+    <div class="fp-prediction-list__no-predictions-found"
+        ng-show="ctrl.predictions.length < ctrl.NUM_PREDICTIONS_PER_PAGE">
+        No more
+        <b ng-show="ctrl.topicTitle">{{ctrl.topicTitle}}</b>
+        predictions available at this time.
+    </div>
 
+    
     <div class="fp-prediction-list__pagination"
         ng-if="ctrl.isPaginationActive">
         
         <button class="fp-prediction-list__pagination-next-button"
             ng-if="ctrl.nextPageNumber"
             ui-sref="{page:ctrl.nextPageNumber}">
-            Next
+            More {{ctrl.topicTitle}} predictions
         </button>
-    
+        <!--
         <ul class="fp-prediction-list__pagination-pages">
             <li class="fp-prediction-list__pagination-page"
                 ng-repeat="page in ctrl.previousPages">
@@ -90,7 +86,10 @@
                 </a>
             </li>
         </ul>
+        -->
     </div>
+
+    
 
 </div>
 

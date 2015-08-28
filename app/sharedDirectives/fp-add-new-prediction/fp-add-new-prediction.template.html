@@ -4,31 +4,27 @@
     <label>
         <div ng-if="!ctrl.isLabelHidden"
             class="fp-add-new-prediction__prediction-title-label">
-            <span ng-hide="ctrl.newPredictionsCount">What's your</span>
-            <span ng-show="ctrl.newPredictionsCount">Add another</b></span>       
-            <span ng-if="ctrl.topicTitle"
-                class="fp-add-new-prediction__topic">
-                <a class="fp-add-new-prediction__topic-link"
-                      ui-sref="app.topic({topic:ctrl.topicTitle})" 
-                      ui-sref-active="active">
-                      {{ctrl.topicTitle}}
-                </a>
-                <span class="fp-add-new-prediction__delete-topic" 
-                    ng-click="ctrl.removeDefaultTopic()">
-                    ×
-                </span>
-            </span>
-            <span ng-hide="ctrl.newPredictionsCount">prediction?</span>
-            <span ng-show="ctrl.newPredictionsCount">prediction</span>        
-        </div>
 
-        <div class="fp-add-new-prediction__questions-not-allowed-explanation" 
-            ng-if="ctrl.predictionValidationErrors.predictionTitleContentErrors">
-            <a class="fp-add-new-prediction__how-to-make-prediction-link" 
-                ui-sref="app.prediction-guidelines" 
-                target="_blank">
-                View Prediction Guidelines
-            </a>
+            <div ng-hide="ctrl.topicTitle">
+                <span ng-hide="ctrl.newPredictionsCount">What's your prediction?</span>
+                <span ng-show="ctrl.newPredictionsCount">Add another prediction</span>
+            </div>
+            <div ng-show="ctrl.topicTitle">
+                <span ng-hide="ctrl.newPredictionsCount">What's your</span>
+                <span ng-show="ctrl.newPredictionsCount">Add another</span>
+                <span class="fp-add-new-prediction__topic">
+                    <a class="fp-add-new-prediction__topic-link"
+                          ui-sref="app.topic({topic:ctrl.topicTitle})" 
+                          ui-sref-active="active">
+                          {{ctrl.topicTitle}}
+                    </a>
+                    <span class="fp-add-new-prediction__delete-topic" 
+                        ng-click="ctrl.removeDefaultTopic()">
+                        ×
+                    </span>
+                </span>
+                <span>prediction</span>
+            </div>
         </div>
 
         <input type="text"

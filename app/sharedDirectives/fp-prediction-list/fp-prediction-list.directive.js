@@ -21,14 +21,15 @@ angular.module('myApp')
         };
     });
 
-FpPredictionList.$inject = ['$scope', '$state', '$window', 'PredictionService', 'JudgementService'];
-function FpPredictionList($scope,  $state,  $window,  PredictionService, JudgementService) {
+FpPredictionList.$inject = ['$timeout','$scope', '$state', '$window', 'PredictionService', 'JudgementService'];
+function FpPredictionList($timeout, $scope,  $state,  $window,  PredictionService, JudgementService) {
 
     var NUM_PREDICTIONS_PER_PAGE = 30;
 
     $window.scroll(0, 0);
 
     var _this = this;
+
     _this.NUM_PREDICTIONS_PER_PAGE = NUM_PREDICTIONS_PER_PAGE;
     _this.currentPageNumber = Number(_this.currentPageNumber) || 1;
     _this.goToPageNumber = goToPageNumber;
@@ -37,7 +38,6 @@ function FpPredictionList($scope,  $state,  $window,  PredictionService, Judgeme
     _this.onDeletePredictionSuccess = onDeletePredictionSuccess;
     _this.newlySavedPredictions =
         PredictionService.getNewlySavedPredictions(_this.topicTitle);
-
 
     (function loadPredictions() {
         if (_this.isPredictionLoadingEnabled) {

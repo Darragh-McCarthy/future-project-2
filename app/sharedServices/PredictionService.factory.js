@@ -92,6 +92,7 @@ function PredictionService(UserAuth, $q) {
             'predictionId': predictionId
         }).then(function() {
             console.warn('need to remove prediction from cache');
+            console.warn('need to remove prediction from new predictions');
         }, function(e) { console.error(e); });
     }
 
