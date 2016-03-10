@@ -4,8 +4,8 @@
 angular.module('myApp')
 	.factory('PredictionService', PredictionService);
 
-PredictionService.$inject = ['UserAuth', '$q'];
-function PredictionService(UserAuth, $q) {
+PredictionService.$inject = ['UserAuth', '$q', '$http'];
+function PredictionService(UserAuth, $q, $http) {
 
     var MIN_PREDICTION_CHARACTER_LENGTH = {
         'val': 10,
@@ -97,11 +97,13 @@ function PredictionService(UserAuth, $q) {
     }
 
     function getRecentPredictions(numPredictions, numPredictionsToSkip) {
-        return Parse.Cloud.run('getRecentPredictions', {
+        return $http.get('content/recentPredictions.json')/*Parse.Cloud.run('getRecentPredictions', {
             'numPredictions': numPredictions,
             'numPredictionsToSkip': numPredictionsToSkip
-        })
+        })*/
         .then(function(recentPredictions) {
+            recentPredictions = recentPredictions.data.result;
+            console.log(recentPredictions);
             recentPredictions = removeAnyPredictionsNewlySavedThisSession(recentPredictions);
             recentPredictions.forEach(function(prediction) {
                 predictionsCache[prediction.id] = angular.copy(prediction);

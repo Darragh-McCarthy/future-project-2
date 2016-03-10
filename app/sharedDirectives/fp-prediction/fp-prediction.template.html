@@ -2,9 +2,11 @@
 <article style="display:inline-block;" 
     class="fp-prediction"
     ng-class="{'fp-prediction--expanded': ctrl.prediction.isExpanded}">
-<!--
-<img style="display:inline-block;width:50px;height:50px;border-radius:50px;position:absolute;top:10px;left:-50px;" src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xat1/v/t1.0-1/p200x200/10410095_10204571738670575_5638321658802120076_n.jpg?oh=58a86fedc0ef7299bfd8fb805ba9b044&oe=560E6791&__gda__=1444015358_32a96d0b8e5967438dcb66d9885881b9"/>
--->
+
+    <img class="fp-prediction__user-profile-photo" 
+        src="iALXg2VM.jpg"
+    />
+
         <div class="fp-prediction__is-deleted-notice"
             ng-show="ctrl.isDeleted">
             <b>Deleted</b> <br/>{{ctrl.prediction.title}}
