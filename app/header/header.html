@@ -2,15 +2,22 @@
     <div class="header__fill-fixed-position-space"></div>
     <div class="header__fixed-to-top">
 
-        <div class="private-alpha-notice">
-            <b>Unnamed project</b> - still in development. This is a test version. Data loss is likely and things will break!
-        </div>
+    <div class="logo">
+        Predict
+    </div>
 
-        <div class="header__center-aligned-container">
+        <fp-add-new-prediction
+            autofocus-text-input="{{ctrl.isAddNewPredictionAutofocused}}"
+            topic-title="{{ctrl.topicTitle}}"
+            on-save-new-prediction-success="ctrl.onSaveNewPredictionSuccess(newPrediction)"
+            on-save-new-prediction-request="ctrl.onSaveNewPredictionRequest()"
+            is-label-hidden="{{ctrl.isAddNewPredictionLabelHidden}}">
+        </fp-add-new-prediction>
+
+        <!--<div class="header__center-aligned-container">
             <nav class="header__navigation">
-                <ul class="header__navigation__list"><!--
-                    --><!--
-                 --><li class="header__navigation-item header__navigation-item--notifications"
+                <ul class="header__navigation__list">
+                    <li class="header__navigation-item header__navigation-item--notifications"
                         ng-if="ctrl.isUserProfileOptionActive">
                         <a class="header__profile-link" 
                             ui-sref="app.user-profile({userId:ctrl.userId})" 
@@ -47,16 +54,9 @@
                             ng-show="ctrl.isLoginOptionActive"
                             >Login
                         </a>
-                    </li><!--<li class="header__navigation-item">
-                        <a class="header__navigation-item-link"
-                            ui-sref="app.follow"
-                            ui-sref-active="active"
-                            >Follow
-                        </a>
-                    </li>-->
+                    </li>
                 </ul>
             </nav>
-
-        </div>
+        </div>-->
     </div>
 </div>

@@ -1,41 +1,38 @@
 <form class="fp-add-new-prediction"
     ng-submit="ctrl.saveNewPrediction()">
 
-    <label>
+    <!--<label>
         <div ng-if="!ctrl.isLabelHidden"
             class="fp-add-new-prediction__prediction-title-label">
 
             <div ng-hide="ctrl.topicTitle">
-                <span ng-hide="ctrl.newPredictionsCount">What's your prediction?</span>
-                <span ng-show="ctrl.newPredictionsCount">Add another prediction</span>
+                <span ng-hide="ctrl.newPredictionsCount">What's Your Prediction?</span>
+                <span ng-show="ctrl.newPredictionsCount">Add Another Prediction</span>
             </div>
             <div ng-show="ctrl.topicTitle">
-                <span ng-hide="ctrl.newPredictionsCount">What's your</span>
-                <span ng-show="ctrl.newPredictionsCount">Add another</span>
+                <span ng-hide="ctrl.newPredictionsCount">What's Your</span>
+                <span ng-show="ctrl.newPredictionsCount">Add Another</span>
                 <span class="fp-add-new-prediction__topic">
                     <a class="fp-add-new-prediction__topic-link"
                           ui-sref="app.topic({topic:ctrl.topicTitle})" 
                           ui-sref-active="active">
                           {{ctrl.topicTitle}}
                     </a>
-                    <span class="fp-add-new-prediction__delete-topic" 
-                        ng-click="ctrl.removeDefaultTopic()">
-                        ×
-                    </span>
                 </span>
-                <span>prediction</span>
+                <span>Prediction?</span>
             </div>
         </div>
 
-        <input type="text"
+        
+    </label>-->
+    <input type="text"
             class="fp-add-new-prediction__prediction-title-input"
             id="{{ctrl.predictionTextInputElementId}}" 
             ng-model="ctrl.newPredictionTitle"
             ng-keyup="ctrl.validateNewPrediction($event)"
             autocomplete="off"
-            placeholder="{{ctrl.placeholderText}}"
+            placeholder="I predict that..."
         />
-    </label>
 
     <ul ng-if="ctrl.displayedValidationErrors.length" 
         class="fp-add-new-prediction__errors">

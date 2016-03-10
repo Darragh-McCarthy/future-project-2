@@ -1,7 +1,7 @@
 <div class="fp-prediction-list">
 
 
-    <div class="fp-prediction-list__add-new-prediction-container"
+    <!--<div class="fp-prediction-list__add-new-prediction-container"
         ng-if="!ctrl.isAddNewPredictionHidden">
         <fp-add-new-prediction
             autofocus-text-input="{{ctrl.isAddNewPredictionAutofocused}}"
@@ -10,7 +10,7 @@
             on-save-new-prediction-request="ctrl.onSaveNewPredictionRequest()"
             is-label-hidden="{{ctrl.isAddNewPredictionLabelHidden}}">
         </fp-add-new-prediction>
-    </div>
+    </div>-->
 
     <div class="fp-prediction-list__newly-added-predictions">
         <div class="fp-prediction-list__newly-added-prediction-is-saving" 
@@ -48,7 +48,7 @@
     </div>
 
 
-    <div ng-if="ctrl.predictions.length >= 3"
+    <!--<div ng-if="ctrl.predictions.length >= 3"
         class="fp-prediction-list__second-add-new-prediction-container">
         <fp-add-new-prediction
             ng-if="!ctrl.isAddNewPredictionHidden"
@@ -57,7 +57,7 @@
             on-save-new-prediction-request="ctrl.onSaveNewPredictionRequest()"
             is-label-hidden="{{ctrl.isAddNewPredictionLabelHidden}}">
         </fp-add-new-prediction>
-    </div>
+    </div>-->
 
     <div class="fp-prediction-list__no-predictions-found"
         ng-show="ctrl.predictions.length < ctrl.NUM_PREDICTIONS_PER_PAGE">
