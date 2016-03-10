@@ -1330,7 +1330,6 @@ fp-prediction {
 .prediction-page {
   padding:50px 2%;
   position:relative;
-  background:#fff;
 }
 .prediction-page__center-aligned-container {
   max-width: 800px;
@@ -1936,6 +1935,7 @@ fp-prediction {
   font-weight: normal;
   font-size:1.1rem;
   line-height: 1.3em;
+  color:#fff;
 }
 .fp-user-judgement-reasons-list__likelihood-percent-number {
   font-size: 1.4rem;
