@@ -38,7 +38,7 @@ function FpUserJudgmentReasonsList(UserAuth, $state, JudgementService) {
     });
 
     function saveComment(judgement, commentText) {
-        UserAuth.loginWithFacebook().then(
+        /*UserAuth.loginWithFacebook().then(
             function onSuccess(isNewLogin) {
 
                 if (!commentText) {
@@ -46,9 +46,9 @@ function FpUserJudgmentReasonsList(UserAuth, $state, JudgementService) {
                 }
 
                 JudgementService.saveNewReasonComment(judgement.id, commentText)
-                .then(function onSaveCommentSuccess(newComment) {
+                .then(function onSaveCommentSuccess(newComment) {*/
                     judgement.areCommentsVisible = true;
-                    judgement.comments.unshift(newComment);
+                    /*judgement.comments.unshift(newComment);
                 }, function onSaveCommentError() {
                     console.error('failed to save new comment');
                 });
@@ -59,7 +59,7 @@ function FpUserJudgmentReasonsList(UserAuth, $state, JudgementService) {
                     });
                 }
             }
-        );
+        );*/
     }
     function deleteComment(commentId) {
         JudgementService.deleteReasonComment()

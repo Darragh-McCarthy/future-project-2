@@ -56,7 +56,7 @@ function FpUserJudgement(focusElementById, JudgementService, $timeout, UserAuth,
     function toggleLikelihoodPercent(percent) {
         _this.isReasonVisible = true;
 
-        return UserAuth.loginWithFacebook().then(
+        /*return UserAuth.loginWithFacebook().then(
             function onSuccess(isNewLogin) {
 
                 if (!_this.currentJudgement) {
@@ -121,7 +121,7 @@ function FpUserJudgement(focusElementById, JudgementService, $timeout, UserAuth,
             function onError() {
 
             }
-        );
+        );*/
     }
 
     function updateReason() {

@@ -687,6 +687,9 @@ fp-prediction {
         font-size:1.05rem;
         border:1px solid #777;
         border-radius:1em;
+        background:none;
+        outline:none;
+        transition:0.3s ease;
     }
     
 
@@ -725,6 +728,50 @@ fp-prediction {
         &:nth-child(10) .test { color: rgb(246,125,0);   }
         &:nth-child(11) .test { color: rgb(241,103,0);   }
 */
+        /*&:nth-child(1)  .test { background: rgb(20,180,240);  }
+        &:nth-child(2)  .test { background: rgb(70,190,180);  }
+        &:nth-child(3)  .test { background: rgb(120,200,120); }
+        &:nth-child(4)  .test { background: rgb(170,210,60);  }
+        &:nth-child(5)  .test { background: rgb(198,204,46);  }
+        &:nth-child(6)  .test { background: rgb(226,197,33);  }
+        &:nth-child(7)  .test { background: rgb(255,190,20);  }
+        &:nth-child(8)  .test { background: rgb(252,169,14);  }
+        &:nth-child(9)  .test { background: rgb(249,147,7);   }
+        &:nth-child(10) .test { background: rgb(246,125,0);   }
+        &:nth-child(11) .test { background: rgb(241,103,0);   }*/
+    }
+    & {
+
+      .test:focus {
+        font-weight: normal;
+//        color:#fff;
+      }
+
+
+        &:nth-child(1)  .test:focus { border-color: rgb(20,180,240);  }
+        &:nth-child(2)  .test:focus { border-color: rgb(70,190,180);  }
+        &:nth-child(3)  .test:focus { border-color: rgb(120,200,120); }
+        &:nth-child(4)  .test:focus { border-color: rgb(170,210,60);  }
+        &:nth-child(5)  .test:focus { border-color: rgb(198,204,46);  }
+        &:nth-child(6)  .test:focus { border-color: rgb(226,197,33);  }
+        &:nth-child(7)  .test:focus { border-color: rgb(255,190,20);  }
+        &:nth-child(8)  .test:focus { border-color: rgb(252,169,14);  }
+        &:nth-child(9)  .test:focus { border-color: rgb(249,147,7);   }
+        &:nth-child(10) .test:focus { border-color: rgb(246,125,0);   }
+        &:nth-child(11) .test:focus { border-color: rgb(241,103,0);   }
+
+        &:nth-child(1)  .test:focus { color: rgb(20,180,240);  }
+        &:nth-child(2)  .test:focus { color: rgb(70,190,180);  }
+        &:nth-child(3)  .test:focus { color: rgb(120,200,120); }
+        &:nth-child(4)  .test:focus { color: rgb(170,210,60);  }
+        &:nth-child(5)  .test:focus { color: rgb(198,204,46);  }
+        &:nth-child(6)  .test:focus { color: rgb(226,197,33);  }
+        &:nth-child(7)  .test:focus { color: rgb(255,190,20);  }
+        &:nth-child(8)  .test:focus { color: rgb(252,169,14);  }
+        &:nth-child(9)  .test:focus { color: rgb(249,147,7);   }
+        &:nth-child(10) .test:focus { color: rgb(246,125,0);   }
+        &:nth-child(11) .test:focus { color: rgb(241,103,0);   }
+
         /*&:nth-child(1)  .test { background: rgb(20,180,240);  }
         &:nth-child(2)  .test { background: rgb(70,190,180);  }
         &:nth-child(3)  .test { background: rgb(120,200,120); }
@@ -790,6 +837,8 @@ fp-prediction {
 */
     }
 }
+
+
 
 .likelihood-user-estimate-option .show-on-active { 
   display:none;

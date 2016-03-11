@@ -39,10 +39,10 @@
             ng-click="ctrl.toggleLikelihoodPercent(percent)" 
             ng-repeat="percent in ctrl.percentOptions" 
             ng-class="{'likelihood-user-estimate-option--active': percent === ctrl.currentJudgement.likelihoodPercent}">
-            <span class="test">
+            <button class="test">
                 <span class="percent">{{percent}}</span>
                 <span class="show-on-active">%</span>
-            </span>
+            </button>
         </div>
     </div>
 </div>
